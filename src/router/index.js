@@ -371,7 +371,18 @@ export const asyncRoutes = [
       }
     ]
   },
-
+  {
+    path: '/InterviewPractice',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/InterviewPractice'),
+        name: 'ClipboardDemo',
+        meta: { title: 'Clipboard', icon: 'clipboard' }
+      }
+    ]
+  },
   {
     path: 'external-link',
     component: Layout,
