@@ -372,14 +372,26 @@ export const asyncRoutes = [
     ]
   },
   {
-    path: '/InterviewPractice',
+    path: '/interview-plaza',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/InterviewPlaza'),
+        name: 'InterviewPlaza',
+        meta: { title: '面试广场', icon: 'form' }
+      }
+    ]
+  },
+  {
+    path: '/interview-practice',
     component: Layout,
     children: [
       {
         path: 'index',
         component: () => import('@/views/InterviewPractice'),
-        name: 'ClipboardDemo',
-        meta: { title: 'Clipboard', icon: 'clipboard' }
+        name: 'InterviewPractice',
+        meta: { title: '面试练习', icon: 'edit' }
       }
     ]
   },
