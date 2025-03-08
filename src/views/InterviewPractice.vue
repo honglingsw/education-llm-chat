@@ -2,7 +2,7 @@
   <div class="interview-page" @click="handlePageClick">
     <!-- 顶部导航 -->
     <header class="header">
-      <div style="margin:0 100px;">  <!-- 使用与灰色框相同的margin -->
+      <div style="margin:0 100px;"> <!-- 使用与灰色框相同的margin -->
         <div class="header-right">
           <div class="wallet" @click="showRechargeDialog">
             <img class="wallet-icon" src="@/assets/wallet.png" alt="wallet">
@@ -30,29 +30,27 @@
             <div class="label-group">
               <span class="label">时间</span>
               <el-select v-model="selectedYear" size="small" placeholder="选择年份">
-                <el-option
-                  v-for="year in years"
-                  :key="year"
-                  :label="year"
-                  :value="year"
-                />
+                <el-option v-for="year in years" :key="year" :label="year" :value="year" />
               </el-select>
             </div>
             <div class="label-group">
               <span class="label">地区</span>
               <el-select v-model="selectedRegion" size="small" placeholder="选择地区">
-                <el-option
-                  v-for="region in regions"
-                  :key="region"
-                  :label="region"
-                  :value="region"
-                />
+                <el-option v-for="region in regions" :key="region" :label="region" :value="region" />
               </el-select>
             </div>
             <div class="label-group">
               <span class="label">考题类型</span>
-              <span class="value">应急考试</span>
+              <el-select v-model="selectedQuestionType" size="small" placeholder="选择地区">
+                <el-option
+                  v-for="questionType in questionTypes"
+                  :key="questionType"
+                  :label="questionType"
+                  :value="questionType"
+                />
+              </el-select>
             </div>
+            <el-button @click="searchQuestion">查询</el-button>
           </div>
           <div class="page-region">
             <el-button round>上一题</el-button>
@@ -73,11 +71,7 @@
           <!-- 左侧答题区域 -->
           <div class="answer-box">
             <div class="tab-group">
-              <span
-                class="tab"
-                :class="{ active: activeTab === 'demo' }"
-                @click="activeTab = 'demo'"
-              >示范作答</span>
+              <span class="tab" :class="{ active: activeTab === 'demo' }" @click="activeTab = 'demo'">示范作答</span>
               <span
                 class="tab"
                 :class="{ active: activeTab === 'reference' }"
@@ -106,13 +100,15 @@
                 <!-- 示范内容 -->
                 <div class="demo-content">
                   <div class="content-text">
-                    <p class="paragraph model-thinking">最后，检查是否有遗漏的关键点，比如劳动教育在培养创新精神、实践能力方面的作用，或者如何平衡劳动教育与其他学科的关系，确保全面发展的教育目标。</p>
+                    <p class="paragraph model-thinking">
+                      最后，检查是否有遗漏的关键点，比如劳动教育在培养创新精神、实践能力方面的作用，或者如何平衡劳动教育与其他学科的关系，确保全面发展的教育目标。</p>
 
                     <p class="paragraph">作为教师招聘考试的考生，我认为劳动教育课成为社会关注的热点，体现了新时代教育理念的深刻转型，具有重要的现实意义和育人价值。以下是我的具体理解：</p>
 
                     <div class="section">
                       <h3 class="section-title">一、劳动教育是"五育融合"的必然要求</h3>
-                      <p class="section-content">劳动教育被纳入国家课程体系，与德育、智育、体育、美育共同构成"五育并举"的育人框架，这不仅是教育政策的调整，更是对"唯分数论"单一评价体系的纠偏。例如...</p>
+                      <p class="section-content">
+                        劳动教育被纳入国家课程体系，与德育、智育、体育、美育共同构成"五育并举"的育人框架，这不仅是教育政策的调整，更是对"唯分数论"单一评价体系的纠偏。例如...</p>
                     </div>
                   </div>
                 </div>
@@ -130,18 +126,19 @@
           <div class="record-box">
             <div class="record-hint">
               <template v-if="isRecording || hasRecordedContent">
-                <div class="recorded-content">
+                <div id="status" />
+                <div id="recordContent" class="recorded-content">
                   劳动教育的本质是"以劳树德、以劳增智、以劳强体、以劳育美"。作为教师，我们应秉其视为培养"完整的人"的重要载体，让学生在出力流汗中锻炼品格，在动手实践中理解知识的价值，这正是回归教育本质的必由之路。
 
                   <!-- 点评框 -->
-                  <div v-if="!showEvaluationContent" class="evaluation-box" @click="showEvaluation">
+                  <!-- <div v-if="!showEvaluationContent" class="evaluation-box" @click="showEvaluation">
                     <img class="eval-logo" src="@/assets/deepseek-color.png" alt="Logo">
                     <span>作答点评</span>
-                  </div>
+                  </div> -->
                   <!-- 点评内容 -->
-                  <div v-else class="evaluation-content">
+                  <!-- <div v-else class="evaluation-content">
                     这是一个很好的回答，结构完整，论述有力。从劳动教育的本质出发，阐述了其重要性和意义。建议可以再补充一些具体的实施建议。
-                  </div>
+                  </div> -->
                 </div>
               </template>
               <template v-else>
@@ -151,8 +148,8 @@
             <div class="record-button-wrapper">
               <div class="audio-recorder">
                 <div class="mic-circle" :class="{ 'recording-btn': isRecording }" @click="toggleRecording">
-                  <img v-if="!isRecording" src="@/assets/microphone.png" alt="microphone">
-                  <div v-else class="recording-square" />
+                  <img v-if="!isRecording" id="asrRecording" src="@/assets/microphone.png" alt="microphone">
+                  <div v-else id="stopBtn" class="recording-square" />
                 </div>
                 <div class="wave-line">
                   <div class="dotted-line" :class="{ 'recording': isRecording }" />
@@ -164,12 +161,7 @@
       </main>
 
       <!-- 替换浮动按钮为侧拉栏 -->
-      <el-drawer
-        title="答题列表"
-        :visible.sync="drawerVisible"
-        direction="rtl"
-        size="30%"
-      >
+      <el-drawer title="答题列表" :visible.sync="drawerVisible" direction="rtl" size="30%">
         <div class="drawer-content">
           <div class="question-list">
             <div class="question-item">
@@ -197,13 +189,7 @@
     </div>
 
     <!-- 添加充值弹窗 -->
-    <el-dialog
-      :visible.sync="rechargeDialogVisible"
-      class="recharge-dialog"
-      width="560px"
-      :show-close="false"
-      center
-    >
+    <el-dialog :visible.sync="rechargeDialogVisible" class="recharge-dialog" width="560px" :show-close="false" center>
       <div class="recharge-container">
         <!-- 顶部用户信息 -->
         <div class="recharge-header">
@@ -295,25 +281,14 @@
         <el-form ref="loginForm" :model="loginForm" :rules="loginRules" label-width="0">
           <!-- 手机号输入框: 480px x 44px -->
           <el-form-item prop="phone" class="form-item">
-            <el-input
-              v-model="loginForm.phone"
-              placeholder="手机号"
-            />
+            <el-input v-model="loginForm.phone" placeholder="手机号" />
           </el-form-item>
 
           <!-- 验证码区域 -->
           <el-form-item prop="code" class="form-item">
             <div class="code-input-group">
-              <el-input
-                v-model="loginForm.code"
-                placeholder="验证码"
-              />
-              <el-button
-                type="primary"
-                class="send-code-btn"
-                :disabled="!canSendCode"
-                @click="sendCode"
-              >
+              <el-input v-model="loginForm.code" placeholder="验证码" />
+              <el-button type="primary" class="send-code-btn" :disabled="!canSendCode" @click="sendCode">
                 {{ canSendCode ? '发送短信' : `${countdown}秒后重新发送` }}
               </el-button>
             </div>
@@ -337,6 +312,8 @@
 </template>
 
 <script>
+import axios from 'axios'
+import ASRClient from '@/utils/asr'
 export default {
   data() {
     // 自定义手机号验证规则
@@ -392,10 +369,15 @@ export default {
       isLoggedIn: false,
       userPhone: '',
       validPhone: '13012343322', // 可登录手机号先写
+
+      selectedQuestionType: '',
       selectedYear: '2017',
       selectedRegion: '湖北',
+
       years: ['2025', '2024', '2023', '2022', '2021', '2020', '2019', '2018', '2017', '2016'],
       regions: ['北京', '上海', '广东', '湖北', '江苏', '浙江', '四川', '山东'],
+      questionTypes: [],
+
       rechargeDialogVisible: false,
       selectedRechargeOption: 0,
       paymentMethod: 'wechat',
@@ -404,7 +386,14 @@ export default {
         { originalPrice: '129.9', discountPrice: '99.99', points: '2000' },
         { originalPrice: '129.9', discountPrice: '99.99', points: '2000' },
         { originalPrice: '129.9', discountPrice: '99.99', points: '2000' }
-      ]
+      ],
+
+      searchInput: {
+        examType: '',
+        questionType: '',
+        year: '',
+        region: ''
+      }
     }
   },
 
@@ -414,8 +403,138 @@ export default {
       return this.userPhone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2')
     }
   },
+  watch: {
+    selectedQuestionType(newVal, oldVal) {
+      this.searchInput.questionType = newVal
+    },
+    selectedYear(newVal, oldVal) {
+      this.searchInput.year = newVal
+    },
+    selectedRegion(newVal, oldVal) {
+      this.searchInput.region = newVal
+    }
+  },
+  mounted() {
+    this.searchInput.examType = this.$route.query.type
+    var config = {
+      method: 'get',
+      url: '/api/exam/tags',
+      headers: {}
+    }
+    axios(config)
+      .then((response) => {
+        console.log(response.data)
+        this.questionTypes = response.data.data[0].tags
+        this.years = response.data.data[1].tags
+        this.regions = response.data.data[2].tags
+      })
+      .catch(function(error) {
+        console.log(error)
+      })
+
+    this.asrRecording()
+  },
 
   methods: {
+    asrRecording() {
+      const startBtn = document.getElementById('asrRecording')
+      const stopBtn = document.getElementById('stopBtn')
+      const resultDiv = document.getElementById('recordContent')
+      const statusDiv = document.getElementById('status')
+      console.log(startBtn, stopBtn, resultDiv, statusDiv)
+
+      // 创建ASR客户端
+      const asrClient = new ASRClient('ws://1.13.0.140:8080/asr/ws')
+
+      // 设置回调函数
+      asrClient.setCallbacks({
+        onReady: () => {
+          statusDiv.textContent = '准备就绪，可以开始识别'
+          startBtn.disabled = false // 启用开始按钮
+        },
+        onStart: () => {
+          statusDiv.textContent = '正在识别...'
+        },
+        onPartialResult: (text) => {
+          resultDiv.textContent = text
+        },
+        onFinalResult: (text) => {
+          resultDiv.textContent = text
+          // 可以在这里处理最终识别结果
+        },
+        onComplete: () => {
+          statusDiv.textContent = '识别完成'
+          startBtn.disabled = false
+          stopBtn.disabled = true
+        },
+        onError: (error) => {
+          statusDiv.textContent = `错误: ${error}`
+          startBtn.disabled = false
+          stopBtn.disabled = true
+        }
+      })
+
+      // 连接到WebSocket服务器
+      asrClient.connect().then(() => {
+        // 连接成功后主动启用开始按钮
+        startBtn.disabled = false
+        statusDiv.textContent = '已连接到服务器，可以开始识别'
+      }).catch(error => {
+        statusDiv.textContent = `连接错误: ${error.message}`
+      })
+
+      // 开始按钮
+      startBtn.addEventListener('click', () => {
+        resultDiv.innerHTML = ''
+        startBtn.disabled = true
+        stopBtn.disabled = false
+        asrClient.startRecognition()
+      })
+
+      // 停止按钮
+      stopBtn.addEventListener('click', () => {
+        startBtn.disabled = false
+        stopBtn.disabled = true
+        asrClient.stopRecognition()
+      })
+
+      // 页面卸载时断开连接
+      window.addEventListener('beforeunload', () => {
+        asrClient.disconnect()
+      })
+    },
+    searchQuestion(pageNum, pageSize) {
+      // console.log(this.searchInput);
+
+      var data = JSON.stringify({
+        'examType': this.searchInput.examType || '',
+        'examTime': this.searchInput.year || '2017',
+        'region': this.searchInput.region || '湖北',
+        'questionType': this.searchInput.questionType || '',
+        'pageNum': 1,
+        'pageSize': 10
+      })
+
+      var config = {
+        method: 'post',
+        url: 'api/exam/filter',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        data: data
+      }
+      console.log(config)
+
+      axios(config)
+        .then((response) => {
+          console.log(123)
+          console.log(response.data)
+        })
+        .catch(function(error) {
+          console.log(321)
+          console.log(error)
+        })
+    },
     toggleDrawer() {
       this.drawerVisible = !this.drawerVisible
     },
@@ -523,8 +642,8 @@ export default {
     handlePageClick(e) {
       // 判断点击的是否是输入框或按钮
       const isFormElement = e.target.closest('.el-input') ||
-                          e.target.closest('.el-button') ||
-                          e.target.closest('.el-form-item__error')
+        e.target.closest('.el-button') ||
+        e.target.closest('.el-form-item__error')
 
       // 如果不是表单元素，则清除验证信息
       if (!isFormElement && this.$refs.loginForm) {
@@ -551,6 +670,7 @@ export default {
         this.$message.warning('请先登录后再进行充值操作')
       }
     }
+
   }
 }
 </script>
@@ -633,7 +753,8 @@ export default {
   display: flex;
   align-items: center;
   gap: 8px;
-  height: 32px; /* 确保高度统一 */
+  height: 32px;
+  /* 确保高度统一 */
 }
 
 .label {
@@ -667,7 +788,7 @@ export default {
   background: #fff;
   padding: 24px;
   border-radius: 8px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   margin-bottom: 24px;
 }
 
@@ -693,7 +814,7 @@ export default {
   background: #fff;
   padding: 24px;
   border-radius: 8px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
 .record-box {
@@ -701,7 +822,7 @@ export default {
   background: #fff;
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
 .tab-group {
@@ -844,12 +965,15 @@ export default {
 }
 
 .recording-btn:hover {
-  background: transparent;  /* 录音状态下保持透明背景 */
-  border-color: #ff7875;  /* hover时边框变浅红色 */
+  background: transparent;
+  /* 录音状态下保持透明背景 */
+  border-color: #ff7875;
+  /* hover时边框变浅红色 */
 }
 
 .recording-btn:hover .recording-square {
-  background-color: #ff7875;  /* hover时方块也变成浅红色 */
+  background-color: #ff7875;
+  /* hover时方块也变成浅红色 */
 }
 
 .mic-circle img {
@@ -876,9 +1000,17 @@ export default {
 }
 
 @keyframes wave {
-  0% { transform: scaleY(1); }
-  50% { transform: scaleY(2); }
-  100% { transform: scaleY(1); }
+  0% {
+    transform: scaleY(1);
+  }
+
+  50% {
+    transform: scaleY(2);
+  }
+
+  100% {
+    transform: scaleY(1);
+  }
 }
 
 .drawer-trigger {
@@ -890,13 +1022,16 @@ export default {
 }
 
 .trigger-area {
-  width: 100px;  /* 增加宽度 */
+  width: 100px;
+  /* 增加宽度 */
   height: 100%;
   background: #ffffff;
   display: flex;
   flex-direction: column;
-  align-items: center;  /* 水平居中 */
-  justify-content: center;  /* 垂直居中 */
+  align-items: center;
+  /* 水平居中 */
+  justify-content: center;
+  /* 垂直居中 */
   padding-bottom: 120px;
   cursor: pointer;
   color: #606266;
@@ -908,8 +1043,10 @@ export default {
 }
 
 .trigger-area span {
-  writing-mode: vertical-lr;  /* 文字垂直排列 */
-  letter-spacing: 4px;  /* 增加文字间距 */
+  writing-mode: vertical-lr;
+  /* 文字垂直排列 */
+  letter-spacing: 4px;
+  /* 增加文字间距 */
 }
 
 .drawer-content {
@@ -943,10 +1080,11 @@ export default {
 }
 
 .dialog-container {
-.el-dialog__header {
-    padding:0;
-    padding-bottom:0;
-}
+  .el-dialog__header {
+    padding: 0;
+    padding-bottom: 0;
+  }
+
   .el-dialog {
     width: 560px !important;
     height: 480px !important;
@@ -1014,12 +1152,14 @@ export default {
 
       /* 修改表单项间距 */
       .form-item {
-        margin-bottom: 24px !important;  /* 普通表单项的底部间距 */
+        margin-bottom: 24px !important;
+        /* 普通表单项的底部间距 */
       }
 
       /* 特别调整验证码输入框（第二个表单项）的间距 */
       .form-item:nth-child(2) {
-        margin-bottom: 32px !important;  /* 增加或减少这个值来调整验证码输入框的位置 */
+        margin-bottom: 32px !important;
+        /* 增加或减少这个值来调整验证码输入框的位置 */
       }
 
       /* 调整登录按钮（第三个表单项）的间距 */
@@ -1066,34 +1206,35 @@ export default {
     margin-bottom: 48px !important;
   }
 
-:deep(.el-form) {
-  width: 80% !important;
-}
+  :deep(.el-form) {
+    width: 80% !important;
+  }
 
-.form-item {
-  margin-bottom: 8px !important;
-}
+  .form-item {
+    margin-bottom: 8px !important;
+  }
 
-.form-item:nth-child(2) {
-  margin-bottom: 48px !important;
-}
+  .form-item:nth-child(2) {
+    margin-bottom: 48px !important;
+  }
 
-:deep(.el-form-item__error) {
-  position: absolute;
-  right: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-  padding: 0;
-  margin: 0;
-  line-height: normal;
-  color: #F56C6C;
-  z-index: 2;
-  background: white;
-}
+  :deep(.el-form-item__error) {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 0;
+    margin: 0;
+    line-height: normal;
+    color: #F56C6C;
+    z-index: 2;
+    background: white;
+  }
 
-:deep(.el-input__inner) {
-  padding-right: 100px !important; /* 为错误提示预留空间 */
-}
+  :deep(.el-input__inner) {
+    padding-right: 100px !important;
+    /* 为错误提示预留空间 */
+  }
 }
 
 .reference-content {
@@ -1168,13 +1309,11 @@ export default {
   top: 0;
   width: 100%;
   height: 100%;
-  background: repeating-linear-gradient(
-    90deg,
-    #DCDFE6,
-    #DCDFE6 4px,
-    transparent 4px,
-    transparent 8px
-  );
+  background: repeating-linear-gradient(90deg,
+      #DCDFE6,
+      #DCDFE6 4px,
+      transparent 4px,
+      transparent 8px);
 }
 
 .recorded-content {
@@ -1201,7 +1340,7 @@ export default {
   cursor: pointer;
   transition: all 0.3s;
   margin-top: auto;
-  box-shadow: 0 2px 12px 0 rgba(0,0,0,0.05);
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.05);
 }
 
 .evaluation-box:hover {
@@ -1312,12 +1451,14 @@ export default {
 
 /* 修改select的宽度样式 */
 .label-group .el-select {
-  width: 80px; /* 减小时间选择框的宽度 */
+  width: 80px;
+  /* 减小时间选择框的宽度 */
 }
 
 /* 为地区select单独设置宽度 */
 .label-group:nth-child(2) .el-select {
-  width: 80px; /* 减小地区选择框的宽度 */
+  width: 80px;
+  /* 减小地区选择框的宽度 */
 }
 
 /* 恢复value的灰色背景样式 */
@@ -1333,7 +1474,8 @@ export default {
 }
 
 .model-thinking {
-  color: #909399; /* 使用浅灰色 */
+  color: #909399;
+  /* 使用浅灰色 */
 }
 
 /* 充值弹窗样式 */
