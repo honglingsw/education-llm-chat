@@ -32,12 +32,12 @@ module.exports = {
   devServer: {
     proxy:{
       '/api': {
-        target:'http://1.13.0.140:8080',
-        changeOrigin: true
+        target:'http://up.aigcpmer.com/api',
+        changeOrigin: false
       },
       '/auth': {
-        target:'http://1.13.0.140:8080',
-        changeOrigin: true
+        target:'http://up.aigcpmer.com/api',
+        changeOrigin: false
       }
     },
     // port: port,

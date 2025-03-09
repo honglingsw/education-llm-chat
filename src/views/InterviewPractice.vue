@@ -58,8 +58,9 @@
         <!-- 题目区域 -->
         <div class="question-box">
           <h1 class="question-title">
-            对于劳动教育课成为话题，你怎么看？
-            <span class="question-subtitle">（2017 湖北省考面试题）</span>
+            {{ questionContentitem.questionContent }}
+            <span class="question-subtitle">（{{ questionContentitem.examTime }} {{ questionContentitem.region }} {{
+              questionContentitem.questionType }}）</span>
           </h1>
         </div>
 
@@ -96,13 +97,9 @@
                     <p class="paragraph model-thinking">
                       最后，检查是否有遗漏的关键点，比如劳动教育在培养创新精神、实践能力方面的作用，或者如何平衡劳动教育与其他学科的关系，确保全面发展的教育目标。</p>
 
-                    <p class="paragraph">作为教师招聘考试的考生，我认为劳动教育课成为社会关注的热点，体现了新时代教育理念的深刻转型，具有重要的现实意义和育人价值。以下是我的具体理解：</p>
+                    <p class="paragraph">{{ modelResult }}</p>
 
-                    <div class="section">
-                      <h3 class="section-title">一、劳动教育是"五育融合"的必然要求</h3>
-                      <p class="section-content">
-                        劳动教育被纳入国家课程体系，与德育、智育、体育、美育共同构成"五育并举"的育人框架，这不仅是教育政策的调整，更是对"唯分数论"单一评价体系的纠偏。例如...</p>
-                    </div>
+
                   </div>
                 </div>
               </template>
@@ -110,6 +107,14 @@
 
             <div v-else class="demo-area">
               <div class="reference-content">
+               
+                  <div class="content-text">
+                
+
+                    <p class="paragraph">{{questionContentitem.questionAnswer}}</p>
+
+
+                </div>
                 <!-- 参考答案的具体内容 -->
               </div>
             </div>
@@ -123,14 +128,14 @@
                 <div class="recorded-content" ref="recordContent">
                   {{ asrResult }}
                   <!-- 点评框 -->
-                  <!-- <div v-if="!showEvaluationContent" class="evaluation-box" @click="showEvaluation">
+                  <div v-if="!showEvaluationContent" class="evaluation-box" @click="showEvaluation">
                     <img class="eval-logo" src="@/assets/deepseek-color.png" alt="Logo">
                     <span>作答点评</span>
-                  </div> -->
+                  </div>
                   <!-- 点评内容 -->
-                  <!-- <div v-else class="evaluation-content">
+                  <div v-else class="evaluation-content">
                     这是一个很好的回答，结构完整，论述有力。从劳动教育的本质出发，阐述了其重要性和意义。建议可以再补充一些具体的实施建议。
-                  </div> -->
+                  </div>
                 </div>
               </template>
               <template v-else>
@@ -156,17 +161,11 @@
       <el-drawer title="答题列表" :visible.sync="drawerVisible" direction="rtl" size="30%">
         <div class="drawer-content">
           <div class="question-list">
-            <div class="question-item">
-              <span>1. 对于劳动教育课成为话题，你怎么看？ （2017 湖北省考面试题）</span>
-            </div>
-            <div class="question-item">
-              <span>2. 对于劳动教育课成为话题，你怎么看？ （2017 湖北省考面试题）</span>
-            </div>
-            <div class="question-item active">
-              <span>3. 对于劳动教育课成为话题，你怎么看？ （2017 湖北省考面试题）</span>
-            </div>
-            <div class="question-item">
-              <span>4. 对于劳动教育课成为话题，你怎么看？ （2017 湖北省考面试题）</span>
+            <div v-for="(item, i) in history" :key="i" @click="get_exam_detail(item.answerId)"
+              :class="['question-item', { active: currentQuestionIndex === i }]">
+              <span>
+                {{ i + 1 }}. {{ item.questionContent }} （{{ item.examTime }} {{ item.region }} {{ item.questionType }}）
+              </span>
             </div>
           </div>
         </div>
@@ -362,11 +361,12 @@ export default {
       isLoggedIn: false,
       userPhone: '',
       validPhone: '13012343322', // 可登录手机号先写
-
+      modelResult: '',
       selectedQuestionType: '',
       selectedYear: '2017',
       selectedRegion: '湖北',
-
+      questionContentitem: '',
+      history: [],
       years: ['2025', '2024', '2023', '2022', '2021', '2020', '2019', '2018', '2017', '2016'],
       regions: ['北京', '上海', '广东', '湖北', '江苏', '浙江', '四川', '山东'],
       questionTypes: [],
@@ -378,6 +378,16 @@ export default {
         totalCount: '',
         currentIndex: ''
       },
+      questionContentitem: {
+        questionContent: '',
+        region: '',
+        questionType: ''
+      },
+
+
+
+
+
       questionIdList: [],
       questionCount: 0,
 
@@ -409,6 +419,9 @@ export default {
     }
   },
   mounted() {
+    this.get_exam_history()
+    this.changeQuestion()
+
     this.searchInput.examType = this.$route.query.type
     var config = {
       method: 'get',
@@ -427,7 +440,8 @@ export default {
       });
 
     this.getCaptcha()
-    this.asrRecording()
+    // this.asrRecording()
+    this.changeQuestion()
   },
   watch: {
     selectedQuestionType(newVal, oldVal) {
@@ -442,6 +456,53 @@ export default {
   },
 
   methods: {
+    get_exam_history() {
+
+
+      var config = {
+        method: 'get',
+        url: '/api/exam/history',
+        headers: {}
+      };
+
+      axios(config)
+        .then((response) => {
+          console.log(response.data);
+          this.history = response.data.data
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+
+    },
+    get_exam_detail(id) {
+      console.log('id',
+        id);
+
+
+      var config = {
+        method: 'get',
+        url: `/api/exam/detail/${id}`,
+        headers: {}
+      };
+
+      axios(config)
+        .then((response) => {
+          this.selectedYear = response.data.data.examTime
+          this.selectedRegion = response.data.data.region
+          this.selectedQuestionType = response.data.data.questionType
+          this.modelResult = response.data.data.modelResult
+          this.questionContentitem
+            = response.data.data
+        this.hasRecordedContent = true
+        this.asrResult = response.data.data.userAnswer
+          console.log(response.data);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+
+    },
     getCaptcha() {
       var config = {
         method: 'get',
@@ -560,7 +621,7 @@ export default {
     },
     changeQuestion(questionCount) {
       var data = JSON.stringify({
-        "currentId": this.questionContent.questionId || 0,
+        "currentId": this.questionContent.questionId || null,
         "tags": {
           // "examType": this.searchInput.examType || '',
           // "examTime": this.searchInput.year || '',
@@ -576,7 +637,7 @@ export default {
           "pageSize": 10
         },
         "keyword": '',
-        "direction": 0
+        "direction": null
       });
 
       var config = {
@@ -585,7 +646,7 @@ export default {
         headers: {
           'Content-Type': 'application/json'
         },
-        data: data
+        data: {}
       };
 
       axios(config)
