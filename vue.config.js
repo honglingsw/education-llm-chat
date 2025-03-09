@@ -34,14 +34,18 @@ module.exports = {
       '/api': {
         target:'http://1.13.0.140:8080',
         changeOrigin: true
+      },
+      '/auth': {
+        target:'http://1.13.0.140:8080',
+        changeOrigin: true
       }
     },
-    port: port,
-    open: true,
-    overlay: {
-      warnings: false,
-      errors: true
-    },
+    // port: port,
+    // open: true,
+    // overlay: {
+    //   warnings: false,
+    //   errors: true
+    // },
     before: require('./mock/mock-server.js')
   },
   configureWebpack: {

@@ -42,20 +42,16 @@
             <div class="label-group">
               <span class="label">考题类型</span>
               <el-select v-model="selectedQuestionType" size="small" placeholder="选择地区">
-                <el-option
-                  v-for="questionType in questionTypes"
-                  :key="questionType"
-                  :label="questionType"
-                  :value="questionType"
-                />
+                <el-option v-for="questionType in questionTypes" :key="questionType" :label="questionType"
+                  :value="questionType" />
               </el-select>
             </div>
             <el-button @click="searchQuestion">查询</el-button>
           </div>
           <div class="page-region">
-            <el-button round>上一题</el-button>
+            <el-button round @click="changeQuestion(--questionCount)">上一题</el-button>
             <span>1/22</span>
-            <el-button round>下一题</el-button>
+            <el-button round @click="changeQuestion(++questionCount)">下一题</el-button>
           </div>
         </div>
 
@@ -72,11 +68,8 @@
           <div class="answer-box">
             <div class="tab-group">
               <span class="tab" :class="{ active: activeTab === 'demo' }" @click="activeTab = 'demo'">示范作答</span>
-              <span
-                class="tab"
-                :class="{ active: activeTab === 'reference' }"
-                @click="activeTab = 'reference'"
-              >参考答案</span>
+              <span class="tab" :class="{ active: activeTab === 'reference' }"
+                @click="activeTab = 'reference'">参考答案</span>
             </div>
 
             <div v-if="activeTab === 'demo'" class="demo-area" @click="startDemo">
@@ -126,10 +119,9 @@
           <div class="record-box">
             <div class="record-hint">
               <template v-if="isRecording || hasRecordedContent">
-                <div id="status" />
-                <div id="recordContent" class="recorded-content">
-                  劳动教育的本质是"以劳树德、以劳增智、以劳强体、以劳育美"。作为教师，我们应秉其视为培养"完整的人"的重要载体，让学生在出力流汗中锻炼品格，在动手实践中理解知识的价值，这正是回归教育本质的必由之路。
-
+                <div id="status"></div>
+                <div class="recorded-content" ref="recordContent">
+                  {{ asrResult }}
                   <!-- 点评框 -->
                   <!-- <div v-if="!showEvaluationContent" class="evaluation-box" @click="showEvaluation">
                     <img class="eval-logo" src="@/assets/deepseek-color.png" alt="Logo">
@@ -148,8 +140,8 @@
             <div class="record-button-wrapper">
               <div class="audio-recorder">
                 <div class="mic-circle" :class="{ 'recording-btn': isRecording }" @click="toggleRecording">
-                  <img v-if="!isRecording" id="asrRecording" src="@/assets/microphone.png" alt="microphone">
-                  <div v-else id="stopBtn" class="recording-square" />
+                  <img v-if="!isRecording" src="@/assets/microphone.png" alt="microphone" ref="asrRecording">
+                  <div v-else class="recording-square" ref="stopBtn" />
                 </div>
                 <div class="wave-line">
                   <div class="dotted-line" :class="{ 'recording': isRecording }" />
@@ -208,13 +200,8 @@
 
         <!-- 充值选项 -->
         <div class="recharge-options">
-          <div
-            v-for="(option, index) in rechargeOptions"
-            :key="index"
-            class="recharge-option"
-            :class="{ 'selected': selectedRechargeOption === index }"
-            @click="selectedRechargeOption = index"
-          >
+          <div v-for="(option, index) in rechargeOptions" :key="index" class="recharge-option"
+            :class="{ 'selected': selectedRechargeOption === index }" @click="selectedRechargeOption = index">
             <div class="original-price">{{ option.originalPrice }}元</div>
             <div class="discount-price">{{ option.discountPrice }}元</div>
             <div class="points">{{ option.points }} <i class="el-icon-info" /></div>
@@ -230,22 +217,16 @@
 
           <!-- 支付选项 -->
           <div class="payment-selection">
-            <div
-              class="payment-option"
-              :class="{ 'selected': paymentMethod === 'wechat' }"
-              @click="paymentMethod = 'wechat'"
-            >
+            <div class="payment-option" :class="{ 'selected': paymentMethod === 'wechat' }"
+              @click="paymentMethod = 'wechat'">
               <div class="radio-circle">
                 <div v-if="paymentMethod === 'wechat'" class="radio-inner" />
               </div>
               <img src="@/assets/wechat_pay.png" alt="WeChat Pay">
               <span>微信支付</span>
             </div>
-            <div
-              class="payment-option"
-              :class="{ 'selected': paymentMethod === 'alipay' }"
-              @click="paymentMethod = 'alipay'"
-            >
+            <div class="payment-option" :class="{ 'selected': paymentMethod === 'alipay' }"
+              @click="paymentMethod = 'alipay'">
               <div class="radio-circle">
                 <div v-if="paymentMethod === 'alipay'" class="radio-inner" />
               </div>
@@ -264,14 +245,8 @@
     </el-dialog>
 
     <!-- 添加登录弹框 -->
-    <el-dialog
-      :visible.sync="loginDialogVisible"
-      class="dialog-container"
-      width="560px"
-      :show-close="false"
-      :before-close="handleCloseDialog"
-      center
-    >
+    <el-dialog :visible.sync="loginDialogVisible" class="dialog-container" width="560px" :show-close="false"
+      :before-close="handleCloseDialog" center>
       <div class="login-container">
         <!-- LOGO区域 -->
         <div class="login-logo">
@@ -282,6 +257,18 @@
           <!-- 手机号输入框: 480px x 44px -->
           <el-form-item prop="phone" class="form-item">
             <el-input v-model="loginForm.phone" placeholder="手机号" />
+          </el-form-item>
+
+          <!-- 图形验证码 -->
+          <el-form-item prop="captcha" class="captcha-verify">
+            <el-input v-model="captcha.captchaCode" placeholder="图片验证" class="captcha-input" />
+            <el-image :src="captcha.captchaImg" alt="" class="captcha-image">
+              <div slot="placeholder" class="image-slot">
+                加载中<span class="dot">...</span>
+              </div>
+            </el-image>
+            <i class="el-icon-refresh" @click="getCaptcha"></i>
+
           </el-form-item>
 
           <!-- 验证码区域 -->
@@ -312,7 +299,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+import axios from 'axios';
 import ASRClient from '@/utils/asr'
 export default {
   data() {
@@ -347,6 +334,11 @@ export default {
         phone: '',
         code: ''
       },
+      captcha: {
+        captchaId: '',
+        captchaImg: '',
+        captchaCode: '',
+      },
       loginRules: {
         phone: [
           { required: true, message: '请输入手机号', trigger: 'blur' },
@@ -355,8 +347,9 @@ export default {
         code: [
           { required: true, message: '请输入验证码', trigger: 'blur' },
           { validator: validateCode, trigger: 'blur' }
-        ]
+        ],
       },
+
       activeTab: 'demo',
       countdown: 60,
       timer: null,
@@ -378,6 +371,16 @@ export default {
       regions: ['北京', '上海', '广东', '湖北', '江苏', '浙江', '四川', '山东'],
       questionTypes: [],
 
+      questionContent: {
+        questionId: '',
+        content: '',
+        answer: '',
+        totalCount: '',
+        currentIndex: ''
+      },
+      questionIdList: [],
+      questionCount: 0,
+
       rechargeDialogVisible: false,
       selectedRechargeOption: 0,
       paymentMethod: 'wechat',
@@ -393,7 +396,9 @@ export default {
         questionType: '',
         year: '',
         region: ''
-      }
+      },
+
+      asrResult: ''
     }
   },
 
@@ -402,6 +407,27 @@ export default {
       if (!this.userPhone) return ''
       return this.userPhone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2')
     }
+  },
+  mounted() {
+    this.searchInput.examType = this.$route.query.type
+    var config = {
+      method: 'get',
+      url: '/api/exam/tags',
+      headers: {}
+    };
+    axios(config)
+      .then((response) => {
+        console.log(response.data);
+        this.questionTypes = response.data.data[0].tags
+        this.years = response.data.data[1].tags
+        this.regions = response.data.data[2].tags
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
+    this.getCaptcha()
+    this.asrRecording()
   },
   watch: {
     selectedQuestionType(newVal, oldVal) {
@@ -414,126 +440,165 @@ export default {
       this.searchInput.region = newVal
     }
   },
-  mounted() {
-    this.searchInput.examType = this.$route.query.type
-    var config = {
-      method: 'get',
-      url: '/api/exam/tags',
-      headers: {}
-    }
-    axios(config)
-      .then((response) => {
-        console.log(response.data)
-        this.questionTypes = response.data.data[0].tags
-        this.years = response.data.data[1].tags
-        this.regions = response.data.data[2].tags
-      })
-      .catch(function(error) {
-        console.log(error)
-      })
-
-    this.asrRecording()
-  },
 
   methods: {
+    getCaptcha() {
+      var config = {
+        method: 'get',
+        url: '/auth/captcha',
+        headers: {}
+      };
+
+      axios(config)
+        .then((response) => {
+          // console.log(response.data);
+          this.captcha.captchaId = response.data.data.captchaId
+          this.captcha.captchaImg = response.data.data.captchaImage
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
     asrRecording() {
-      const startBtn = document.getElementById('asrRecording')
-      const stopBtn = document.getElementById('stopBtn')
-      const resultDiv = document.getElementById('recordContent')
-      const statusDiv = document.getElementById('status')
-      console.log(startBtn, stopBtn, resultDiv, statusDiv)
+      // const startBtn = document.getElementById('asrRecording');
+      // const stopBtn = document.getElementById('stopBtn');
+      // const resultDiv = document.getElementById('recordContent');
+      // const statusDiv = document.getElementById('status');
+      // console.log(startBtn, stopBtn, resultDiv, statusDiv);
 
       // 创建ASR客户端
-      const asrClient = new ASRClient('ws://1.13.0.140:8080/asr/ws')
+      const asrClient = new ASRClient('ws://1.13.0.140:8080/asr/ws');
 
       // 设置回调函数
       asrClient.setCallbacks({
         onReady: () => {
-          statusDiv.textContent = '准备就绪，可以开始识别'
-          startBtn.disabled = false // 启用开始按钮
+          // statusDiv.textContent = '准备就绪，可以开始识别';
+          this.$refs.asrRecording.disabled = false; // 启用开始按钮
         },
         onStart: () => {
-          statusDiv.textContent = '正在识别...'
+          statusDiv.textContent = '正在识别...';
         },
         onPartialResult: (text) => {
-          resultDiv.textContent = text
+          // resultDiv.textContent = text;
+          this.asrResult = text
         },
         onFinalResult: (text) => {
-          resultDiv.textContent = text
+          resultDiv.textContent = text;
           // 可以在这里处理最终识别结果
         },
         onComplete: () => {
-          statusDiv.textContent = '识别完成'
-          startBtn.disabled = false
-          stopBtn.disabled = true
+          statusDiv.textContent = '识别完成';
+          this.$refs.asrRecording.disabled = false;
+          this.$refs.asrRecording.disabled = true;
         },
         onError: (error) => {
-          statusDiv.textContent = `错误: ${error}`
-          startBtn.disabled = false
-          stopBtn.disabled = true
+          statusDiv.textContent = `错误: ${error}`;
+          this.$refs.asrRecording.disabled = false;
+          this.$refs.asrRecording.disabled = true;
         }
-      })
+      });
 
       // 连接到WebSocket服务器
       asrClient.connect().then(() => {
         // 连接成功后主动启用开始按钮
-        startBtn.disabled = false
-        statusDiv.textContent = '已连接到服务器，可以开始识别'
+        this.$refs.asrRecording.disabled = false;
+        statusDiv.textContent = '已连接到服务器，可以开始识别';
       }).catch(error => {
-        statusDiv.textContent = `连接错误: ${error.message}`
-      })
+        statusDiv.textContent = `连接错误: ${error.message}`;
+      });
 
       // 开始按钮
-      startBtn.addEventListener('click', () => {
-        resultDiv.innerHTML = ''
-        startBtn.disabled = true
-        stopBtn.disabled = false
-        asrClient.startRecognition()
-      })
+      this.$refs.asrRecording.addEventListener('click', () => {
+        this.asrResult = '';
+        // this.$refs.asrRecording.disabled = true;
+        // this.$refs.stopBtn.disabled = false;
+        asrClient.startRecognition();
+      });
 
       // 停止按钮
-      stopBtn.addEventListener('click', () => {
-        startBtn.disabled = false
-        stopBtn.disabled = true
-        asrClient.stopRecognition()
-      })
+      this.$refs.stopBtn.addEventListener('click', () => {
+        // this.$refs.asrRecording.disabled = false;
+        // this.$refs.stopBtn.disabled = true;
+        asrClient.stopRecognition();
+      });
 
       // 页面卸载时断开连接
       window.addEventListener('beforeunload', () => {
-        asrClient.disconnect()
-      })
+        asrClient.disconnect();
+      });
     },
     searchQuestion(pageNum, pageSize) {
-      // console.log(this.searchInput);
+      console.log(this.searchInput);
 
       var data = JSON.stringify({
-        'examType': this.searchInput.examType || '',
-        'examTime': this.searchInput.year || '2017',
-        'region': this.searchInput.region || '湖北',
-        'questionType': this.searchInput.questionType || '',
-        'pageNum': 1,
-        'pageSize': 10
-      })
+        "examType": this.searchInput.examType || '',
+        "examTime": this.searchInput.year || '2017',
+        "region": this.searchInput.region || 'HuBei',
+        "questionType": this.searchInput.questionType || '',
+        "pageNum": 1,
+        "pageSize": 10
+      });
 
       var config = {
         method: 'post',
-        url: 'api/exam/filter',
+        url: '/api/exam/filter',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': '*/*',
+        },
+        data: data
+      };
+
+      axios(config)
+        .then((response) => {
+          console.log(response.data);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+
+    },
+    changeQuestion(questionCount) {
+      var data = JSON.stringify({
+        "currentId": this.questionContent.questionId || 0,
+        "tags": {
+          // "examType": this.searchInput.examType || '',
+          // "examTime": this.searchInput.year || '',
+          // "region": this.searchInput.region || '',
+          // "questionType": this.searchInput.questionType || '',
+          // "pageNum": questionCount >= this.questionIdList.length ? questionCount + 1 : this.questionIdList.length,
+          // "pageSize": 1
+          "examType": '',
+          "examTime": '',
+          "region": '',
+          "questionType": '',
+          "pageNum": 1,
+          "pageSize": 10
+        },
+        "keyword": '',
+        "direction": 0
+      });
+
+      var config = {
+        method: 'post',
+        url: '/api/exam/switch',
         headers: {
           'Content-Type': 'application/json'
         },
         data: data
-      }
-      console.log(config)
+      };
 
       axios(config)
         .then((response) => {
-          console.log(123)
-          console.log(response.data)
+          console.log(response.data);
+          if (questionCount >= this.questionIdList.length) {
+            this.questionIdList.push(response.data.data.currentId)
+            this.questionContent = response.data.data
+          }
         })
-        .catch(function(error) {
-          console.log(321)
-          console.log(error)
-        })
+        .catch(function (error) {
+          console.log(error);
+        });
     },
     toggleDrawer() {
       this.drawerVisible = !this.drawerVisible
@@ -600,7 +665,7 @@ export default {
     // 发送验证码
     async sendCode() {
       // 先验证手机号
-      this.$refs.loginForm.validateField('phone', async(errorMessage) => {
+      this.$refs.loginForm.validateField('phone', async (errorMessage) => {
         if (errorMessage) {
           return // 如果手机号验证不通过，直接返回
         }
@@ -608,6 +673,20 @@ export default {
         // 手机号验证通过，开始发送验证码
         this.canSendCode = false
         this.countdown = 60
+        var data = JSON.stringify({
+          "phone": this.loginForm.phone,
+          "captcha": this.captcha.captchaCode,
+          "captchaId": this.captcha.captchaCode,
+          "macAddress": "1232"
+        });
+        var config = {
+          method: 'post',
+          url: '/auth/sms',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          data: data
+        };
 
         // 开始倒计时
         this.timer = setInterval(() => {
@@ -623,6 +702,13 @@ export default {
         try {
           // 这里添加发送验证码的接口调用
           // await this.$api.sendCode(this.loginForm.phone)
+          await axios(config)
+            .then(function (response) {
+              console.log(response.data);
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
           this.$message.success('验证码发送成功')
         } catch (error) {
           this.canSendCode = true
@@ -669,13 +755,31 @@ export default {
         this.showLoginDialog()
         this.$message.warning('请先登录后再进行充值操作')
       }
-    }
+    },
+
 
   }
 }
 </script>
 
 <style scoped>
+.captcha-verify {
+  height: 40px;
+  margin-left: 0;
+  font-size: 50px;
+}
+
+.captcha-verify .captcha-input {
+  width: 60%;
+
+}
+
+.captcha-verify .captcha-image {
+  width: 30%;
+  margin-left: 10px;
+  vertical-align: middle;
+}
+
 .interview-page {
   min-height: 100vh;
   background-color: #fff;
