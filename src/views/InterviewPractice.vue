@@ -58,9 +58,8 @@
         <!-- 题目区域 -->
         <div class="question-box">
           <h1 class="question-title">
-            {{ questionContentitem.questionContent }}
-            <span class="question-subtitle">（{{ questionContentitem.examTime }} {{ questionContentitem.region }} {{
-              questionContentitem.questionType }}）</span>
+            对于劳动教育课成为话题，你怎么看？
+            <span class="question-subtitle">（2017 湖北省考面试题）</span>
           </h1>
         </div>
 
@@ -96,10 +95,7 @@
                   <div class="content-text">
                     <p class="paragraph model-thinking">
                       最后，检查是否有遗漏的关键点，比如劳动教育在培养创新精神、实践能力方面的作用，或者如何平衡劳动教育与其他学科的关系，确保全面发展的教育目标。</p>
-
                     <p class="paragraph">{{ modelResult }}</p>
-
-
                   </div>
                 </div>
               </template>
@@ -107,11 +103,11 @@
 
             <div v-else class="demo-area">
               <div class="reference-content">
-               
-                  <div class="content-text">
-                
 
-                    <p class="paragraph">{{questionContentitem.questionAnswer}}</p>
+                <div class="content-text">
+
+
+                  <p class="paragraph">{{ questionContentitem.questionAnswer }}</p>
 
 
                 </div>
@@ -151,6 +147,7 @@
                 <div class="wave-line">
                   <div class="dotted-line" :class="{ 'recording': isRecording }" />
                 </div>
+                <el-button @click="submitAnswer()">提交答案</el-button>
               </div>
             </div>
           </div>
@@ -383,11 +380,6 @@ export default {
         region: '',
         questionType: ''
       },
-
-
-
-
-
       questionIdList: [],
       questionCount: 0,
 
@@ -408,7 +400,8 @@ export default {
         region: ''
       },
 
-      asrResult: ''
+      asrResult: '',
+      submitting: false
     }
   },
 
@@ -421,7 +414,6 @@ export default {
   mounted() {
     this.get_exam_history()
     this.changeQuestion()
-
     this.searchInput.examType = this.$route.query.type
     var config = {
       method: 'get',
@@ -440,7 +432,7 @@ export default {
       });
 
     this.getCaptcha()
-    // this.asrRecording()
+    this.asrRecording()
     this.changeQuestion()
   },
   watch: {
@@ -494,8 +486,8 @@ export default {
           this.modelResult = response.data.data.modelResult
           this.questionContentitem
             = response.data.data
-        this.hasRecordedContent = true
-        this.asrResult = response.data.data.userAnswer
+          this.hasRecordedContent = true
+          this.asrResult = response.data.data.userAnswer
           console.log(response.data);
         })
         .catch(function (error) {
@@ -621,23 +613,17 @@ export default {
     },
     changeQuestion(questionCount) {
       var data = JSON.stringify({
-        "currentId": this.questionContent.questionId || null,
+        "currentId": this.questionContent.questionId || 0,
         "tags": {
-          // "examType": this.searchInput.examType || '',
-          // "examTime": this.searchInput.year || '',
-          // "region": this.searchInput.region || '',
-          // "questionType": this.searchInput.questionType || '',
-          // "pageNum": questionCount >= this.questionIdList.length ? questionCount + 1 : this.questionIdList.length,
-          // "pageSize": 1
-          "examType": '',
-          "examTime": '',
-          "region": '',
-          "questionType": '',
-          "pageNum": 1,
-          "pageSize": 10
+          "examType": this.searchInput.examType || '',
+          "examTime": this.searchInput.year || '',
+          "region": this.searchInput.region || '',
+          "questionType": this.searchInput.questionType || '',
+          "pageNum": questionCount >= this.questionIdList.length ? questionCount + 1 : this.questionIdList.length,
+          "pageSize": 1
         },
         "keyword": '',
-        "direction": null
+        "direction": 0
       });
 
       var config = {
@@ -646,7 +632,7 @@ export default {
         headers: {
           'Content-Type': 'application/json'
         },
-        data: {}
+        data: data
       };
 
       axios(config)
@@ -660,6 +646,62 @@ export default {
         .catch(function (error) {
           console.log(error);
         });
+    },
+    submitAnswer() {
+      console.log('submitAnswer');
+      // // 验证回答是否为空
+      // // if (!this.asrResult || this.submitting) return
+      // this.submitting = true
+      // var data = JSON.stringify({
+      //   // "questionId": this.questionIdList[this.questionCount],
+      //   // "submitContent": this.asrResult
+      //   "questionId": 1740879842490,
+      //   "submitContent": "我觉得是国家想要刺激市场"
+      // });
+
+      // var config = {
+      //   method: 'post',
+      //   url: '/api/exam/submit',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   data: data
+      // };
+
+      // axios(config)
+      //   .then((response) => {
+      //     console.log(JSON.stringify(response.data));
+      //     // response.data.on('data', chunk => {
+      //     //   console.log(`接收到 ${chunk.length} 字节`);
+      //     // });
+      //   })
+      //   .catch((error) => {
+      //     console.log(error);
+      //     this.submitting = false
+      //     this.$message.error('请重新提交')
+      //   });
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+
+      const raw = JSON.stringify({
+        "questionId": "1740879842490",
+        "submitContent": "我觉得是国家想要刺激市场"
+      });
+
+      const requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow"
+      };
+
+      fetch("/api/exam/submit", requestOptions)
+        .then((response) => response.text())
+        .then((result) => console.log(result))
+        .catch((error) => console.error(error));
+    },
+    demoAnswer() {
+
     },
     toggleDrawer() {
       this.drawerVisible = !this.drawerVisible
