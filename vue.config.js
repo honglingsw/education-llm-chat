@@ -33,11 +33,17 @@ module.exports = {
     proxy:{
       '/api': {
         target:'http://up.aigcpmer.com/api',
-        changeOrigin: false
+        changeOrigin: true,
+        pathRewrite: {
+          '^/api': '/api'                 // 如果你的后台就是 /api 开头，就加这一行
+        }
       },
       '/auth': {
         target:'http://up.aigcpmer.com/api',
-        changeOrigin: false
+        changeOrigin: true,
+        pathRewrite: {
+          '^/api': '/api'                 // 如果你的后台就是 /api 开头，就加这一行
+        }
       }
     },
     // port: port,

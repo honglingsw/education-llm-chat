@@ -625,14 +625,15 @@ export default {
         "keyword": '',
         "direction": 0
       });
-
+      
       var config = {
         method: 'post',
-        url: '/api/exam/switch',
+        url: 'http://up.aigcpmer.com/api/api/exam/switch',
         headers: {
           'Content-Type': 'application/json'
         },
-        data: data
+        data:{}
+        // data: data
       };
 
       axios(config)
