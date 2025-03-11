@@ -50,7 +50,7 @@
           </div>
           <div class="page-region">
             <el-button round @click="prevQuestion">上一题</el-button>
-            <span>{{currentIndex}}/{{totalCount}}</span>
+            <span>{{ currentIndex }}/{{ totalCount }}</span>
             <el-button round @click="nextQuestion">下一题</el-button>
           </div>
         </div>
@@ -130,7 +130,7 @@
                   </div>
                   <!-- 点评内容 -->
                   <div v-else class="evaluation-content">
-                    这是一个很好的回答，结构完整，论述有力。从劳动教育的本质出发，阐述了其重要性和意义。建议可以再补充一些具体的实施建议。
+                    {{ aiResponse }}
                   </div>
                 </div>
               </template>
@@ -155,7 +155,7 @@
       </main>
 
       <!-- 替换浮动按钮为侧拉栏 -->
-      <el-drawer title="答题列表"  :visible.sync="drawerVisible" direction="rtl" size="30%">
+      <el-drawer title="答题列表" :visible.sync="drawerVisible" direction="rtl" size="30%">
         <div class="drawer-content">
           <div class="question-list">
             <div v-for="(item, i) in orderedHistory" :key="item.answerId" @click="get_exam_detail(item.answerId)"
@@ -297,6 +297,7 @@
 <script>
 import axios from 'axios';
 import ASRClient from '@/utils/asr'
+import { stream } from 'xlsx';
 export default {
   data() {
     // 自定义手机号验证规则
@@ -365,8 +366,8 @@ export default {
       questionContentitem: '',
       orderedHistory: [], // 用于存储按答题顺序排列的历史记录
       history: [],
-      years: ['2025', '2024', '2023', '2022', '2021', '2020', '2019', '2018', '2017', '2016'],
-      regions: ['北京', '上海', '广东', '湖北', '江苏', '浙江', '四川', '山东'],
+      years: [],
+      regions: [],
       questionTypes: [],
 
       questionContent: {
@@ -383,6 +384,7 @@ export default {
       },
       questionIdList: [],
       questionCount: 0,
+      currentQuestionIndex: 0,
 
       rechargeDialogVisible: false,
       selectedRechargeOption: 0,
@@ -405,6 +407,7 @@ export default {
       submitting: false,
       currentIndex: 1,
       totalCount: 22,
+      aiResponse: '',
     }
   },
 
@@ -483,7 +486,7 @@ export default {
         .then((response) => {
           if (response.data.code === 200) {
             const data = response.data.data;
-            
+
             // 更新题目内容对象
             this.questionContent = {
               questionId: data.questionId,
@@ -553,7 +556,7 @@ export default {
           this.$refs.asrRecording.disabled = false; // 启用开始按钮
         },
         onStart: () => {
-          statusDiv.textContent = '正在识别...';
+          // statusDiv.textContent = '正在识别...';
         },
         onPartialResult: (text) => {
           // resultDiv.textContent = text;
@@ -564,14 +567,10 @@ export default {
           // 可以在这里处理最终识别结果
         },
         onComplete: () => {
-          statusDiv.textContent = '识别完成';
-          this.$refs.asrRecording.disabled = false;
-          this.$refs.asrRecording.disabled = true;
+          // statusDiv.textContent = '识别完成';
         },
         onError: (error) => {
-          statusDiv.textContent = `错误: ${error}`;
-          this.$refs.asrRecording.disabled = false;
-          this.$refs.asrRecording.disabled = true;
+          // statusDiv.textContent = `错误: ${error}`;
         }
       });
 
@@ -579,9 +578,9 @@ export default {
       asrClient.connect().then(() => {
         // 连接成功后主动启用开始按钮
         this.$refs.asrRecording.disabled = false;
-        statusDiv.textContent = '已连接到服务器，可以开始识别';
+        // statusDiv.textContent = '已连接到服务器，可以开始识别';
       }).catch(error => {
-        statusDiv.textContent = `连接错误: ${error.message}`;
+        // statusDiv.textContent = `连接错误: ${error.message}`;
       });
 
       // 开始按钮
@@ -594,6 +593,7 @@ export default {
 
       // 停止按钮
       this.$refs.stopBtn.addEventListener('click', () => {
+        console.log('asrClient.stopRecognition');
         // this.$refs.asrRecording.disabled = false;
         // this.$refs.stopBtn.disabled = true;
         asrClient.stopRecognition();
@@ -648,11 +648,11 @@ export default {
           examTime: this.selectedYear || '',
           region: this.selectedRegion || '',
           questionType: this.selectedQuestionType || '',
-              pageNum: 1,
-        pageSize: 1
+          pageNum: 1,
+          pageSize: 1
         },
         keyword: '',
-    
+
       };
 
       axios({
@@ -663,102 +663,110 @@ export default {
         },
         data: data
       })
-      .then(response => {
-        this.isLoading = false;
-        
-        if (response.data.code === 200 && response.data.data) {
-          // 更新题目内容
-          const questionData = response.data.data;
-          this.questionContent = {
-            questionId: questionData.questionId,
-            content: questionData.content,
-            answer: questionData.answer,
-            examTime: questionData.examTime,
-            region: questionData.region,
-            questionType: questionData.questionType
-          };
+        .then(response => {
+          this.isLoading = false;
 
-          // 更新页面显示的题目内容
-          const questionBox = document.querySelector('.question-title');
-          if (questionBox) {
-            const subtitleParts = [
-              questionData.examTime,
-              questionData.region,
-              questionData.questionType
-            ].filter(item => item);
-            
-            const subtitleText = subtitleParts.length > 0 ? `（${subtitleParts.join(' ')}）` : '';
-            
-            questionBox.innerHTML = `
+          if (response.data.code === 200 && response.data.data) {
+            // 更新题目内容
+            const questionData = response.data.data;
+            this.questionContent = {
+              questionId: questionData.questionId,
+              content: questionData.content,
+              answer: questionData.answer,
+              examTime: questionData.examTime,
+              region: questionData.region,
+              questionType: questionData.questionType
+            };
+
+            // 更新页面显示的题目内容
+            const questionBox = document.querySelector('.question-title');
+            if (questionBox) {
+              const subtitleParts = [
+                questionData.examTime,
+                questionData.region,
+                questionData.questionType
+              ].filter(item => item);
+
+              const subtitleText = subtitleParts.length > 0 ? `（${subtitleParts.join(' ')}）` : '';
+
+              questionBox.innerHTML = `
               ${questionData.content}
               <span class="question-subtitle">${subtitleText}</span>
             `;
-          }
+            }
 
-          // 更新其他状态
-          this.selectedYear = questionData.examTime;
-          this.selectedRegion = questionData.region;
-          this.selectedQuestionType = questionData.questionType;
-          
-          // 更新题目序号
-          if (questionData.currentIndex) {
-            this.currentIndex = questionData.currentIndex;
-          }
-          if (questionData.totalCount) {
-            this.totalCount = questionData.totalCount;
-          }
+            // 更新其他状态
+            this.selectedYear = questionData.examTime;
+            this.selectedRegion = questionData.region;
+            this.selectedQuestionType = questionData.questionType;
 
-          // 重置相关状态
-          this.isDemoStarted = false;
-          this.hasRecordedContent = false;
-          this.showEvaluationContent = false;
-          this.asrResult = '';
-          this.modelResult = '';
-        } else {
-          // 处理错误情况
-          this.$message.error(response.data.message || '切换题目失败');
-        }
-      })
-      .catch(error => {
-        console.log('接口错误：', error);
-        this.isLoading = false;
-        this.$message.error('切换题目失败，请重试');
-      });
-    },
-    submitAnswer() {
-      console.log('submitAnswer');
-      const myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
+            // 更新题目序号
+            if (questionData.currentIndex) {
+              this.currentIndex = questionData.currentIndex;
+            }
+            if (questionData.totalCount) {
+              this.totalCount = questionData.totalCount;
+            }
 
-      const raw = JSON.stringify({
-        "questionId": this.questionContent.questionId,
-        "submitContent": this.asrResult
-      });
-
-      const requestOptions = {
-        method: "POST",
-        headers: myHeaders,
-        body: raw,
-        redirect: "follow"
-      };
-
-      fetch("/api/exam/submit", requestOptions)
-        .then((response) => response.json())
-        .then((result) => {
-          if (result.code === 200) {
-            // 提交成功后，将新的答题记录添加到历史记录的开头
-            const newAnswer = {
-              answerId: result.data.answerId,
-              questionContent: this.questionContent.content,
-              examTime: this.selectedYear || '2017',
-              region: this.selectedRegion || '湖北省',
-              questionType: this.selectedQuestionType,
-              userAnswer: this.asrResult
-            };
-            this.orderedHistory.unshift(newAnswer);
+            // 重置相关状态
+            this.isDemoStarted = false;
+            this.hasRecordedContent = false;
+            this.showEvaluationContent = false;
+            this.asrResult = '';
+            this.modelResult = '';
+          } else {
+            // 处理错误情况
+            this.$message.error(response.data.message || '切换题目失败');
           }
         })
-        .catch((error) => console.error(error));
+        .catch(error => {
+          console.log('接口错误：', error);
+          this.isLoading = false;
+          this.$message.error('切换题目失败，请重试');
+        });
+    },
+    async submitAnswer() {
+      let stream = true
+      const config = {
+        method: 'POST', // 根据实际需求设置请求方法
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'text/plain'
+        },
+        // 如果需要请求体数据，请在 body 中传入字符串化后的 JSON
+        body: JSON.stringify({
+          "questionId": 1740879842490,
+          "submitContent": "我觉得是国家想要刺激市场"
+        })
+      };
+
+      try {
+        const response = await fetch('http://up.aigcpmer.com/api/api/exam/submit', config);
+        if (!response.body) {
+          throw new Error('当前浏览器不支持流式响应');
+        }
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder('utf-8');
+        let done = false;
+
+        while (!done) {
+          const { value, done: streamDone } = await reader.read();
+          done = streamDone;
+          if (value) {
+            // 解码当前数据块
+            const chunk = decoder.decode(value, { stream: true });
+            // 假如服务端是以空格或换行分割单词，你可以进一步拆分 chunk
+            // 这里直接追加整个数据块到 aiResponse 中
+            const chineseMatches = chunk.match(/[\u4e00-\u9fa5，]+/g).join('');
+            this.aiResponse += chineseMatches
+            console.log(chunk);
+            // console.log('接收到数据块：', chunk);
+          }
+        }
+        console.log('数据流接收完毕');
+      } catch (error) {
+        console.error('请求错误：', error);
+      }
     },
     demoAnswer() {
 
@@ -930,6 +938,7 @@ export default {
         this.changeQuestion(1);
       }
     },
+
   }
 }
 </script>
@@ -1602,6 +1611,7 @@ export default {
   font-size: 14px;
   line-height: 1.8;
   color: #333333;
+  overflow-y: scroll;
 }
 
 .evaluation-box {
@@ -1637,6 +1647,7 @@ export default {
   font-size: 14px;
   line-height: 1.8;
   color: #333333;
+  overflow-y: scroll;
 }
 
 .source-hint {
