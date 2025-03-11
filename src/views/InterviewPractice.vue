@@ -46,20 +46,20 @@
                   :value="questionType" />
               </el-select>
             </div>
-            <el-button @click="searchQuestion">查询</el-button>
+            <el-button @click="changeQuestion()">查询</el-button>
           </div>
           <div class="page-region">
-            <el-button round @click="changeQuestion(--questionCount)">上一题</el-button>
-            <span>1/22</span>
-            <el-button round @click="changeQuestion(++questionCount)">下一题</el-button>
+            <el-button round @click="prevQuestion">上一题</el-button>
+            <span>{{currentIndex}}/{{totalCount}}</span>
+            <el-button round @click="nextQuestion">下一题</el-button>
           </div>
         </div>
 
         <!-- 题目区域 -->
         <div class="question-box">
           <h1 class="question-title">
-            对于劳动教育课成为话题，你怎么看？
-            <span class="question-subtitle">（2017 湖北省考面试题）</span>
+            {{ questionContent.content }}
+            <span class="question-subtitle">（{{ questionContent.examTime }} {{ questionContent.questionType }}）</span>
           </h1>
         </div>
 
@@ -107,7 +107,7 @@
                 <div class="content-text">
 
 
-                  <p class="paragraph">{{ questionContentitem.questionAnswer }}</p>
+                  <p class="paragraph">{{ questionContent.answer }}</p>
 
 
                 </div>
@@ -155,13 +155,13 @@
       </main>
 
       <!-- 替换浮动按钮为侧拉栏 -->
-      <el-drawer title="答题列表" :visible.sync="drawerVisible" direction="rtl" size="30%">
+      <el-drawer title="答题列表"  :visible.sync="drawerVisible" direction="rtl" size="30%">
         <div class="drawer-content">
           <div class="question-list">
-            <div v-for="(item, i) in history" :key="i" @click="get_exam_detail(item.answerId)"
+            <div v-for="(item, i) in orderedHistory" :key="item.answerId" @click="get_exam_detail(item.answerId)"
               :class="['question-item', { active: currentQuestionIndex === i }]">
               <span>
-                {{ i + 1 }}. {{ item.questionContent }} （{{ item.examTime }} {{ item.region }} {{ item.questionType }}）
+                {{ i + 1 }}. {{ item.questionContent }} （{{ item.examTime }} {{ item.questionType }}）
               </span>
             </div>
           </div>
@@ -360,9 +360,10 @@ export default {
       validPhone: '13012343322', // 可登录手机号先写
       modelResult: '',
       selectedQuestionType: '',
-      selectedYear: '2017',
-      selectedRegion: '湖北',
+      selectedYear: '',
+      selectedRegion: '',
       questionContentitem: '',
+      orderedHistory: [], // 用于存储按答题顺序排列的历史记录
       history: [],
       years: ['2025', '2024', '2023', '2022', '2021', '2020', '2019', '2018', '2017', '2016'],
       regions: ['北京', '上海', '广东', '湖北', '江苏', '浙江', '四川', '山东'],
@@ -401,7 +402,9 @@ export default {
       },
 
       asrResult: '',
-      submitting: false
+      submitting: false,
+      currentIndex: 1,
+      totalCount: 22,
     }
   },
 
@@ -449,8 +452,6 @@ export default {
 
   methods: {
     get_exam_history() {
-
-
       var config = {
         method: 'get',
         url: '/api/exam/history',
@@ -459,18 +460,18 @@ export default {
 
       axios(config)
         .then((response) => {
-          console.log(response.data);
-          this.history = response.data.data
+          if (response.data.code === 200) {
+            this.history = response.data.data;
+            // 根据 answerId 排序，较新的 ID 排在前面
+            this.orderedHistory = [...this.history].sort((a, b) => b.answerId - a.answerId);
+          }
         })
         .catch(function (error) {
           console.log(error);
         });
-
     },
     get_exam_detail(id) {
-      console.log('id',
-        id);
-
+      console.log('id', id);
 
       var config = {
         method: 'get',
@@ -480,20 +481,43 @@ export default {
 
       axios(config)
         .then((response) => {
-          this.selectedYear = response.data.data.examTime
-          this.selectedRegion = response.data.data.region
-          this.selectedQuestionType = response.data.data.questionType
-          this.modelResult = response.data.data.modelResult
-          this.questionContentitem
-            = response.data.data
-          this.hasRecordedContent = true
-          this.asrResult = response.data.data.userAnswer
-          console.log(response.data);
+          if (response.data.code === 200) {
+            const data = response.data.data;
+            
+            // 更新题目内容对象
+            this.questionContent = {
+              questionId: data.questionId,
+              content: data.questionContent,
+              answer: data.answer,
+              currentIndex: data.currentIndex,
+              totalCount: data.totalCount || this.totalCount
+            };
+            this.questionContent.questionId = data.questionId
+            // 更新页面显示的题目内容
+            const questionBox = document.querySelector('.question-title');
+            if (questionBox) {
+              questionBox.innerHTML = `
+                ${data.questionContent}
+                <span class="question-subtitle">（${data.examTime} ${data.questionType}）</span>
+              `;
+            }
+
+            // 更新其他状态
+            // this.selectedYear = data.examTime;
+            // this.selectedRegion = data.region;
+            // this.selectedQuestionType = data.questionType;
+            this.modelResult = data.modelResult;
+            this.hasRecordedContent = true;
+            this.asrResult = data.userAnswer;
+
+            // 重置相关状态
+            this.isDemoStarted = false;
+            this.showEvaluationContent = false;
+          }
         })
         .catch(function (error) {
           console.log(error);
         });
-
     },
     getCaptcha() {
       var config = {
@@ -611,82 +635,104 @@ export default {
         });
 
     },
-    changeQuestion(questionCount) {
-      var data = JSON.stringify({
-        "currentId": this.questionContent.questionId || 0,
-        "tags": {
-          "examType": this.searchInput.examType || '',
-          "examTime": this.searchInput.year || '',
-          "region": this.searchInput.region || '',
-          "questionType": this.searchInput.questionType || '',
-          "pageNum": questionCount >= this.questionIdList.length ? questionCount + 1 : this.questionIdList.length,
-          "pageSize": 1
+    changeQuestion(direction) {
+      if (this.isLoading) return;
+      this.isLoading = true;
+
+      // 构建请求数据
+      const data = {
+        currentId: this.questionContent.questionId || '',  // 当前题目ID
+        direction: direction,  // 方向：-1 上一题，1 下一题
+        tags: {
+          examType: '',  // 可以根据需要设置
+          examTime: this.selectedYear || '',
+          region: this.selectedRegion || '',
+          questionType: this.selectedQuestionType || '',
+              pageNum: 1,
+        pageSize: 1
         },
-        "keyword": '',
-        "direction": 0
-      });
-      
-      var config = {
+        keyword: '',
+    
+      };
+
+      axios({
         method: 'post',
         url: 'http://up.aigcpmer.com/api/api/exam/switch',
         headers: {
           'Content-Type': 'application/json'
         },
-        data:{}
-        // data: data
-      };
+        data: data
+      })
+      .then(response => {
+        this.isLoading = false;
+        
+        if (response.data.code === 200 && response.data.data) {
+          // 更新题目内容
+          const questionData = response.data.data;
+          this.questionContent = {
+            questionId: questionData.questionId,
+            content: questionData.content,
+            answer: questionData.answer,
+            examTime: questionData.examTime,
+            region: questionData.region,
+            questionType: questionData.questionType
+          };
 
-      axios(config)
-        .then((response) => {
-          console.log(response.data);
-          if (questionCount >= this.questionIdList.length) {
-            this.questionIdList.push(response.data.data.currentId)
-            this.questionContent = response.data.data
+          // 更新页面显示的题目内容
+          const questionBox = document.querySelector('.question-title');
+          if (questionBox) {
+            const subtitleParts = [
+              questionData.examTime,
+              questionData.region,
+              questionData.questionType
+            ].filter(item => item);
+            
+            const subtitleText = subtitleParts.length > 0 ? `（${subtitleParts.join(' ')}）` : '';
+            
+            questionBox.innerHTML = `
+              ${questionData.content}
+              <span class="question-subtitle">${subtitleText}</span>
+            `;
           }
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+
+          // 更新其他状态
+          this.selectedYear = questionData.examTime;
+          this.selectedRegion = questionData.region;
+          this.selectedQuestionType = questionData.questionType;
+          
+          // 更新题目序号
+          if (questionData.currentIndex) {
+            this.currentIndex = questionData.currentIndex;
+          }
+          if (questionData.totalCount) {
+            this.totalCount = questionData.totalCount;
+          }
+
+          // 重置相关状态
+          this.isDemoStarted = false;
+          this.hasRecordedContent = false;
+          this.showEvaluationContent = false;
+          this.asrResult = '';
+          this.modelResult = '';
+        } else {
+          // 处理错误情况
+          this.$message.error(response.data.message || '切换题目失败');
+        }
+      })
+      .catch(error => {
+        console.log('接口错误：', error);
+        this.isLoading = false;
+        this.$message.error('切换题目失败，请重试');
+      });
     },
     submitAnswer() {
       console.log('submitAnswer');
-      // // 验证回答是否为空
-      // // if (!this.asrResult || this.submitting) return
-      // this.submitting = true
-      // var data = JSON.stringify({
-      //   // "questionId": this.questionIdList[this.questionCount],
-      //   // "submitContent": this.asrResult
-      //   "questionId": 1740879842490,
-      //   "submitContent": "我觉得是国家想要刺激市场"
-      // });
-
-      // var config = {
-      //   method: 'post',
-      //   url: '/api/exam/submit',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   data: data
-      // };
-
-      // axios(config)
-      //   .then((response) => {
-      //     console.log(JSON.stringify(response.data));
-      //     // response.data.on('data', chunk => {
-      //     //   console.log(`接收到 ${chunk.length} 字节`);
-      //     // });
-      //   })
-      //   .catch((error) => {
-      //     console.log(error);
-      //     this.submitting = false
-      //     this.$message.error('请重新提交')
-      //   });
       const myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/json");
 
       const raw = JSON.stringify({
-        "questionId": "1740879842490",
-        "submitContent": "我觉得是国家想要刺激市场"
+        "questionId": this.questionContent.questionId,
+        "submitContent": this.asrResult
       });
 
       const requestOptions = {
@@ -697,8 +743,21 @@ export default {
       };
 
       fetch("/api/exam/submit", requestOptions)
-        .then((response) => response.text())
-        .then((result) => console.log(result))
+        .then((response) => response.json())
+        .then((result) => {
+          if (result.code === 200) {
+            // 提交成功后，将新的答题记录添加到历史记录的开头
+            const newAnswer = {
+              answerId: result.data.answerId,
+              questionContent: this.questionContent.content,
+              examTime: this.selectedYear || '2017',
+              region: this.selectedRegion || '湖北省',
+              questionType: this.selectedQuestionType,
+              userAnswer: this.asrResult
+            };
+            this.orderedHistory.unshift(newAnswer);
+          }
+        })
         .catch((error) => console.error(error));
     },
     demoAnswer() {
@@ -706,6 +765,7 @@ export default {
     },
     toggleDrawer() {
       this.drawerVisible = !this.drawerVisible
+      this.get_exam_history()
     },
     toggleRecording() {
       this.isRecording = !this.isRecording
@@ -860,8 +920,16 @@ export default {
         this.$message.warning('请先登录后再进行充值操作')
       }
     },
-
-
+    prevQuestion() {
+      if (this.currentIndex > 1) {
+        this.changeQuestion(-1);
+      }
+    },
+    nextQuestion() {
+      if (this.currentIndex < this.totalCount) {
+        this.changeQuestion(1);
+      }
+    },
   }
 }
 </script>
