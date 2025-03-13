@@ -47,6 +47,7 @@
               </el-select>
             </div>
             <el-button @click="changeQuestion()">查询</el-button>
+            <el-button @click="clearFilters">清空</el-button>
           </div>
           <div class="page-region">
             <el-button round @click="prevQuestion">上一题</el-button>
@@ -58,8 +59,8 @@
         <!-- 题目区域 -->
         <div class="question-box">
           <h1 class="question-title">
-            {{ questionContent.content }}
-            <span class="question-subtitle">（{{ questionContent.examTime }} {{ questionContent.questionType }}）</span>
+            {{questionContent.questionStateEnum=='VIEWED'?'（已阅读）':'（未阅读）'}} {{ questionContent.content }}
+            <span class="question-subtitle">（{{ questionContent.examTime?questionContent.examTime:'' }} {{ questionContent.questionType }}）</span>
           </h1>
         </div>
 
@@ -84,7 +85,7 @@
                 <!-- 添加来源提示 -->
                 <div class="source-hint">
                   以下内容均来自deepseek-r1生成
-                  <el-button type="text" class="regenerate-btn">
+                  <el-button type="text" class="regenerate-btn" @click="startDemo">
                     <i class="el-icon-refresh" />
                     重新生成
                   </el-button>
@@ -94,7 +95,7 @@
                 <div class="demo-content">
                   <div class="content-text">
                     <p class="paragraph model-thinking">
-                      最后，检查是否有遗漏的关键点，比如劳动教育在培养创新精神、实践能力方面的作用，或者如何平衡劳动教育与其他学科的关系，确保全面发展的教育目标。</p>
+                      {{ reasonContent }}</p>
                     <p class="paragraph">{{ modelResult }}</p>
                   </div>
                 </div>
@@ -130,7 +131,9 @@
                   </div>
                   <!-- 点评内容 -->
                   <div v-else class="evaluation-content">
-                    {{ aiResponse }}
+                   
+                   点评: <p class="paragraph model-thinking"  v-html="markdownReason"></p>
+                    <p class="paragraph" v-html="markdownResult"></p>
                   </div>
                 </div>
               </template>
@@ -141,13 +144,13 @@
             <div class="record-button-wrapper">
               <div class="audio-recorder">
                 <div class="mic-circle" :class="{ 'recording-btn': isRecording }" @click="toggleRecording">
-                  <img v-if="!isRecording" src="@/assets/microphone.png" alt="microphone" ref="asrRecording">
-                  <div v-else class="recording-square" ref="stopBtn" />
+                  <img v-if="!isRecording" src="@/assets/microphone.png" alt="microphone">
+                  <div v-else class="recording-square" ></div>
                 </div>
                 <div class="wave-line">
                   <div class="dotted-line" :class="{ 'recording': isRecording }" />
                 </div>
-                <el-button @click="submitAnswer()">提交答案</el-button>
+                <!-- <el-button @click="submitAnswer()">提交答案</el-button> -->
               </div>
             </div>
           </div>
@@ -177,7 +180,7 @@
     </div>
 
     <!-- 添加充值弹窗 -->
-    <el-dialog :visible.sync="rechargeDialogVisible" class="recharge-dialog" width="560px" :show-close="false" center>
+    <el-dialog :visible.sync="rechargeDialogVisible" class="recharge-dialog" width="720px" :show-close="false" center>
       <div class="recharge-container">
         <!-- 顶部用户信息 -->
         <div class="recharge-header">
@@ -298,6 +301,7 @@
 import axios from 'axios';
 import ASRClient from '@/utils/asr'
 import { stream } from 'xlsx';
+import { marked } from 'marked'
 export default {
   data() {
     // 自定义手机号验证规则
@@ -315,8 +319,8 @@ export default {
     const validateCode = (rule, value, callback) => {
       if (!value) {
         callback(new Error('请输入验证码'))
-      } else if (value !== '1234') {
-        callback(new Error('验证码错误！'))
+        // } else if (value !== '1234') {
+        //   callback(new Error('验证码错误！'))
       } else {
         callback()
       }
@@ -327,10 +331,12 @@ export default {
       isRecording: false,
       loginDialogVisible: false,
       loading: false,
+      token: '',
       loginForm: {
         phone: '',
         code: ''
       },
+      asrClient: null,
       captcha: {
         captchaId: '',
         captchaImg: '',
@@ -407,7 +413,8 @@ export default {
       submitting: false,
       currentIndex: 1,
       totalCount: 22,
-      aiResponse: '',
+      aiResponseReasonContent:'',
+      aiResponseResult:''
     }
   },
 
@@ -415,16 +422,23 @@ export default {
     maskPhoneNumber() {
       if (!this.userPhone) return ''
       return this.userPhone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2')
+    },
+    markdownReason() {
+      return marked(this.aiResponseReasonContent || '')
+    },
+    markdownResult() {
+      return marked(this.aiResponseResult || '')
     }
   },
   mounted() {
     this.get_exam_history()
     this.changeQuestion()
     this.searchInput.examType = this.$route.query.type
+    const token = localStorage.getItem('token');
     var config = {
       method: 'get',
-      url: '/api/exam/tags',
-      headers: {}
+      url: 'http://1.13.0.140:8080/api/exam/tags',
+      headers: {'Authorization': `Bearer ${token}`}
     };
     axios(config)
       .then((response) => {
@@ -455,10 +469,12 @@ export default {
 
   methods: {
     get_exam_history() {
+      const token = localStorage.getItem('token');
+
       var config = {
         method: 'get',
-        url: '/api/exam/history',
-        headers: {}
+        url: 'http://1.13.0.140:8080/api/exam/history',
+        headers: {'Authorization': `Bearer ${token}`}
       };
 
       axios(config)
@@ -475,11 +491,12 @@ export default {
     },
     get_exam_detail(id) {
       console.log('id', id);
+      const token = localStorage.getItem('token');
 
       var config = {
         method: 'get',
-        url: `/api/exam/detail/${id}`,
-        headers: {}
+        url: `http://1.13.0.140:8080/api/exam/detail/${id}`,
+        headers: {'Authorization': `Bearer ${token}`}
       };
 
       axios(config)
@@ -512,10 +529,11 @@ export default {
             this.modelResult = data.modelResult;
             this.hasRecordedContent = true;
             this.asrResult = data.userAnswer;
-
+            this.aiResponseReasonContent = data.reasonContent;
+            this.aiResponseResult = data.modelResult
             // 重置相关状态
             this.isDemoStarted = false;
-            this.showEvaluationContent = false;
+            this.showEvaluationContent = true;
           }
         })
         .catch(function (error) {
@@ -547,10 +565,10 @@ export default {
       // console.log(startBtn, stopBtn, resultDiv, statusDiv);
 
       // 创建ASR客户端
-      const asrClient = new ASRClient('ws://1.13.0.140:8080/asr/ws');
+      this.asrClient = new ASRClient('ws://1.13.0.140:8080/asr/ws');
 
       // 设置回调函数
-      asrClient.setCallbacks({
+      this.asrClient.setCallbacks({
         onReady: () => {
           // statusDiv.textContent = '准备就绪，可以开始识别';
           this.$refs.asrRecording.disabled = false; // 启用开始按钮
@@ -575,7 +593,7 @@ export default {
       });
 
       // 连接到WebSocket服务器
-      asrClient.connect().then(() => {
+      this.asrClient.connect().then(() => {
         // 连接成功后主动启用开始按钮
         this.$refs.asrRecording.disabled = false;
         // statusDiv.textContent = '已连接到服务器，可以开始识别';
@@ -586,23 +604,40 @@ export default {
       // 开始按钮
       this.$refs.asrRecording.addEventListener('click', () => {
         this.asrResult = '';
+        this.aiResponseReasonContent = '';
+        this.aiResponseResult = '';
         // this.$refs.asrRecording.disabled = true;
         // this.$refs.stopBtn.disabled = false;
-        asrClient.startRecognition();
+        this.asrClient.startRecognition();
       });
 
       // 停止按钮
       this.$refs.stopBtn.addEventListener('click', () => {
-        console.log('asrClient.stopRecognition');
+        console.log('this.asrClient.stopRecognition');
         // this.$refs.asrRecording.disabled = false;
         // this.$refs.stopBtn.disabled = true;
-        asrClient.stopRecognition();
+        this.asrClient.stopRecognition();
+        this.asrClient.disconnect();
       });
 
       // 页面卸载时断开连接
       window.addEventListener('beforeunload', () => {
-        asrClient.disconnect();
+        this.asrClient.disconnect();
       });
+    },
+    startRecognition() {
+      this.asrResult = '';
+      this.aiResponseReasonContent = '';
+      this.aiResponseResult = '';
+        this.asrClient.startRecognition();
+    },
+    // 新增一个方法来处理停止按钮的点击
+    stopRecognition() {
+      console.log('触发停止录音');
+      if (this.asrClient) {
+        this.asrClient.stopRecognition();
+        this.asrClient.disconnect();
+      }
     },
     searchQuestion(pageNum, pageSize) {
       console.log(this.searchInput);
@@ -654,12 +689,14 @@ export default {
         keyword: '',
 
       };
+      const token = localStorage.getItem('token');
 
       axios({
         method: 'post',
-        url: 'http://up.aigcpmer.com/api/api/exam/switch',
+        url: 'http://1.13.0.140:8080/api/exam/switch',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         data: data
       })
@@ -673,33 +710,34 @@ export default {
               questionId: questionData.questionId,
               content: questionData.content,
               answer: questionData.answer,
-              examTime: questionData.examTime,
-              region: questionData.region,
-              questionType: questionData.questionType
+              questionStateEnum:questionData.questionStateEnum
+              // examTime: questionData.examTime,
+              // region: questionData.region,
+              // questionType: questionData.questionType
             };
 
             // 更新页面显示的题目内容
-            const questionBox = document.querySelector('.question-title');
-            if (questionBox) {
-              const subtitleParts = [
-                questionData.examTime,
-                questionData.region,
-                questionData.questionType
-              ].filter(item => item);
+            // const questionBox = document.querySelector('.question-title');
+            // if (questionBox) {
+            //   const subtitleParts = [
+            //     questionData.examTime,
+            //     questionData.region,
+            //     questionData.questionType
+            //   ].filter(item => item);
 
-              const subtitleText = subtitleParts.length > 0 ? `（${subtitleParts.join(' ')}）` : '';
+            //   const subtitleText = subtitleParts.length > 0 ? `（${subtitleParts.join(' ')}）` : '';
 
-              questionBox.innerHTML = `
-              ${questionData.content}
-              <span class="question-subtitle">${subtitleText}</span>
-            `;
-            }
+            //   questionBox.innerHTML = `
+            //   ${questionData.content}
+            //   <span class="question-subtitle">${subtitleText}</span>
+            // `;
+            // }
 
             // 更新其他状态
-            this.selectedYear = questionData.examTime;
-            this.selectedRegion = questionData.region;
-            this.selectedQuestionType = questionData.questionType;
-
+            // this.selectedYear = questionData.examTime;
+            // this.selectedRegion = questionData.region;
+            // this.selectedQuestionType = questionData.questionType;
+             
             // 更新题目序号
             if (questionData.currentIndex) {
               this.currentIndex = questionData.currentIndex;
@@ -727,40 +765,69 @@ export default {
     },
     async submitAnswer() {
       let stream = true
+     const token = localStorage.getItem('token');
+
       const config = {
         method: 'POST', // 根据实际需求设置请求方法
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'text/plain'
+          'Accept': 'text/plain',
+          'Authorization': `Bearer ${token}`,
         },
         // 如果需要请求体数据，请在 body 中传入字符串化后的 JSON
         body: JSON.stringify({
-          "questionId": 1740879842490,
-          "submitContent": "我觉得是国家想要刺激市场"
+          "questionId": this.questionContent.questionId,
+          "submitContent": this.asrResult
         })
       };
 
       try {
-        const response = await fetch('http://up.aigcpmer.com/api/api/exam/submit', config);
+        const response = await fetch('http://1.13.0.140:8080/api/exam/submit', config);
         if (!response.body) {
           throw new Error('当前浏览器不支持流式响应');
         }
+
         const reader = response.body.getReader();
         const decoder = new TextDecoder('utf-8');
         let done = false;
+
+        this.reasonContent = '';
+        this.modelResult = '';
+        let partialData = '';
 
         while (!done) {
           const { value, done: streamDone } = await reader.read();
           done = streamDone;
           if (value) {
-            // 解码当前数据块
+            // 将当前 chunk 解码
             const chunk = decoder.decode(value, { stream: true });
-            // 假如服务端是以空格或换行分割单词，你可以进一步拆分 chunk
-            // 这里直接追加整个数据块到 aiResponse 中
-            const chineseMatches = chunk.match(/[\u4e00-\u9fa5，]+/g).join('');
-            this.aiResponse += chineseMatches
-            console.log(chunk);
-            // console.log('接收到数据块：', chunk);
+
+            // 累加到 partialData 中
+            partialData += chunk;
+
+            // 按换行符分割成多行
+            const lines = partialData.split('\n');
+            // 保留最后可能不完整的一行，等待后续数据拼接
+            partialData = lines.pop();
+
+            // 逐行处理
+            for (const line of lines) {
+              if (line.startsWith('data:')) {
+                // 去掉开头 "data:" 后获得 JSON 字符串
+                const jsonStr = line.slice(5).trim();
+                try {
+                  const obj = JSON.parse(jsonStr);
+                  if (obj.contentType === 'reason') {
+                    this.aiResponseReasonContent += obj.content;
+                  } else if (obj.contentType === 'answer') {
+                    this.aiResponseResult += obj.content;
+                  }
+                  await this.$nextTick();
+                } catch (err) {
+                  console.error('JSON 解析出错:', err);
+                }
+              }
+            }
           }
         }
         console.log('数据流接收完毕');
@@ -795,11 +862,17 @@ export default {
             })
           }
         }
+        this.stopRecognition()
+      }else{
+        this.startRecognition()
       }
     },
     showEvaluation() {
       this.showEvaluationContent = true
+      this.aiResponseReasonContent = '';
+      this.aiResponseResult = '';
       this.recordCount = 0 // 使用点评功能后重置计数
+      this.submitAnswer()
     },
     // 新增登录相关方法
     showLoginDialog() {
@@ -818,19 +891,37 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-          // 验证手机号是否匹配
-          if (this.loginForm.phone === this.validPhone && this.loginForm.code === '1234') {
-            setTimeout(() => {
-              this.loading = false
-              this.isLoggedIn = true
-              this.userPhone = this.loginForm.phone
-              this.handleCloseDialog()
-              this.$message.success('登录成功')
-            }, 1500)
-          } else {
-            this.loading = false
-            this.$message.error('手机号或验证码错误')
-          }
+          var config = {
+            method: 'post',
+            url: 'http://1.13.0.140:8080/auth/login',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': '*/*',
+            },
+            data: { 'phone': this.loginForm.phone, 'captcha': this.loginForm.code }
+          };
+
+          axios(config)
+            .then((response) => {
+              if (response.data.code === 200) {
+                this.loading = false
+                this.isLoggedIn = true
+                this.userPhone = this.loginForm.phone
+                localStorage.setItem('token', response.data.data.token);
+                this.handleCloseDialog()
+                this.$message.success('登录成功')
+              } else {
+
+
+                this.loading = false
+                this.$message.error('手机号或验证码错误')
+              }
+
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+
         }
       })
     },
@@ -848,12 +939,12 @@ export default {
         var data = JSON.stringify({
           "phone": this.loginForm.phone,
           "captcha": this.captcha.captchaCode,
-          "captchaId": this.captcha.captchaCode,
+          "captchaId": this.captcha.captchaId,
           "macAddress": "1232"
         });
         var config = {
           method: 'post',
-          url: '/auth/sms',
+          url: 'http://1.13.0.140:8080/auth/sms',
           headers: {
             'Content-Type': 'application/json'
           },
@@ -908,9 +999,75 @@ export default {
         this.$refs.loginForm.clearValidate()
       }
     },
-    startDemo() {
-      if (!this.isDemoStarted) {
-        this.isDemoStarted = true
+    async startDemo() {
+
+      var data = {
+        "questionId": this.questionContent.questionId
+      };
+      const token = localStorage.getItem('token');
+
+      var config = {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)  // 注意这里要用 body
+      };
+      try {
+        const response = await fetch('http://1.13.0.140:8080/api/exam/demoAnswner', config);
+        if (!response.body) {
+          throw new Error('当前浏览器不支持流式响应');
+        }
+        if (!this.isDemoStarted) {
+          this.isDemoStarted = true
+        }
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder('utf-8');
+        let done = false;
+
+        this.reasonContent = '';
+        this.modelResult = '';
+        let partialData = '';
+
+        while (!done) {
+          const { value, done: streamDone } = await reader.read();
+          done = streamDone;
+          if (value) {
+            // 将当前 chunk 解码
+            const chunk = decoder.decode(value, { stream: true });
+
+            // 累加到 partialData 中
+            partialData += chunk;
+
+            // 按换行符分割成多行
+            const lines = partialData.split('\n');
+            // 保留最后可能不完整的一行，等待后续数据拼接
+            partialData = lines.pop();
+
+            // 逐行处理
+            for (const line of lines) {
+              if (line.startsWith('data:')) {
+                // 去掉开头 "data:" 后获得 JSON 字符串
+                const jsonStr = line.slice(5).trim();
+                try {
+                  const obj = JSON.parse(jsonStr);
+                  if (obj.contentType === 'reason') {
+                    this.reasonContent += obj.content;
+                  } else if (obj.contentType === 'answer') {
+                    this.modelResult += obj.content;
+                  }
+                  await this.$nextTick();
+                } catch (err) {
+                  console.error('JSON 解析出错:', err);
+                }
+              }
+            }
+          }
+        }
+        console.log('数据流接收完毕');
+      } catch (error) {
+        console.error('请求错误：', error);
       }
     },
     // 添加退出登录方法
@@ -938,7 +1095,14 @@ export default {
         this.changeQuestion(1);
       }
     },
-
+    clearFilters() {
+      this.selectedYear = '';
+      this.selectedRegion = '';
+      this.selectedQuestionType = '';
+      this.searchInput.year = '';
+      this.searchInput.region = '';
+      this.searchInput.questionType = '';
+    },
   }
 }
 </script>
@@ -1067,6 +1231,25 @@ export default {
 .page-region span {
   font-size: 14px;
   color: #606266;
+}
+
+/* 添加翻页按钮的统一样式 */
+.page-region .el-button {
+  background: #fff;
+  border: 1px solid #DCDFE6;
+  color: #606266;
+}
+
+.page-region .el-button:hover {
+  color: #409EFF;
+  border-color: #c6e2ff;
+  background-color: #ecf5ff;
+}
+
+.page-region .el-button:active {
+  color: #409EFF;
+  border-color: #409EFF;
+  background-color: #ecf5ff;
 }
 
 .question-box {
@@ -1372,7 +1555,7 @@ export default {
 
   .el-dialog {
     width: 560px !important;
-    height: 480px !important;
+    height: 540px !important;
     position: fixed !important;
     top: 50% !important;
     left: 50% !important;
@@ -1613,6 +1796,20 @@ export default {
   color: #333333;
   overflow-y: scroll;
 }
+.recorded-content::-webkit-scrollbar {
+  width: 6px;  /* 调整宽度 */
+}
+
+/* 滚动槽 */
+.recorded-content::-webkit-scrollbar-track {
+  background: transparent;  /* 背景透明 */
+}
+
+/* 滚动条滑块 */
+.recorded-content::-webkit-scrollbar-thumb {
+  background: #C0C4CC;  /* 颜色可以根据需要调整 */
+  border-radius: 3px;  /* 圆角效果 */
+}
 
 .evaluation-box {
   width: 100%;
@@ -1641,13 +1838,13 @@ export default {
 
 .evaluation-content {
   margin-top: auto;
-  padding: 16px;
-  background: #FFFFFF;
+  /* padding: 16px; */
+  /* background: #FFFFFF; */
   border-radius: 8px;
   font-size: 14px;
   line-height: 1.8;
   color: #333333;
-  overflow-y: scroll;
+  /* overflow-y: scroll; */
 }
 
 .source-hint {
@@ -1742,10 +1939,14 @@ export default {
   /* 减小时间选择框的宽度 */
 }
 
-/* 为地区select单独设置宽度 */
+/* 地区select单独设置宽度 */
 .label-group:nth-child(2) .el-select {
-  width: 80px;
-  /* 减小地区选择框的宽度 */
+  width: 100px;
+}
+
+/* select单独设置宽度 */
+.label-group:nth-child(3) .el-select {
+  width: 100px;
 }
 
 /* 恢复value的灰色背景样式 */
@@ -1777,6 +1978,22 @@ export default {
 
   :deep(.el-dialog__body) {
     padding: 0;
+  }
+  
+  :deep(.el-dialog__header) {
+    display: none !important;
+    padding: 0 !important;
+    padding-bottom: 0 !important;
+    margin: 0 !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    line-height: 0 !important;
+    border: none !important;
+    overflow: hidden !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    position: absolute !important;
+    z-index: -1 !important;
   }
 }
 
@@ -1854,11 +2071,12 @@ export default {
 }
 
 .recharge-option:first-child {
-  background-color: #f5f5f5;
+  background-color: #fff;
 }
 
 .recharge-option.selected {
   border-color: #409EFF;
+  background-color: #f5f5f5;
 }
 
 .original-price {

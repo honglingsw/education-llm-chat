@@ -52,8 +52,22 @@ export const constantRoutes = [
   },
   {
     path: '/login',
-    component: () => import('@/views/login/index'),
+    component: () => import('@/views/InterviewPractice'),
     hidden: true
+  },
+  {
+    path: '/interview-practice',
+    component: () => import('@/views/InterviewPractice'),
+    hidden: true
+    
+    // children: [
+    //   {
+    //     path: 'index',
+    //     component: () => import('@/views/InterviewPractice'),
+    //     name: 'InterviewPractice',
+    //     meta: { title: '面试练习', icon: 'edit' }
+    //   }
+    // ]
   },
   {
     path: '/auth-redirect',
@@ -383,18 +397,7 @@ export const asyncRoutes = [
       }
     ]
   },
-  {
-    path: '/interview-practice',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/InterviewPractice'),
-        name: 'InterviewPractice',
-        meta: { title: '面试练习', icon: 'edit' }
-      }
-    ]
-  },
+
   {
     path: 'external-link',
     component: Layout,
