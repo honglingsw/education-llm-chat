@@ -437,7 +437,7 @@ export default {
     const token = localStorage.getItem('token');
     var config = {
       method: 'get',
-      url: 'http://1.13.0.140:8080/api/exam/tags',
+      url: 'https://test.aigcpmer.com/api/api/exam/tags',
       headers: {'Authorization': `Bearer ${token}`}
     };
     axios(config)
@@ -473,7 +473,7 @@ export default {
 
       var config = {
         method: 'get',
-        url: 'http://1.13.0.140:8080/api/exam/history',
+        url: 'https://test.aigcpmer.com/api/api/exam/history',
         headers: {'Authorization': `Bearer ${token}`}
       };
 
@@ -495,7 +495,7 @@ export default {
 
       var config = {
         method: 'get',
-        url: `http://1.13.0.140:8080/api/exam/detail/${id}`,
+        url: `https://test.aigcpmer.com/api/api/exam/detail/${id}`,
         headers: {'Authorization': `Bearer ${token}`}
       };
 
@@ -543,7 +543,7 @@ export default {
     getCaptcha() {
       var config = {
         method: 'get',
-        url: '/auth/captcha',
+        url: 'https://test.aigcpmer.com/api/auth/captcha',
         headers: {}
       };
 
@@ -565,7 +565,7 @@ export default {
       // console.log(startBtn, stopBtn, resultDiv, statusDiv);
 
       // 创建ASR客户端
-      this.asrClient = new ASRClient('ws://1.13.0.140:8080/asr/ws');
+      this.asrClient = new ASRClient('wss://test.aigcpmer.com/asr/ws');
 
       // 设置回调函数
       this.asrClient.setCallbacks({
@@ -693,7 +693,7 @@ export default {
 
       axios({
         method: 'post',
-        url: 'http://1.13.0.140:8080/api/exam/switch',
+        url: 'https://test.aigcpmer.com/api/api/exam/switch',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
@@ -782,7 +782,7 @@ export default {
       };
 
       try {
-        const response = await fetch('http://1.13.0.140:8080/api/exam/submit', config);
+        const response = await fetch('https://test.aigcpmer.com/api/api/exam/submit', config);
         if (!response.body) {
           throw new Error('当前浏览器不支持流式响应');
         }
@@ -893,7 +893,7 @@ export default {
           this.loading = true
           var config = {
             method: 'post',
-            url: 'http://1.13.0.140:8080/auth/login',
+            url: 'https://test.aigcpmer.com/api/auth/login',
             headers: {
               'Content-Type': 'application/json',
               'Accept': '*/*',
@@ -944,7 +944,7 @@ export default {
         });
         var config = {
           method: 'post',
-          url: 'http://1.13.0.140:8080/auth/sms',
+          url: 'https://test.aigcpmer.com/api/auth/sms',
           headers: {
             'Content-Type': 'application/json'
           },
@@ -1015,7 +1015,7 @@ export default {
         body: JSON.stringify(data)  // 注意这里要用 body
       };
       try {
-        const response = await fetch('http://1.13.0.140:8080/api/exam/demoAnswner', config);
+        const response = await fetch('https://test.aigcpmer.com/api/api/exam/demoAnswner', config);
         if (!response.body) {
           throw new Error('当前浏览器不支持流式响应');
         }

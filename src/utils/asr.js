@@ -20,7 +20,8 @@ export default class ASRClient {
   async connect() {
     return new Promise((resolve, reject) => {
       try {
-        this.socket = new WebSocket(this.websocketUrl);
+        const token = localStorage.getItem('token');
+        this.socket = new WebSocket(`${this.websocketUrl}?token=${token}`);
 
         this.socket.onopen = () => {
           console.log('WebSocket连接已建立');
