@@ -59,8 +59,10 @@
         <!-- 题目区域 -->
         <div class="question-box">
           <h1 class="question-title">
-            {{questionContent.questionStateEnum=='VIEWED'?'（已阅读）':'（未阅读）'}} {{ questionContent.content }}
-            <span class="question-subtitle">（{{ questionContent.examTime?questionContent.examTime:'' }} {{ questionContent.questionType }}）</span>
+            {{ questionContent.questionStateEnum == 'VIEWED' ? '（已阅读）' : '（未阅读）' }} {{ questionContent.content }}
+            <span v-if="questionContent.examTime || questionContent.questionType" class="question-subtitle">
+              （{{ questionContent.examTime }} {{ questionContent.questionType }}）
+            </span>
           </h1>
         </div>
 
@@ -94,9 +96,8 @@
                 <!-- 示范内容 -->
                 <div class="demo-content">
                   <div class="content-text">
-                    <p class="paragraph model-thinking">
-                      {{ reasonContent }}</p>
-                    <p class="paragraph">{{ modelResult }}</p>
+                    <p class="paragraph model-thinking" v-html="markdownReasonContent"></p>
+                    <p class="paragraph" v-html="markdownModelResult"></p>
                   </div>
                 </div>
               </template>
@@ -131,8 +132,8 @@
                   </div>
                   <!-- 点评内容 -->
                   <div v-else class="evaluation-content">
-                   
-                   点评: <p class="paragraph model-thinking"  v-html="markdownReason"></p>
+
+                    点评: <p class="paragraph model-thinking" v-html="markdownReason"></p>
                     <p class="paragraph" v-html="markdownResult"></p>
                   </div>
                 </div>
@@ -145,7 +146,7 @@
               <div class="audio-recorder">
                 <div class="mic-circle" :class="{ 'recording-btn': isRecording }" @click="toggleRecording">
                   <img v-if="!isRecording" src="@/assets/microphone.png" alt="microphone">
-                  <div v-else class="recording-square" ></div>
+                  <div v-else class="recording-square"></div>
                 </div>
                 <div class="wave-line">
                   <div class="dotted-line" :class="{ 'recording': isRecording }" />
@@ -214,31 +215,36 @@
             <img src="@/assets/qr_code.png" alt="QR Code">
           </div>
 
-          <!-- 支付选项 -->
-          <div class="payment-selection">
-            <div class="payment-option" :class="{ 'selected': paymentMethod === 'wechat' }"
-              @click="paymentMethod = 'wechat'">
-              <div class="radio-circle">
-                <div v-if="paymentMethod === 'wechat'" class="radio-inner" />
+          <!-- 右侧区域：支付选项和说明文字 -->
+          <div class="payment-right-section">
+            <!-- 支付选项 -->
+            <div class="payment-options">
+              <div class="payment-option" :class="{ 'selected': paymentMethod === 'wechat' }"
+                @click="paymentMethod = 'wechat'">
+                <label class="radio-label">
+                  <input type="radio" name="payment" :checked="paymentMethod === 'wechat'">
+                  <span class="radio-custom"></span>
+                  <img src="@/assets/wechat_pay.png" alt="WeChat Pay">
+                  <span>微信支付</span>
+                </label>
               </div>
-              <img src="@/assets/wechat_pay.png" alt="WeChat Pay">
-              <span>微信支付</span>
+              <div class="payment-option" :class="{ 'selected': paymentMethod === 'alipay' }"
+                @click="paymentMethod = 'alipay'">
+                <label class="radio-label">
+                  <input type="radio" name="payment" :checked="paymentMethod === 'alipay'">
+                  <span class="radio-custom"></span>
+                  <img src="@/assets/alipay.png" alt="Alipay">
+                  <span>支付宝支付</span>
+                </label>
+              </div>
             </div>
-            <div class="payment-option" :class="{ 'selected': paymentMethod === 'alipay' }"
-              @click="paymentMethod = 'alipay'">
-              <div class="radio-circle">
-                <div v-if="paymentMethod === 'alipay'" class="radio-inner" />
-              </div>
-              <img src="@/assets/alipay.png" alt="Alipay">
-              <span>支付宝支付</span>
+
+            <!-- 说明文字 -->
+            <div class="payment-notes">
+              <p>• 每次答题点评消耗积分，每次智能示范消耗积分；点数不足时，无法使用对应服务</p>
+              <p>• 完成支付即视为同意<span class="agreement">《用户协议》</span></p>
             </div>
           </div>
-        </div>
-
-        <!-- 说明文字 -->
-        <div class="payment-notes">
-          <p>• 每次答题点评消耗积分，每次智能示范消耗积分；点数不足时，无法使用对应服务</p>
-          <p>• 完成支付即视为同意<span class="agreement">《用户协议》</span></p>
         </div>
       </div>
     </el-dialog>
@@ -413,8 +419,9 @@ export default {
       submitting: false,
       currentIndex: 1,
       totalCount: 22,
-      aiResponseReasonContent:'',
-      aiResponseResult:''
+      aiResponseReasonContent: '',
+      aiResponseResult: '',
+      reasonContent: ''
     }
   },
 
@@ -428,9 +435,17 @@ export default {
     },
     markdownResult() {
       return marked(this.aiResponseResult || '')
+    },
+    markdownReasonContent() {
+      return marked(this.reasonContent || '')
+    },
+    markdownModelResult() {
+      return marked(this.modelResult || '')
     }
   },
   mounted() {
+    this.getUserInfo()
+
     this.get_exam_history()
     this.changeQuestion()
     this.searchInput.examType = this.$route.query.type
@@ -438,7 +453,7 @@ export default {
     var config = {
       method: 'get',
       url: 'https://test.aigcpmer.com/api/api/exam/tags',
-      headers: {'Authorization': `Bearer ${token}`}
+      headers: { 'Authorization': `Bearer ${token}` }
     };
     axios(config)
       .then((response) => {
@@ -474,7 +489,7 @@ export default {
       var config = {
         method: 'get',
         url: 'https://test.aigcpmer.com/api/api/exam/history',
-        headers: {'Authorization': `Bearer ${token}`}
+        headers: { 'Authorization': `Bearer ${token}` }
       };
 
       axios(config)
@@ -496,7 +511,7 @@ export default {
       var config = {
         method: 'get',
         url: `https://test.aigcpmer.com/api/api/exam/detail/${id}`,
-        headers: {'Authorization': `Bearer ${token}`}
+        headers: { 'Authorization': `Bearer ${token}` }
       };
 
       axios(config)
@@ -514,13 +529,6 @@ export default {
             };
             this.questionContent.questionId = data.questionId
             // 更新页面显示的题目内容
-            const questionBox = document.querySelector('.question-title');
-            if (questionBox) {
-              questionBox.innerHTML = `
-                ${data.questionContent}
-                <span class="question-subtitle">（${data.examTime} ${data.questionType}）</span>
-              `;
-            }
 
             // 更新其他状态
             // this.selectedYear = data.examTime;
@@ -629,7 +637,7 @@ export default {
       this.asrResult = '';
       this.aiResponseReasonContent = '';
       this.aiResponseResult = '';
-        this.asrClient.startRecognition();
+      this.asrClient.startRecognition();
     },
     // 新增一个方法来处理停止按钮的点击
     stopRecognition() {
@@ -710,7 +718,7 @@ export default {
               questionId: questionData.questionId,
               content: questionData.content,
               answer: questionData.answer,
-              questionStateEnum:questionData.questionStateEnum
+              questionStateEnum: questionData.questionStateEnum
               // examTime: questionData.examTime,
               // region: questionData.region,
               // questionType: questionData.questionType
@@ -737,7 +745,7 @@ export default {
             // this.selectedYear = questionData.examTime;
             // this.selectedRegion = questionData.region;
             // this.selectedQuestionType = questionData.questionType;
-             
+
             // 更新题目序号
             if (questionData.currentIndex) {
               this.currentIndex = questionData.currentIndex;
@@ -765,7 +773,7 @@ export default {
     },
     async submitAnswer() {
       let stream = true
-     const token = localStorage.getItem('token');
+      const token = localStorage.getItem('token');
 
       const config = {
         method: 'POST', // 根据实际需求设置请求方法
@@ -791,8 +799,8 @@ export default {
         const decoder = new TextDecoder('utf-8');
         let done = false;
 
-        this.reasonContent = '';
-        this.modelResult = '';
+        this.aiResponseReasonContent = '';
+        this.aiResponseResult = '';
         let partialData = '';
 
         while (!done) {
@@ -863,7 +871,7 @@ export default {
           }
         }
         this.stopRecognition()
-      }else{
+      } else {
         this.startRecognition()
       }
     },
@@ -887,6 +895,14 @@ export default {
       // 重置表单数据和验证状态
       this.$refs.loginForm.resetFields()
     },
+    getUserInfo() {
+      const userPhone = localStorage.getItem('userPhone');
+      const token = localStorage.getItem('token');
+      if (userPhone && token) {
+        this.isLoggedIn = true
+        this.userPhone = userPhone
+      }
+    },
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
@@ -907,6 +923,8 @@ export default {
                 this.loading = false
                 this.isLoggedIn = true
                 this.userPhone = this.loginForm.phone
+                localStorage.setItem('userPhone', this.loginForm.phone);
+
                 localStorage.setItem('token', response.data.data.token);
                 this.handleCloseDialog()
                 this.$message.success('登录成功')
@@ -966,13 +984,20 @@ export default {
           // 这里添加发送验证码的接口调用
           // await this.$api.sendCode(this.loginForm.phone)
           await axios(config)
-            .then(function (response) {
+            .then((response) =>{
+              if (response.data.code == 10001) {
+                this.canSendCode = true
+                clearInterval(this.timer)
+                this.$message.error(response.data.message)
+                return
+              }
               console.log(response.data);
+              this.$message.success('验证码发送成功')
+
             })
-            .catch(function (error) {
+            .catch((error) => {
               console.log(error);
             });
-          this.$message.success('验证码发送成功')
         } catch (error) {
           this.canSendCode = true
           clearInterval(this.timer)
@@ -1015,13 +1040,17 @@ export default {
         body: JSON.stringify(data)  // 注意这里要用 body
       };
       try {
+        if (!this.isDemoStarted) {
+          this.isDemoStarted = true
+        }
         const response = await fetch('https://test.aigcpmer.com/api/api/exam/demoAnswner', config);
         if (!response.body) {
           throw new Error('当前浏览器不支持流式响应');
         }
-        if (!this.isDemoStarted) {
-          this.isDemoStarted = true
-        }
+        const now = new Date();
+        // 记录触发时间，可以选择打印日志或存入数组中显示在页面上
+        console.log(`开始接收：${now.toLocaleTimeString()}`);
+
         const reader = response.body.getReader();
         const decoder = new TextDecoder('utf-8');
         let done = false;
@@ -1029,7 +1058,7 @@ export default {
         this.reasonContent = '';
         this.modelResult = '';
         let partialData = '';
-
+        console.log(`开始处理${now.toLocaleTimeString()}`);
         while (!done) {
           const { value, done: streamDone } = await reader.read();
           done = streamDone;
@@ -1052,17 +1081,24 @@ export default {
                 const jsonStr = line.slice(5).trim();
                 try {
                   const obj = JSON.parse(jsonStr);
+                  const now = new Date();
+                  // 记录触发时间，可以选择打印日志或存入数组中显示在页面上
+                  console.log(`开始每行处理：${now.toLocaleTimeString()} ${obj.contentType} `);
+
                   if (obj.contentType === 'reason') {
                     this.reasonContent += obj.content;
                   } else if (obj.contentType === 'answer') {
                     this.modelResult += obj.content;
                   }
-                  await this.$nextTick();
+                  console.log(`进行渲染：${now.toLocaleTimeString()}  `);
+
+                  // await this.$nextTick();
                 } catch (err) {
                   console.error('JSON 解析出错:', err);
                 }
               }
             }
+
           }
         }
         console.log('数据流接收完毕');
@@ -1796,19 +1832,24 @@ export default {
   color: #333333;
   overflow-y: scroll;
 }
+
 .recorded-content::-webkit-scrollbar {
-  width: 6px;  /* 调整宽度 */
+  width: 6px;
+  /* 调整宽度 */
 }
 
 /* 滚动槽 */
 .recorded-content::-webkit-scrollbar-track {
-  background: transparent;  /* 背景透明 */
+  background: transparent;
+  /* 背景透明 */
 }
 
 /* 滚动条滑块 */
 .recorded-content::-webkit-scrollbar-thumb {
-  background: #C0C4CC;  /* 颜色可以根据需要调整 */
-  border-radius: 3px;  /* 圆角效果 */
+  background: #C0C4CC;
+  /* 颜色可以根据需要调整 */
+  border-radius: 3px;
+  /* 圆角效果 */
 }
 
 .evaluation-box {
@@ -1979,7 +2020,7 @@ export default {
   :deep(.el-dialog__body) {
     padding: 0;
   }
-  
+
   :deep(.el-dialog__header) {
     display: none !important;
     padding: 0 !important;
@@ -2109,71 +2150,114 @@ export default {
 
 .payment-section {
   display: flex;
-  padding: 24px;
-  gap: 24px;
+  padding: 0;
   background-color: #f5f5f5;
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 0 24px 20px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.05);
 }
 
 .qr-code {
-  flex: 0 0 50%;
+  flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #fff;
-  border-radius: 4px;
-  padding: 16px;
-  height: 200px;
+  background-color: #f5f5f5;
+  padding: 20px;
+  height: 240px;
+  border-right: 1px dashed #ccc;
 }
 
 .qr-code img {
-  width: 160px;
-  height: 160px;
+  width: 140px;
+  height: 140px;
   object-fit: contain;
 }
 
-.payment-selection {
-  flex: 0 0 50%;
+.payment-right-section {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  background-color: #f5f5f5;
+  padding: 20px;
+  justify-content: space-between;
+}
+
+.payment-options {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 0 20px;
+  gap: 15px;
 }
 
 .payment-option {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
+  margin-bottom: 0;
+  border-radius: 30px;
+  overflow: hidden;
+  border: 1px solid #dcdfe6;
   background-color: #fff;
-  border-radius: 4px;
-  cursor: pointer;
   transition: all 0.3s;
-  height: 50px;
+  height: 44px;
 }
 
 .payment-option.selected {
+  border-color: #409EFF;
   background-color: #fff;
 }
 
-.radio-circle {
-  width: 18px;
-  height: 18px;
-  border: 1px solid #DCDFE6;
-  border-radius: 50%;
+.radio-label {
   display: flex;
   align-items: center;
-  justify-content: center;
+  cursor: pointer;
+  padding: 0 20px;
+  width: 100%;
+  height: 100%;
 }
 
-.radio-inner {
-  width: 10px;
-  height: 10px;
-  background-color: #409EFF;
+.radio-label input[type="radio"] {
+  display: none;
+}
+
+.radio-custom {
+  width: 18px;
+  height: 18px;
+  border: 1px solid #dcdfe6;
   border-radius: 50%;
+  margin-right: 10px;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.radio-custom::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #409EFF;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.radio-label input[type="radio"]:checked+.radio-custom::after {
+  opacity: 1;
+}
+
+.payment-option.selected .radio-custom {
+  border-color: #409EFF;
 }
 
 .payment-option img {
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+  flex-shrink: 0;
 }
 
 .payment-option span {
@@ -2182,7 +2266,7 @@ export default {
 }
 
 .payment-notes {
-  padding: 16px 24px;
+  padding: 0;
   color: #909399;
   font-size: 12px;
   line-height: 1.6;
@@ -2191,10 +2275,14 @@ export default {
 
 .payment-notes p {
   margin: 4px 0;
+  display: flex;
+  align-items: flex-start;
+  line-height: 1.8;
 }
 
 .agreement {
   color: #409EFF;
   cursor: pointer;
+  text-decoration: underline;
 }
 </style>
