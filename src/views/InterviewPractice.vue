@@ -75,9 +75,9 @@
                 @click="activeTab = 'reference'">参考答案</span>
             </div>
 
-            <div v-if="activeTab === 'demo'" class="demo-area" @click="startDemo">
+            <div v-if="activeTab === 'demo'" class="demo-area">
               <template v-if="!isDemoStarted">
-                <div class="demo-start-area">
+                <div class="demo-start-area" @click="startDemo">
                   <img class="logo" src="@/assets/deepseek-color.png" alt="Logo">
                   <div class="demo-text">deepseek</div>
                   <div class="demo-hint">点击开始示范</div>
@@ -87,7 +87,7 @@
                 <!-- 添加来源提示 -->
                 <div class="source-hint">
                   以下内容均来自deepseek-r1生成
-                  <el-button type="text" class="regenerate-btn" @click="startDemo">
+                  <el-button type="text" class="regenerate-btn" @click.stop="startDemo">
                     <i class="el-icon-refresh" />
                     重新生成
                   </el-button>
@@ -888,6 +888,10 @@ export default {
       // 重置表单数据和验证状态
       this.$nextTick(() => {
         this.$refs.loginForm.resetFields()
+        // 清空图形验证码输入框
+        this.captcha.captchaCode = ''
+        // 获取新的图形验证码
+        this.getCaptcha()
       })
     },
     handleCloseDialog() {
@@ -951,59 +955,53 @@ export default {
           return // 如果手机号验证不通过，直接返回
         }
 
-        // 手机号验证通过，开始发送验证码
-        this.canSendCode = false
-        this.countdown = 60
-        var data = JSON.stringify({
-          "phone": this.loginForm.phone,
-          "captcha": this.captcha.captchaCode,
-          "captchaId": this.captcha.captchaId,
-          "macAddress": "1232"
-        });
-        var config = {
-          method: 'post',
-          url: 'https://test.aigcpmer.com/api/auth/sms',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          data: data
-        };
-
-        // 开始倒计时
-        this.timer = setInterval(() => {
-          if (this.countdown > 0) {
-            this.countdown--
-          } else {
-            this.canSendCode = true
-            clearInterval(this.timer)
-            this.timer = null
-          }
-        }, 1000)
-
         try {
-          // 这里添加发送验证码的接口调用
-          // await this.$api.sendCode(this.loginForm.phone)
-          await axios(config)
-            .then((response) =>{
-              if (response.data.code == 10001) {
-                this.canSendCode = true
-                clearInterval(this.timer)
-                this.$message.error(response.data.message)
-                return
-              }
-              console.log(response.data);
-              this.$message.success('验证码发送成功')
+          // 直接发送短信验证码，接口内部会验证图形验证码
+          var data = JSON.stringify({
+            "phone": this.loginForm.phone,
+            "captcha": this.captcha.captchaCode,
+            "captchaId": this.captcha.captchaId,
+            "macAddress": "1232"
+          });
+          
+          var config = {
+            method: 'post',
+            url: 'https://test.aigcpmer.com/api/auth/sms',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            data: data
+          };
 
-            })
-            .catch((error) => {
-              console.log(error);
-            });
+          const response = await axios(config);
+          console.log('短信验证码响应:', response.data);
+          
+          // 检查响应状态
+          if (response.data.code !== 200) {
+            // 处理各种错误情况
+            this.$message.error(response.data.message || '发送失败，请重试');
+            return;
+          }
+          
+          // 短信验证码发送成功，开始倒计时
+          this.canSendCode = false;
+          this.countdown = 60;
+          this.timer = setInterval(() => {
+            if (this.countdown > 0) {
+              this.countdown--;
+            } else {
+              this.canSendCode = true;
+              clearInterval(this.timer);
+              this.timer = null;
+            }
+          }, 1000);
+          
+          this.$message.success('验证码发送成功');
         } catch (error) {
-          this.canSendCode = true
-          clearInterval(this.timer)
-          this.$message.error('验证码发送失败')
+          console.log('发送短信验证码出错:', error);
+          this.$message.error('验证码发送失败，请重试');
         }
-      })
+      });
     },
     // 在组件销毁前清除定时器
     beforeDestroy() {
