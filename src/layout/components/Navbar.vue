@@ -76,7 +76,7 @@ export default {
     },
     async logout() {
       await this.$store.dispatch('user/logout')
-      this.$router.push(`/interview-practice`)
+      this.$router.push(`/interview-plaza`)
     }
   }
 }

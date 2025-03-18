@@ -70,6 +70,11 @@ export const constantRoutes = [
     // ]
   },
   {
+    path: '/interview-plaza',
+    component: () => import('@/views/InterviewPlaza'),
+    hidden: true
+  },
+  {
     path: '/auth-redirect',
     component: () => import('@/views/login/auth-redirect'),
     hidden: true
@@ -385,14 +390,15 @@ export const asyncRoutes = [
       }
     ]
   },
-  {
-    path: '/interview-plaza',
+ 
+   {
+    path: '/Interview-practice',
     component: Layout,
     children: [
       {
         path: 'index',
-        component: () => import('@/views/InterviewPlaza'),
-        name: 'InterviewPlaza',
+        component: () => import('@/views/InterviewPractice'),
+        name: 'InterviewPractice',
         meta: { title: '面试广场', icon: 'form' }
       }
     ]
