@@ -71,8 +71,8 @@
           <div class="answer-box">
             <div class="tab-group">
               <span class="tab" :class="{ active: activeTab === 'demo' }" @click="activeTab = 'demo'">示范作答</span>
-              <span class="tab" :class="{ active: activeTab === 'reference' }"
-                @click="activeTab = 'reference'">参考答案</span>
+              <!-- <span class="tab" :class="{ active: activeTab === 'reference' }"
+                @click="activeTab = 'reference'">参考答案</span> -->
             </div>
 
             <div v-if="activeTab === 'demo'" class="demo-area">
@@ -94,7 +94,7 @@
                 </div>
 
                 <!-- 示范内容 -->
-                <div class="demo-content">
+                <div class="demo-content" ref="sourceHint">
                   <div class="content-text">
                     <p class="paragraph model-thinking" v-html="markdownReasonContent"></p>
                     <p class="paragraph" v-html="markdownModelResult"></p>
@@ -131,7 +131,7 @@
                     <span>作答点评</span>
                   </div>
                   <!-- 点评内容 -->
-                  <div v-else class="evaluation-content">
+                  <div v-else class="evaluation-content" ref="evaluationContent">
 
                     点评: <p class="paragraph model-thinking" v-html="markdownReason"></p>
                     <p class="paragraph" v-html="markdownResult"></p>
@@ -251,7 +251,7 @@
 
     <!-- 添加登录弹框 -->
     <el-dialog :visible.sync="loginDialogVisible" class="dialog-container" width="560px" :show-close="false"
-      :before-close="handleCloseDialog" center>
+      :before-close="handleCloseDialog" :close-on-click-modal="false" center>
       <div class="login-container">
         <!-- LOGO区域 -->
         <div class="login-logo">
@@ -827,8 +827,16 @@ export default {
                   const obj = JSON.parse(jsonStr);
                   if (obj.contentType === 'reason') {
                     this.aiResponseReasonContent += obj.content;
+                    this.$nextTick(() => {
+                      const container = this.$refs.evaluationContent;
+                      container.scrollTop = container.scrollHeight;
+                    });
                   } else if (obj.contentType === 'answer') {
                     this.aiResponseResult += obj.content;
+                    this.$nextTick(() => {
+                      const container = this.$refs.evaluationContent;
+                      container.scrollTop = container.scrollHeight;
+                    });
                   }
                   await this.$nextTick();
                 } catch (err) {
@@ -881,6 +889,9 @@ export default {
       this.aiResponseResult = '';
       this.recordCount = 0 // 使用点评功能后重置计数
       this.submitAnswer()
+      console.log('stopRecognition');
+      this.stopRecognition()
+      // this.isRecording = false
     },
     // 新增登录相关方法
     showLoginDialog() {
@@ -898,6 +909,7 @@ export default {
       this.loginDialogVisible = false
       // 重置表单数据和验证状态
       this.$refs.loginForm.resetFields()
+      this.captcha.captchaCode = ''
     },
     getUserInfo() {
       const userPhone = localStorage.getItem('userPhone');
@@ -963,7 +975,7 @@ export default {
             "captchaId": this.captcha.captchaId,
             "macAddress": "1232"
           });
-          
+
           var config = {
             method: 'post',
             url: 'https://test.aigcpmer.com/api/auth/sms',
@@ -975,14 +987,14 @@ export default {
 
           const response = await axios(config);
           console.log('短信验证码响应:', response.data);
-          
+
           // 检查响应状态
           if (response.data.code !== 200) {
             // 处理各种错误情况
             this.$message.error(response.data.message || '发送失败，请重试');
             return;
           }
-          
+
           // 短信验证码发送成功，开始倒计时
           this.canSendCode = false;
           this.countdown = 60;
@@ -995,7 +1007,7 @@ export default {
               this.timer = null;
             }
           }, 1000);
-          
+
           this.$message.success('验证码发送成功');
         } catch (error) {
           console.log('发送短信验证码出错:', error);
@@ -1085,8 +1097,16 @@ export default {
 
                   if (obj.contentType === 'reason') {
                     this.reasonContent += obj.content;
+                    this.$nextTick(() => {
+                      const container = this.$refs.sourceHint;
+                      container.scrollTop = container.scrollHeight;
+                    });
                   } else if (obj.contentType === 'answer') {
                     this.modelResult += obj.content;
+                    this.$nextTick(() => {
+                      const container = this.$refs.sourceHint;
+                      container.scrollTop = container.scrollHeight;
+                    });
                   }
                   console.log(`进行渲染：${now.toLocaleTimeString()}  `);
 
@@ -1106,6 +1126,8 @@ export default {
     },
     // 添加退出登录方法
     handleLogout() {
+      localStorage.removeItem('userPhone');
+      localStorage.removeItem('token');
       this.isLoggedIn = false
       this.userPhone = ''
       this.$message.success('已退出登录')
@@ -1883,7 +1905,7 @@ export default {
   font-size: 14px;
   line-height: 1.8;
   color: #333333;
-  /* overflow-y: scroll; */
+  overflow-y: auto;
 }
 
 .source-hint {
@@ -1908,8 +1930,10 @@ export default {
 }
 
 .demo-content {
+  position: absolute;
+  top: 40px;
   width: 100%;
-  height: 100%;
+  height: 85%;
   padding: 48px 24px 24px;
   overflow-y: auto;
 }
