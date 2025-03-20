@@ -1,7 +1,7 @@
 <template>
   <div class="interview-plaza" @click="handlePageClick">
     <!-- 顶部导航 -->
-    <header class="header">
+    <!-- <header class="header">
       <div style="margin:0 100px;">
         <div class="header-content">
           <div class="logo">言elogo</div>
@@ -23,7 +23,7 @@
           </div>
         </div>
       </div>
-    </header>
+    </header> -->
 
     <!-- 主体内容 -->
     <div style="margin:10px 100px;background-color: #ffffff;">
@@ -47,6 +47,7 @@
           <div
             v-for="(interview, index) in filteredInterviews"
             :key="index"
+            :style="interview.title !== '公务员考试' ? { filter: 'blur(3px)' } : {}"
             class="interview-card"
             @click="goToInterview(interview)"
           >
@@ -236,12 +237,13 @@ export default {
 
   methods: {
     goToInterview(interview) {
+      this.$router.push(`/interview-practice`)
       // 导航到面试练习页面
-      this.$router.push({
-        name: 'InterviewPractice',
-        params: { id: interview.id },
-        query: { type: interview.type }
-      })
+      // this.$router.push({
+      //   name: 'InterviewPractice',
+      //   params: { id: interview.id },
+      //   query: { type: interview.type }
+      // })
     },
 
     // 新增登录相关方法

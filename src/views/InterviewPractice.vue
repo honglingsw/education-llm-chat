@@ -6,7 +6,7 @@
         <div class="header-right">
           <div class="wallet" @click="showRechargeDialog">
             <img class="wallet-icon" src="@/assets/wallet.png" alt="wallet">
-            <span class="balance">{{ isLoggedIn ? '4000' : '----' }}</span>
+            <span class="balance">{{ isLoggedIn ? coinBalance : '----' }}</span>
           </div>
           <i class="el-icon-question" />
           <template v-if="isLoggedIn">
@@ -25,7 +25,7 @@
       <!-- 主体内容 -->
       <main class="main-content">
         <!-- 翻页区域 -->
-        <div class="pagination top-pagination">
+        <!-- <div class="pagination top-pagination">
           <div class="time-region">
             <div class="label-group">
               <span class="label">时间</span>
@@ -49,21 +49,25 @@
             <el-button @click="changeQuestion()">查询</el-button>
             <el-button @click="clearFilters">清空</el-button>
           </div>
+         
+        </div>  -->
+
+        <!-- 题目区域 -->
+        <div class="question-box">
+          <h1 class="question-title">
+            {{
+              questionContent.questionStateEnum === 'ANSWERED'
+                ? '（已作答）'
+                : (questionContent.questionStateEnum === 'VIEWED' ? '（已阅读）' : '（未阅读）')}} {{ questionContent.content }}
+            <span v-if="questionContent.examTime || questionContent.questionType" class="question-subtitle">
+              （{{ questionContent.examTime }} {{ questionContent.questionType }}）
+            </span>
+          </h1>
           <div class="page-region">
             <el-button round @click="prevQuestion">上一题</el-button>
             <span>{{ currentIndex }}/{{ totalCount }}</span>
             <el-button round @click="nextQuestion">下一题</el-button>
           </div>
-        </div>
-
-        <!-- 题目区域 -->
-        <div class="question-box">
-          <h1 class="question-title">
-            {{ questionContent.questionStateEnum == 'VIEWED' ? '（已阅读）' : '（未阅读）' }} {{ questionContent.content }}
-            <span v-if="questionContent.examTime || questionContent.questionType" class="question-subtitle">
-              （{{ questionContent.examTime }} {{ questionContent.questionType }}）
-            </span>
-          </h1>
         </div>
 
         <div class="content-wrapper">
@@ -91,10 +95,15 @@
                     <i class="el-icon-refresh" />
                     重新生成
                   </el-button>
+                  <el-button type="text" @click="toggleAn">
+                    <!-- 根据 isLogoVisible 变量切换内置图标 -->
+                    <i :class="isAnVisible ? 'el-icon-s-fold' : 'el-icon-s-unfold'" />
+                    {{ isAnVisible ? '隐藏' : '显示' }}
+                  </el-button>
                 </div>
 
                 <!-- 示范内容 -->
-                <div class="demo-content" ref="sourceHint">
+                <div class="demo-content" ref="sourceHint" v-if="isAnVisible">
                   <div class="content-text">
                     <p class="paragraph model-thinking" v-html="markdownReasonContent"></p>
                     <p class="paragraph" v-html="markdownModelResult"></p>
@@ -159,13 +168,18 @@
       </main>
 
       <!-- 替换浮动按钮为侧拉栏 -->
-      <el-drawer title="答题列表" :visible.sync="drawerVisible" direction="rtl" size="30%">
+      <el-drawer title="答题列表"  :visible.sync="drawerVisible" direction="rtl" size="30%" style="overflow-y: auto;">
+
         <div class="drawer-content">
           <div class="question-list">
-            <div v-for="(item, i) in orderedHistory" :key="item.answerId" @click="get_exam_detail(item.answerId)"
+            <div v-for="(item, i) in orderedHistory" :key="item.answerId" @click="get_exam_detail(item.questionId, i)"
               :class="['question-item', { active: currentQuestionIndex === i }]">
               <span>
-                {{ i + 1 }}. {{ item.questionContent }} （{{ item.examTime }} {{ item.questionType }}）
+                {{ i + 1 }}. {{
+                  item.state === 'ANSWERED'
+                    ? '（已作答）'
+                    : (item.state === 'VIEWED' ? '（已阅读）' : '（未阅读）')}} {{ item.questionContent }} （{{ item.examTime }} {{
+                  item.questionType }}）
               </span>
             </div>
           </div>
@@ -342,6 +356,7 @@ export default {
         phone: '',
         code: ''
       },
+      coinBalance: 0,
       asrClient: null,
       captcha: {
         captchaId: '',
@@ -378,6 +393,7 @@ export default {
       questionContentitem: '',
       orderedHistory: [], // 用于存储按答题顺序排列的历史记录
       history: [],
+      errorLock: false,
       years: [],
       regions: [],
       questionTypes: [],
@@ -421,7 +437,8 @@ export default {
       totalCount: 22,
       aiResponseReasonContent: '',
       aiResponseResult: '',
-      reasonContent: ''
+      reasonContent: '',
+      isAnVisible:true
     }
   },
 
@@ -445,7 +462,7 @@ export default {
   },
   mounted() {
     this.getUserInfo()
-
+    this.getToken()
     this.get_exam_history()
     this.changeQuestion()
     this.searchInput.examType = this.$route.query.type
@@ -504,27 +521,36 @@ export default {
           console.log(error);
         });
     },
-    get_exam_detail(id) {
+    toggleAn(){
+      this.isAnVisible = !this.isAnVisible
+    },
+    get_exam_detail(id, I) {
+      this.currentQuestionIndex = I
       console.log('id', id);
       const token = localStorage.getItem('token');
+      const data = {
+        currentId: id
+      }
 
-      var config = {
-        method: 'get',
-        url: `https://test.aigcpmer.com/api/api/exam/detail/${id}`,
-        headers: { 'Authorization': `Bearer ${token}` }
-      };
-
-      axios(config)
-        .then((response) => {
+      axios({
+        method: 'post',
+        url: 'https://test.aigcpmer.com/api/api/exam/switchQuestionById',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        data: data
+      })
+        .then(response => {
           if (response.data.code === 200) {
             const data = response.data.data;
 
             // 更新题目内容对象
             this.questionContent = {
               questionId: data.questionId,
-              content: data.questionContent,
+              content: data.content,
               answer: data.answer,
-              currentIndex: data.currentIndex,
+              questionStateEnum: data.questionStateEnum,
               totalCount: data.totalCount || this.totalCount
             };
             this.questionContent.questionId = data.questionId
@@ -536,9 +562,10 @@ export default {
             // this.selectedQuestionType = data.questionType;
             this.modelResult = data.modelResult;
             this.hasRecordedContent = true;
-            this.asrResult = data.userAnswer;
+            this.asrResult = data.userContent;
             this.aiResponseReasonContent = data.reasonContent;
             this.aiResponseResult = data.modelResult
+            this.currentIndex = data.currentIndex
             // 重置相关状态
             this.isDemoStarted = false;
             this.showEvaluationContent = true;
@@ -683,20 +710,19 @@ export default {
       this.isLoading = true;
 
       // 构建请求数据
-      const data = {
-        currentId: this.questionContent.questionId || '',  // 当前题目ID
-        direction: direction,  // 方向：-1 上一题，1 下一题
+      const data = this.questionContent.questionId ? {
+        currentId: this.questionContent.questionId, // 当前题目ID
+        direction: direction, // 方向：-1 上一题，1 下一题
         tags: {
-          examType: '',  // 可以根据需要设置
+          examType: '',        // 根据需要设置
           examTime: this.selectedYear || '',
           region: this.selectedRegion || '',
           questionType: this.selectedQuestionType || '',
           pageNum: 1,
           pageSize: 1
         },
-        keyword: '',
-
-      };
+        keyword: ''
+      } : {};
       const token = localStorage.getItem('token');
 
       axios({
@@ -762,13 +788,28 @@ export default {
             this.modelResult = '';
           } else {
             // 处理错误情况
-            this.$message.error(response.data.message || '切换题目失败');
+            if (!this.errorLock) {
+              this.errorLock = true;
+              this.$message.error(response.data.message || '切换题目失败');
+              setTimeout(() => {
+                this.errorLock = false;
+              }, 2000);
+            }
           }
         })
         .catch(error => {
           console.log('接口错误：', error);
           this.isLoading = false;
-          this.$message.error('切换题目失败，请重试');
+          if (!this.errorLock) {
+            this.errorLock = true;
+            const msg =
+              (error.response && error.response.data && error.response.data.message) ||
+              '切换题目失败';
+            this.$message.error(msg);
+            setTimeout(() => {
+              this.errorLock = false;
+            }, 2000);
+          }
         });
     },
     async submitAnswer() {
@@ -880,6 +921,9 @@ export default {
         }
         this.stopRecognition()
       } else {
+        // 开始录音时，确保评价按钮可见
+        this.hasRecordedContent = true
+        this.showEvaluationContent = false
         this.startRecognition()
       }
     },
@@ -888,10 +932,13 @@ export default {
       this.aiResponseReasonContent = '';
       this.aiResponseResult = '';
       this.recordCount = 0 // 使用点评功能后重置计数
+      if (this.isRecording) {
+        this.isRecording = false
+        this.hasRecordedContent = true
+      }
       this.submitAnswer()
       console.log('stopRecognition');
       this.stopRecognition()
-      // this.isRecording = false
     },
     // 新增登录相关方法
     showLoginDialog() {
@@ -919,6 +966,26 @@ export default {
         this.userPhone = userPhone
       }
     },
+    getToken() {
+      const token = localStorage.getItem('token');
+
+
+      var config = {
+        method: 'get',
+        url: 'https://test.aigcpmer.com/api/user/detail',
+        headers: { 'Authorization': `Bearer ${token}` }
+      };
+
+      axios(config)
+        .then((response) => {
+          // console.log(response.data);
+          this.coinBalance = response.data.data.coinBalance
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+
+    },
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
@@ -944,6 +1011,7 @@ export default {
                 localStorage.setItem('token', response.data.data.token);
                 this.handleCloseDialog()
                 this.$message.success('登录成功')
+                this.getToken()
               } else {
 
 
@@ -1281,6 +1349,7 @@ export default {
 .page-region {
   display: flex;
   align-items: center;
+  justify-content: end;
   gap: 16px;
 }
 
@@ -1342,12 +1411,13 @@ export default {
 }
 
 .record-box {
-  width: 384px;
+  width: 580px;
   background: #fff;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
+
 
 .tab-group {
   display: flex;
@@ -1574,10 +1644,10 @@ export default {
 }
 
 .drawer-content {
-  padding: 20px;
-  height: 100%;
+  padding:40PX 20px;
+  height: calc(100% - 115px) !important;
   background-color: #f5f7fa;
-  overflow: hidden;
+  overflow: auto;
 }
 
 .question-list {
