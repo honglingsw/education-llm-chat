@@ -2,7 +2,12 @@
   <div class="interview-page" @click="handlePageClick">
     <!-- 顶部导航 -->
     <header class="header">
-      <div style="margin:0 100px;"> <!-- 使用与灰色框相同的margin -->
+      <div style="margin:0 100px; display: flex; justify-content: space-between; align-items: center;"> <!-- 使用与灰色框相同的margin -->
+        <!-- 左侧图标 -->
+        <div class="header-left">
+          <i class="el-icon-message" @click="showMessageDialog"></i>
+          <i class="el-icon-chat-dot-square" @click="showFeedbackDialog"></i>
+        </div>
         <div class="header-right">
           <div class="wallet" @click="showRechargeDialog">
             <img class="wallet-icon" src="@/assets/wallet.png" alt="wallet">
@@ -314,6 +319,68 @@
         </el-form>
       </div>
     </el-dialog>
+
+    <!-- 添加消息对话框 -->
+    <el-dialog :visible.sync="messageDialogVisible" :show-close="false" class="welcome-dialog" center>
+      <div class="welcome-content">
+        <h1 class="welcome-title">欢迎使用结构化面试陪练助手！</h1>
+        
+        <p class="user-greeting">亲爱的考生:</p>
+        
+        <p class="intro-text">感谢您对我们产品的信任！ 在这里，我们将为您简单介绍当前工具的使用场景及特色功能:</p>
+        
+        <p class="feature-text">结构化面试是当前公务员/事业编考试中，最常见的面试手段， 它具备......的特点， 考试形式是......， 存在......等评分维度；根据过往经验，我们将结构化面试分为了5个维度，分别是:</p>
+        
+        <p class="dots">......</p>
+        
+        <p class="feature-text">在结构化面试陪练助手中，基于国内顶尖的人工智能基础设施，我们为您准备了以下的特色功能:</p>
+        
+        <p class="dots">......</p>
+        
+        <p class="more-info">访问xx网站以获取更多信息: <a href="http://www.example.com" class="link">www.example.com</a></p>
+        
+        <div class="signature">
+          <p>您的职业伙伴</p>
+          <p>aigcpm</p>
+          <p>2025年4月19日</p>
+        </div>
+        
+        <div class="btn-container">
+          <button class="confirm-btn" @click="messageDialogVisible = false">好的，我知道了</button>
+        </div>
+      </div>
+    </el-dialog>
+
+    <!-- 添加反馈对话框 -->
+    <el-dialog :visible.sync="feedbackDialogVisible" :show-close="false" class="feedback-dialog" center>
+      <div class="feedback-content">
+        <div class="close-btn" @click="feedbackDialogVisible = false">
+          <i class="el-icon-close"></i>
+        </div>
+        
+        <h2>陪练助手对您的面试有帮助吗?</h2>
+        <div class="star-rating">
+          <i class="el-icon-star-off" v-for="i in 5" :key="'help'+i" @click="setHelpRating(i)" :class="{ 'el-icon-star-on': helpRating >= i }"></i>
+        </div>
+        
+        <h2>陪练助手的使用足够方便吗?</h2>
+        <div class="star-rating">
+          <i class="el-icon-star-off" v-for="i in 5" :key="'use'+i" @click="setUseRating(i)" :class="{ 'el-icon-star-on': useRating >= i }"></i>
+        </div>
+        
+        <h2>如果您还有更多想说的，请告诉我:</h2>
+        <el-input type="textarea" :rows="6" v-model="feedbackComment" placeholder="请输入您的反馈意见..."></el-input>
+        
+        <div class="auto-show-option">
+          <el-checkbox v-model="notAutoShow">不再自动弹出</el-checkbox>
+        </div>
+        
+        <div class="feedback-btns">
+          <el-button class="cancel-btn" @click="feedbackDialogVisible = false">不了，谢谢</el-button>
+          <el-button type="primary" class="submit-btn" @click="submitFeedback">提交反馈</el-button>
+        </div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -347,6 +414,8 @@ export default {
     }
 
     return {
+      messageDialogVisible: false,
+      feedbackDialogVisible: false,
       drawerVisible: false,
       isRecording: false,
       loginDialogVisible: false,
@@ -438,7 +507,11 @@ export default {
       aiResponseReasonContent: '',
       aiResponseResult: '',
       reasonContent: '',
-      isAnVisible:true
+      isAnVisible:true,
+      helpRating: 0,
+      useRating: 0,
+      feedbackComment: '',
+      notAutoShow: false
     }
   },
 
@@ -486,6 +559,9 @@ export default {
     this.getCaptcha()
     this.asrRecording()
     this.changeQuestion()
+    
+    // 检查是否需要显示欢迎对话框
+    this.checkWelcomeDialog()
   },
   watch: {
     selectedQuestionType(newVal, oldVal) {
@@ -500,6 +576,60 @@ export default {
   },
 
   methods: {
+    showMessageDialog() {
+      this.messageDialogVisible = true;
+    },
+    
+    showFeedbackDialog() {
+      this.feedbackDialogVisible = true;
+    },
+    
+    setHelpRating(rating) {
+      this.helpRating = rating;
+    },
+    
+    setUseRating(rating) {
+      this.useRating = rating;
+    },
+    
+    submitFeedback() {
+      // 这里可以添加提交反馈的逻辑
+      this.$message.success('感谢您的反馈！');
+      this.feedbackDialogVisible = false;
+      // 重置表单数据
+      this.helpRating = 0;
+      this.useRating = 0;
+      this.feedbackComment = '';
+    },
+    
+    // 添加检查欢迎对话框的方法
+    checkWelcomeDialog() {
+      let storageKey = 'lastVisitTime_guest';
+      
+      // 如果用户已登录，使用用户手机号作为唯一标识符
+      if (this.isLoggedIn && this.userPhone) {
+        storageKey = `lastVisitTime_${this.userPhone}`;
+      }
+      
+      const lastVisitTime = localStorage.getItem(storageKey);
+      const currentTime = Date.now();
+      const daysPassed = lastVisitTime ? this.getDaysPassed(parseInt(lastVisitTime), currentTime) : null;
+      
+      // 检查是否是180天内的首次访问或者从未访问过
+      if (!lastVisitTime || daysPassed > 180) {
+        // 显示欢迎对话框
+        this.messageDialogVisible = true;
+        // 更新访问时间
+        localStorage.setItem(storageKey, currentTime.toString());
+      }
+    },
+    
+    // 计算两个时间戳之间经过的天数
+    getDaysPassed(oldTimestamp, newTimestamp) {
+      const millisecondsInDay = 24 * 60 * 60 * 1000;
+      return Math.floor((newTimestamp - oldTimestamp) / millisecondsInDay);
+    },
+    
     get_exam_history() {
       const token = localStorage.getItem('token');
 
@@ -1266,6 +1396,24 @@ export default {
   align-items: center;
   gap: 16px;
   color: #606266;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.header-left .el-icon-message,
+.header-left .el-icon-chat-dot-square {
+  font-size: 20px;
+  color: #909399;
+  cursor: pointer;
+}
+
+.header-left .el-icon-message:hover,
+.header-left .el-icon-chat-dot-square:hover {
+  color: #409EFF;
 }
 
 .wallet {
@@ -2376,5 +2524,243 @@ export default {
   color: #409EFF;
   cursor: pointer;
   text-decoration: underline;
+}
+
+/* 欢迎对话框样式 */
+.welcome-dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.welcome-dialog >>> .el-dialog {
+  width: 1600px !important;
+  height: 800px !important;
+  margin: 0 !important;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  padding: 0;
+}
+
+.welcome-dialog >>> .el-dialog__header,
+.welcome-dialog >>> .el-dialog__footer {
+  display: none;
+}
+
+.welcome-dialog >>> .el-dialog__body {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.welcome-content {
+  width: 100%;
+  height: 100%;
+  padding: 40px 100px;
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.welcome-title {
+  font-size: 32px;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 40px;
+}
+
+.user-greeting {
+  font-size: 18px;
+  margin-left: 40px;
+  margin-bottom: 30px;
+  font-weight: normal;
+}
+
+.intro-text, .feature-text {
+  font-size: 16px;
+  line-height: 1.8;
+  margin-bottom: 20px;
+  text-indent: 2em;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.dots {
+  font-size: 22px;
+  text-align: center;
+  letter-spacing: 10px;
+  margin: 20px 0;
+}
+
+.more-info {
+  font-size: 16px;
+  margin-bottom: 20px;
+  margin-top: 20px;
+  text-indent: 2em;
+}
+
+.link {
+  color: #409EFF;
+  text-decoration: none;
+}
+
+.signature {
+  text-align: right;
+  margin-top: 40px;
+  line-height: 1.6;
+  margin-right: 0;
+}
+
+.signature p {
+  margin: 5px 0;
+}
+
+.btn-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: auto;
+  margin-bottom: 40px;
+}
+
+.confirm-btn {
+  width: 300px;
+  height: 46px;
+  background-color: #3384ff;
+  color: white;
+  border: none;
+  border-radius: 23px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.confirm-btn:hover {
+  opacity: 0.9;
+}
+
+/* 反馈对话框样式 */
+.feedback-dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.feedback-dialog >>> .el-dialog {
+  width: 620px !important;
+  height: 730px !important;
+  margin: 0 !important;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  padding: 0;
+}
+
+.feedback-dialog >>> .el-dialog__header,
+.feedback-dialog >>> .el-dialog__footer {
+  display: none;
+}
+
+.feedback-dialog >>> .el-dialog__body {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.feedback-content {
+  width: 100%;
+  height: 100%;
+  padding: 40px;
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.feedback-content .close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  cursor: pointer;
+  font-size: 24px;
+  color: #909399;
+}
+
+.feedback-content .close-btn:hover {
+  color: #606266;
+}
+
+.feedback-content h2 {
+  font-size: 18px;
+  font-weight: 500;
+  color: #303133;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.star-rating {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.star-rating i {
+  font-size: 40px;
+  color: #DCDFE6;
+  cursor: pointer;
+}
+
+.star-rating i.el-icon-star-on {
+  color: #F7BA2A;
+}
+
+.auto-show-option {
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.feedback-btns {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: auto;
+}
+
+.feedback-btns .cancel-btn,
+.feedback-btns .submit-btn {
+  width: 160px;
+  height: 46px;
+  border-radius: 23px;
+  font-size: 16px;
+}
+
+.feedback-btns .submit-btn {
+  background: #3384ff;
+}
+
+.feedback-btns .submit-btn:hover {
+  opacity: 0.9;
 }
 </style>
