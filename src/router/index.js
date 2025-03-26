@@ -50,9 +50,15 @@ export const constantRoutes = [
       }
     ]
   },
+
   {
     path: '/login',
     component: () => import('@/views/InterviewPractice'),
+    hidden: true
+  },
+  {
+    path: '/interview-practice-test',
+    component: () => import('@/views/InterviewPracticetest'),
     hidden: true
   },
   {
