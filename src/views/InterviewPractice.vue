@@ -619,7 +619,7 @@ export default {
       };
 
       axios(config)
-        .then(function (response) {
+        .then((response) => {
           // 这里可以添加提交反馈的逻辑
           this.$message.success('感谢您的反馈！');
           this.feedbackDialogVisible = false;
@@ -628,7 +628,7 @@ export default {
           this.useRating = 0;
           this.feedbackComment = '';
         })
-        .catch(function (error) {
+        .catch((error) => {
           this.feedbackDialogVisible = false;
           this.$message.success('网络故障，请重新提交');
         });
