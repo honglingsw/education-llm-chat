@@ -2,7 +2,8 @@
   <div class="interview-page" @click="handlePageClick">
     <!-- 顶部导航 -->123
     <header class="header">
-      <div style="margin:0 100px; display: flex; justify-content: space-between; align-items: center;"> <!-- 使用与灰色框相同的margin -->
+      <div style="margin:0 100px; display: flex; justify-content: space-between; align-items: center;">
+        <!-- 使用与灰色框相同的margin -->
         <!-- 左侧图标 -->
         <div class="header-left">
           <i class="el-icon-message" @click="showMessageDialog"></i>
@@ -54,7 +55,7 @@
             <el-button @click="changeQuestion()">查询</el-button>
             <el-button @click="clearFilters">清空</el-button>
           </div>
-         
+
         </div>  -->
 
         <!-- 题目区域 -->
@@ -63,7 +64,7 @@
             {{
               questionContent.questionStateEnum === 'ANSWERED'
                 ? '（已作答）'
-                : (questionContent.questionStateEnum === 'VIEWED' ? '（已阅读）' : '（未阅读）')}} {{ questionContent.content }}
+                : (questionContent.questionStateEnum === 'VIEWED' ? '（已阅读）' : '（未阅读）') }} {{ questionContent.content }}
             <span v-if="questionContent.examTime || questionContent.questionType" class="question-subtitle">
               （{{ questionContent.examTime }} {{ questionContent.questionType }}）
             </span>
@@ -173,7 +174,7 @@
       </main>
 
       <!-- 替换浮动按钮为侧拉栏 -->
-      <el-drawer title="答题列表"  :visible.sync="drawerVisible" direction="rtl" size="30%" style="overflow-y: auto;">
+      <el-drawer title="答题列表" :visible.sync="drawerVisible" direction="rtl" size="30%" style="overflow-y: auto;">
 
         <div class="drawer-content">
           <div class="question-list">
@@ -183,7 +184,7 @@
                 {{ i + 1 }}. {{
                   item.state === 'ANSWERED'
                     ? '（已作答）'
-                    : (item.state === 'VIEWED' ? '（已阅读）' : '（未阅读）')}} {{ item.questionContent }} （{{ item.examTime }} {{
+                    : (item.state === 'VIEWED' ? '（已阅读）' : '（未阅读）') }} {{ item.questionContent }} （{{ item.examTime }} {{
                   item.questionType }}）
               </span>
             </div>
@@ -324,27 +325,28 @@
     <el-dialog :visible.sync="messageDialogVisible" :show-close="false" class="welcome-dialog" center>
       <div class="welcome-content">
         <h1 class="welcome-title">欢迎使用结构化面试陪练助手！</h1>
-        
+
         <p class="user-greeting">亲爱的考生:</p>
-        
+
         <p class="intro-text">感谢您对我们产品的信任！ 在这里，我们将为您简单介绍当前工具的使用场景及特色功能:</p>
-        
-        <p class="feature-text">结构化面试是当前公务员/事业编考试中，最常见的面试手段， 它具备......的特点， 考试形式是......， 存在......等评分维度；根据过往经验，我们将结构化面试分为了5个维度，分别是:</p>
-        
+
+        <p class="feature-text">结构化面试是当前公务员/事业编考试中，最常见的面试手段， 它具备......的特点， 考试形式是......，
+          存在......等评分维度；根据过往经验，我们将结构化面试分为了5个维度，分别是:</p>
+
         <p class="dots">......</p>
-        
+
         <p class="feature-text">在结构化面试陪练助手中，基于国内顶尖的人工智能基础设施，我们为您准备了以下的特色功能:</p>
-        
+
         <p class="dots">......</p>
-        
+
         <p class="more-info">访问xx网站以获取更多信息: <a href="http://www.example.com" class="link">www.example.com</a></p>
-        
+
         <div class="signature">
           <p>您的职业伙伴</p>
           <p>aigcpm</p>
           <p>2025年4月19日</p>
         </div>
-        
+
         <div class="btn-container">
           <button class="confirm-btn" @click="messageDialogVisible = false">好的，我知道了</button>
         </div>
@@ -357,24 +359,26 @@
         <div class="close-btn" @click="feedbackDialogVisible = false">
           <i class="el-icon-close"></i>
         </div>
-        
+
         <h2>陪练助手对您的面试有帮助吗?</h2>
         <div class="star-rating">
-          <i class="el-icon-star-off" v-for="i in 5" :key="'help'+i" @click="setHelpRating(i)" :class="{ 'el-icon-star-on': helpRating >= i }"></i>
+          <i class="el-icon-star-off" v-for="i in 5" :key="'help' + i" @click="setHelpRating(i)"
+            :class="{ 'el-icon-star-on': helpRating >= i }"></i>
         </div>
-        
+
         <h2>陪练助手的使用足够方便吗?</h2>
         <div class="star-rating">
-          <i class="el-icon-star-off" v-for="i in 5" :key="'use'+i" @click="setUseRating(i)" :class="{ 'el-icon-star-on': useRating >= i }"></i>
+          <i class="el-icon-star-off" v-for="i in 5" :key="'use' + i" @click="setUseRating(i)"
+            :class="{ 'el-icon-star-on': useRating >= i }"></i>
         </div>
-        
+
         <h2>如果您还有更多想说的，请告诉我:</h2>
         <el-input type="textarea" :rows="6" v-model="feedbackComment" placeholder="请输入您的反馈意见..."></el-input>
-        
+
         <div class="auto-show-option">
           <el-checkbox v-model="notAutoShow">不再自动弹出</el-checkbox>
         </div>
-        
+
         <div class="feedback-btns">
           <el-button class="cancel-btn" @click="feedbackDialogVisible = false">不了，谢谢</el-button>
           <el-button type="primary" class="submit-btn" @click="submitFeedback">提交反馈</el-button>
@@ -507,7 +511,7 @@ export default {
       aiResponseReasonContent: '',
       aiResponseResult: '',
       reasonContent: '',
-      isAnVisible:true,
+      isAnVisible: true,
       helpRating: 0,
       useRating: 0,
       feedbackComment: '',
@@ -559,7 +563,7 @@ export default {
     this.getCaptcha()
     this.asrRecording()
     this.changeQuestion()
-    
+
     // 检查是否需要显示欢迎对话框
     this.checkWelcomeDialog()
   },
@@ -579,19 +583,19 @@ export default {
     showMessageDialog() {
       this.messageDialogVisible = true;
     },
-    
+
     showFeedbackDialog() {
       this.feedbackDialogVisible = true;
     },
-    
+
     setHelpRating(rating) {
       this.helpRating = rating;
     },
-    
+
     setUseRating(rating) {
       this.useRating = rating;
     },
-    
+
     submitFeedback() {
       // 这里可以添加提交反馈的逻辑
       this.$message.success('感谢您的反馈！');
@@ -601,20 +605,20 @@ export default {
       this.useRating = 0;
       this.feedbackComment = '';
     },
-    
+
     // 添加检查欢迎对话框的方法
     checkWelcomeDialog() {
       let storageKey = 'lastVisitTime_guest';
-      
+
       // 如果用户已登录，使用用户手机号作为唯一标识符
       if (this.isLoggedIn && this.userPhone) {
         storageKey = `lastVisitTime_${this.userPhone}`;
       }
-      
+
       const lastVisitTime = localStorage.getItem(storageKey);
       const currentTime = Date.now();
       const daysPassed = lastVisitTime ? this.getDaysPassed(parseInt(lastVisitTime), currentTime) : null;
-      
+
       // 检查是否是180天内的首次访问或者从未访问过
       if (!lastVisitTime || daysPassed > 180) {
         // 显示欢迎对话框
@@ -623,13 +627,13 @@ export default {
         localStorage.setItem(storageKey, currentTime.toString());
       }
     },
-    
+
     // 计算两个时间戳之间经过的天数
     getDaysPassed(oldTimestamp, newTimestamp) {
       const millisecondsInDay = 24 * 60 * 60 * 1000;
       return Math.floor((newTimestamp - oldTimestamp) / millisecondsInDay);
     },
-    
+
     get_exam_history() {
       const token = localStorage.getItem('token');
 
@@ -651,7 +655,7 @@ export default {
           console.log(error);
         });
     },
-    toggleAn(){
+    toggleAn() {
       this.isAnVisible = !this.isAnVisible
     },
     get_exam_detail(id, I) {
@@ -1792,7 +1796,7 @@ export default {
 }
 
 .drawer-content {
-  padding:40PX 20px;
+  padding: 40PX 20px;
   height: calc(100% - 115px) !important;
   background-color: #f5f7fa;
   overflow: auto;
@@ -2539,7 +2543,7 @@ export default {
   z-index: 2000;
 }
 
-.welcome-dialog >>> .el-dialog {
+.welcome-dialog>>>.el-dialog {
   width: 1600px !important;
   height: 800px !important;
   margin: 0 !important;
@@ -2550,12 +2554,12 @@ export default {
   padding: 0;
 }
 
-.welcome-dialog >>> .el-dialog__header,
-.welcome-dialog >>> .el-dialog__footer {
+.welcome-dialog>>>.el-dialog__header,
+.welcome-dialog>>>.el-dialog__footer {
   display: none;
 }
 
-.welcome-dialog >>> .el-dialog__body {
+.welcome-dialog>>>.el-dialog__body {
   padding: 0;
   margin: 0;
   width: 100%;
@@ -2588,7 +2592,8 @@ export default {
   font-weight: normal;
 }
 
-.intro-text, .feature-text {
+.intro-text,
+.feature-text {
   font-size: 16px;
   line-height: 1.8;
   margin-bottom: 20px;
@@ -2663,7 +2668,7 @@ export default {
   z-index: 2000;
 }
 
-.feedback-dialog >>> .el-dialog {
+.feedback-dialog>>>.el-dialog {
   width: 620px !important;
   height: 730px !important;
   margin: 0 !important;
@@ -2674,12 +2679,12 @@ export default {
   padding: 0;
 }
 
-.feedback-dialog >>> .el-dialog__header,
-.feedback-dialog >>> .el-dialog__footer {
+.feedback-dialog>>>.el-dialog__header,
+.feedback-dialog>>>.el-dialog__footer {
   display: none;
 }
 
-.feedback-dialog >>> .el-dialog__body {
+.feedback-dialog>>>.el-dialog__body {
   padding: 0;
   margin: 0;
   width: 100%;
