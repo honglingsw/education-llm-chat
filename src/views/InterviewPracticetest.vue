@@ -1,28 +1,57 @@
 <template>
   <div class="interview-page" @click="handlePageClick">
-    <!-- 顶部导航 -->123
+    <!-- 顶部导航 -->
     <header class="header">
-      <div style="margin:0 100px; display: flex; justify-content: space-between; align-items: center;"> <!-- 使用与灰色框相同的margin -->
-        <!-- 左侧图标 -->
+      <div class="header-container">
+        <!-- 左侧logo -->
         <div class="header-left">
-          <i class="el-icon-message" @click="showMessageDialog"></i>
-          <i class="el-icon-chat-dot-square" @click="showFeedbackDialog"></i>
+          <img class="nav-logo" src="@/assets/logo1.png" alt="Logo">
         </div>
+        <!-- 右侧工具栏 -->
         <div class="header-right">
-          <div class="wallet" @click="showRechargeDialog">
-            <img class="wallet-icon" src="@/assets/wallet.png" alt="wallet">
-            <span class="balance">{{ isLoggedIn ? coinBalance : '----' }}</span>
+          <div class="nav-icons">
+            <template v-if="isLoggedIn">
+              <div class="nav-icons-wrapper">
+                <div class="qr-tooltip-container">
+                  <img class="icon-img" src="@/assets/all.png" alt="all">
+                  <div class="qr-tooltip">
+                    <div class="qr-tooltip-content">
+                      <img src="@/assets/qr_code.png" alt="QR Code" class="qr-code-img">
+                      <div class="qr-tooltip-text">进群送次数</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="wallet nav-icon" @click="showRechargeDialog">
+                  <img class="wallet-icon" src="@/assets/wallet.png" alt="wallet">
+                  <span class="balance" style="font-size: 14px; color: #111111; font-family: 'Alibaba Sans', sans-serif;">{{ coinBalance }}</span>
+                </div>
+              </div>
+            </template>
+            <template v-else>
+              <div class="nav-icons-wrapper">
+                <div class="qr-tooltip-container">
+                  <img class="icon-img" src="@/assets/all.png" alt="all">
+                  <div class="qr-tooltip">
+                    <div class="qr-tooltip-content">
+                      <img src="@/assets/qr_code.png" alt="QR Code" class="qr-code-img">
+                      <div class="qr-tooltip-text">进群送次数</div>
+                    </div>
+                  </div>
+                </div>
+                <img class="icon-img" src="@/assets/wallet.png" alt="wallet" @click="showRechargeDialog">
+              </div>
+            </template>
           </div>
-          <i class="el-icon-question" />
-          <template v-if="isLoggedIn">
-            <i class="el-icon-user" />
-            <span class="user-phone">{{ maskPhoneNumber }}</span>
-            <span class="logout-text" @click="handleLogout">退出登录</span>
-          </template>
-          <template v-else>
-            <i class="el-icon-user" @click="showLoginDialog" />
-            <span class="not-login-text" @click="showLoginDialog">未登录</span>
-          </template>
+          <div class="user-actions">
+            <template v-if="isLoggedIn">
+              <img src="@/assets/user.png" class="user-icon" alt="user" />
+              <span class="user-phone" style="color: #111111; font-family: 'Alibaba Sans', sans-serif; font-size: 14px;">{{ maskPhoneNumber }}</span>
+              <img src="@/assets/out.png" class="logout-icon" alt="logout" @click="handleLogout" />
+            </template>
+            <template v-else>
+              <el-button class="login-button" type="primary" @click="showLoginDialog">登录</el-button>
+            </template>
+          </div>
         </div>
       </div>
     </header>
@@ -269,16 +298,16 @@
     </el-dialog>
 
     <!-- 添加登录弹框 -->
-    <el-dialog :visible.sync="loginDialogVisible" class="dialog-container" width="560px" :show-close="false"
+    <el-dialog :visible.sync="loginDialogVisible" class="dialog-container" width="400px" :show-close="false"
       :before-close="handleCloseDialog" :close-on-click-modal="false" center>
       <div class="login-container">
         <!-- LOGO区域 -->
         <div class="login-logo">
-          LOGO
+          <img src="@/assets/logo1.png" alt="Logo" class="logo-image">
         </div>
 
         <el-form ref="loginForm" :model="loginForm" :rules="loginRules" label-width="0">
-          <!-- 手机号输入框: 480px x 44px -->
+          <!-- 手机号输入框 -->
           <el-form-item prop="phone" class="form-item">
             <el-input v-model="loginForm.phone" placeholder="手机号" />
           </el-form-item>
@@ -292,27 +321,26 @@
               </div>
             </el-image>
             <i class="el-icon-refresh" @click="getCaptcha"></i>
-
           </el-form-item>
 
           <!-- 验证码区域 -->
           <el-form-item prop="code" class="form-item">
-            <div class="code-input-group">
-              <el-input v-model="loginForm.code" placeholder="验证码" />
-              <el-button type="primary" class="send-code-btn" :disabled="!canSendCode" @click="sendCode">
-                {{ canSendCode ? '发送短信' : `${countdown}秒后重新发送` }}
-              </el-button>
+            <div class="verify-input-wrapper">
+              <el-input v-model="loginForm.code" placeholder="输入验证码" class="verify-input" />
+              <span class="send-code-text" :class="{ 'disabled': !canSendCode }" @click="sendCode">
+                {{ canSendCode ? '获取短信验证码' : `${countdown}秒后重新发送` }}
+              </span>
             </div>
           </el-form-item>
 
-          <!-- 注册/登录按钮: 480px x 44px -->
+          <!-- 注册/登录按钮 -->
           <el-form-item class="form-item">
             <el-button type="primary" class="register-login-btn" :loading="loading" @click="handleLogin">
               注册/登录
             </el-button>
           </el-form-item>
 
-          <!-- 取消按钮: 480px x 44px -->
+          <!-- 取消按钮 -->
           <el-form-item class="form-item">
             <el-button class="cancel-btn" @click="handleCloseDialog">取消</el-button>
           </el-form-item>
@@ -352,7 +380,7 @@
     </el-dialog>
 
     <!-- 添加反馈对话框 -->
-    <el-dialog :visible.sync="feedbackDialogVisible" :show-close="false" class="feedback-dialog" center>
+    <el-dialog :visible.sync="feedbackDialogVisible" :show-close="false" class="feedback-dialog">
       <div class="feedback-content">
         <div class="close-btn" @click="feedbackDialogVisible = false">
           <i class="el-icon-close"></i>
@@ -369,7 +397,7 @@
         </div>
         
         <h2>如果您还有更多想说的，请告诉我:</h2>
-        <el-input type="textarea" :rows="6" v-model="feedbackComment" placeholder="请输入您的反馈意见..."></el-input>
+        <el-input type="textarea" :rows="4" v-model="feedbackComment" placeholder="请输入您的反馈意见..."></el-input>
         
         <div class="auto-show-option">
           <el-checkbox v-model="notAutoShow">不再自动弹出</el-checkbox>
@@ -434,12 +462,12 @@ export default {
       },
       loginRules: {
         phone: [
-          { required: true, message: '请输入手机号', trigger: 'blur' },
-          { validator: validatePhone, trigger: 'blur' }
+          { required: true, message: '请输入手机号', trigger: 'submit' },
+          { validator: validatePhone, trigger: 'submit' }
         ],
         code: [
-          { required: true, message: '请输入验证码', trigger: 'blur' },
-          { validator: validateCode, trigger: 'blur' }
+          { required: true, message: '请输入验证码', trigger: 'submit' },
+          { validator: validateCode, trigger: 'submit' }
         ],
       },
 
@@ -562,6 +590,9 @@ export default {
     
     // 检查是否需要显示欢迎对话框
     this.checkWelcomeDialog()
+    
+    // 添加全局点击监听器
+    document.addEventListener('click', this.handlePageClick)
   },
   watch: {
     selectedQuestionType(newVal, oldVal) {
@@ -1072,13 +1103,20 @@ export default {
     },
     // 新增登录相关方法
     showLoginDialog() {
-      this.loginDialogVisible = true
-      // 重置表单数据和验证状态
-      this.$nextTick(() => {
+      // 先重置表单数据和验证状态，防止打开对话框时触发验证
+      if (this.$refs.loginForm) {
         this.$refs.loginForm.resetFields()
-        // 清空图形验证码输入框
-        this.captcha.captchaCode = ''
-        // 获取新的图形验证码
+        this.$refs.loginForm.clearValidate()
+      }
+      
+      // 再打开对话框
+      this.loginDialogVisible = true
+      
+      // 清空图形验证码输入框
+      this.captcha.captchaCode = ''
+      
+      // 获取新的图形验证码
+      this.$nextTick(() => {
         this.getCaptcha()
       })
     },
@@ -1143,26 +1181,34 @@ export default {
                 this.$message.success('登录成功')
                 this.getToken()
               } else {
-
-
                 this.loading = false
                 this.$message.error('手机号或验证码错误')
               }
-
             })
-            .catch(function (error) {
+            .catch((error) => {
+              this.loading = false
+              this.$message.error('登录失败，请重试')
               console.log(error);
             });
-
         }
       })
     },
     // 发送验证码
     async sendCode() {
+      if (!this.canSendCode) {
+        return // 如果正在倒计时，直接返回不做任何操作
+      }
+      
       // 先验证手机号
       this.$refs.loginForm.validateField('phone', async (errorMessage) => {
         if (errorMessage) {
           return // 如果手机号验证不通过，直接返回
+        }
+        
+        // 验证验证码不为空
+        if (!this.captcha.captchaCode) {
+          this.$message.warning('请输入图片验证码')
+          return
         }
 
         try {
@@ -1219,15 +1265,19 @@ export default {
         clearInterval(this.timer)
         this.timer = null
       }
+      
+      // 移除点击监听器
+      document.removeEventListener('click', this.handlePageClick)
     },
     // 添加点击页面空白处的处理方法
     handlePageClick(e) {
       // 判断点击的是否是输入框或按钮
       const isFormElement = e.target.closest('.el-input') ||
         e.target.closest('.el-button') ||
-        e.target.closest('.el-form-item__error')
+        e.target.closest('.el-form-item__error') ||
+        e.target.closest('.send-code-text')
 
-      // 如果不是表单元素，则清除验证信息
+      // 如果不是表单元素，则清除验证信息，但不触发新的验证
       if (!isFormElement && this.$refs.loginForm) {
         this.$refs.loginForm.clearValidate()
       }
@@ -1386,70 +1436,115 @@ export default {
 }
 
 .header {
-  padding: 16px 0;
+  padding: 8px 0;
   background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.header-right {
+.header-container {
+  margin: 0 100px;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
-  gap: 16px;
-  color: #606266;
+  height: 50px;
 }
 
 .header-left {
   display: flex;
   align-items: center;
-  gap: 16px;
 }
 
-.header-left .el-icon-message,
-.header-left .el-icon-chat-dot-square {
-  font-size: 20px;
-  color: #909399;
+.nav-logo {
+  height: 40px;
+  width: auto;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.nav-icons {
+  display: flex;
+  align-items: center;
+  height: 24px;
+}
+
+.nav-icon {
+  font-size: 24px;
+  color: #666666;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
 }
 
-.header-left .el-icon-message:hover,
-.header-left .el-icon-chat-dot-square:hover {
+.nav-icon:hover {
   color: #409EFF;
 }
 
 .wallet {
   display: flex;
   align-items: center;
+  height: 24px;
   gap: 4px;
-  cursor: pointer;
 }
 
 .wallet-icon {
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
+  display: block;
 }
 
 .balance {
   font-size: 14px;
-  color: #909399;
+  color: #111111;
+  font-family: 'Alibaba Sans', sans-serif;
 }
 
-.el-icon-question,
-.el-icon-user {
-  font-size: 20px;
+.user-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+}
+
+.user-icon {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+
+.user-phone {
+  font-size: 14px !important;
+  color: #111111 !important;
+  font-family: 'Alibaba Sans', sans-serif !important;
+  margin-right: 8px;
+}
+
+.logout-text {
   cursor: pointer;
-  color: #909399;
-}
-
-.el-icon-question:hover,
-.el-icon-user:hover,
-.not-login-text:hover {
-  color: #409EFF;
-}
-
-.not-login-text {
-  cursor: pointer;
-  color: #909399;
   font-size: 14px;
+  color: #F56C6C;
+}
+
+.logout-text:hover {
+  color: #f78989;
+}
+
+.login-button {
+  font-size: 14px;
+  padding: 8px 20px;
+  border-radius: 4px;
+  background-color: #7B2CF5;
+  border-color: #7B2CF5;
+}
+
+.login-button:hover {
+  background-color: #6521d4;
+  border-color: #6521d4;
 }
 
 .main-content {
@@ -1824,22 +1919,24 @@ export default {
 .dialog-container {
   .el-dialog__header {
     padding: 0;
-    padding-bottom: 0;
+    display: none; /* 完全隐藏header */
   }
 
   .el-dialog {
-    width: 560px !important;
-    height: 540px !important;
+    width: 400px !important;
+    height: 416px !important;
     position: fixed !important;
     top: 50% !important;
     left: 50% !important;
     transform: translate(-50%, -50%) !important;
     margin: 0 !important;
-    background: #F5F5F5 !important;
+    background: #FFFFFF !important;
     border-radius: 8px !important;
     padding: 0 !important;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1) !important;
     overflow: hidden !important;
+    font-family: "PingFang SC", sans-serif;
+    font-size: 16px;
   }
 
   .el-dialog__body {
@@ -1847,135 +1944,197 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    padding: 16px 32px;
-    gap: 24px !important;
+    justify-content: flex-start;
+    padding: 0 20px 20px 20px;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: "PingFang SC", sans-serif;
+    font-size: 16px;
   }
 
   .login-container {
-    .el-button--primary {
-      border-color: #FFF;
-    }
-
-    .el-form {
-      width: 480px !important;
-
-      .el-input__inner {
-        width: 100% !important;
-        height: 44px !important;
-        padding: 0 15px !important;
-        line-height: 44px !important;
-        box-sizing: border-box !important;
-        font-size: 16px;
-        border-radius: 16px !important;
-      }
-
-      .code-input-group {
-        display: flex;
-        gap: 16px;
-
-        .el-input {
-          flex: 1;
-
-          .el-input__inner {
-            width: 100% !important;
-            border-radius: 16px !important;
-          }
-        }
-
-        .send-code-btn {
-          width: 144px !important;
-          height: 44px !important;
-          background: black !important;
-          color: white !important;
-          border-radius: 16px !important;
-        }
-      }
-
-      /* 修改表单项间距 */
-      .form-item {
-        margin-bottom: 24px !important;
-        /* 普通表单项的底部间距 */
-      }
-
-      /* 特别调整验证码输入框（第二个表单项）的间距 */
-      .form-item:nth-child(2) {
-        margin-bottom: 32px !important;
-        /* 增加或减少这个值来调整验证码输入框的位置 */
-      }
-
-      /* 调整登录按钮（第三个表单项）的间距 */
-      .form-item:nth-child(3) {
-        margin-bottom: 16px !important;
-      }
-    }
-
-    /* 登录和取消按钮 */
-    .register-login-btn,
-    .cancel-btn {
-      width: 100% !important;
-      height: 44px !important;
-      border-radius: 16px;
-    }
-
-    .register-login-btn {
-      background: black !important;
-      color: white !important;
-      font-size: 16px;
-    }
-
-    .register-login-btn:hover {
-      background: #303133 !important;
-    }
-
-    .cancel-btn {
-      background: transparent !important;
-      color: #606266 !important;
-      border: 1px solid #DCDCDC !important;
-    }
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: "PingFang SC", sans-serif;
+    font-size: 16px;
   }
-
+  
   .login-logo {
-    width: 480px;
-    height: 120px;
-    background: #ffffff;
+    width: 400px;
+    height: 100px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 36px;
-    font-weight: bold;
-    color: #606266;
-    margin-bottom: 48px !important;
+  }
+  
+  .logo-image {
+    width: 37px;
+    height: 40px;
+    object-fit: contain;
+  }
+  
+  .el-button--primary {
+    border-color: #FFF;
+    font-family: "PingFang SC", sans-serif;
+    font-size: 16px;
   }
 
-  :deep(.el-form) {
-    width: 80% !important;
+  .el-form {
+    width: 320px !important;
+    height: 284px !important;
+    box-sizing: border-box;
+    font-family: "PingFang SC", sans-serif;
+    font-size: 16px;
   }
 
+  .el-input__inner {
+    width: 100% !important;
+    height: 40px !important;
+    padding: 0 15px !important;
+    line-height: 40px !important;
+    box-sizing: border-box !important;
+    font-size: 16px;
+    border-radius: 4px !important;
+    font-family: "PingFang SC", sans-serif;
+  }
+
+  .el-input__inner:focus {
+    border-color: #7B2CF5 !important;
+  }
+
+  .el-input.is-active .el-input__inner {
+    border-color: #7B2CF5 !important;
+  }
+
+  .code-input-group {
+    display: none;
+  }
+
+  .code-input-group .el-input {
+    flex: 1;
+  }
+
+  .code-input-group .el-input__inner {
+    width: 100% !important;
+    border-radius: 4px !important;
+  }
+
+  .send-code-btn {
+    width: 120px !important;
+    height: 40px !important;
+    background: #7B2CF5 !important;
+    color: white !important;
+    border-radius: 4px !important;
+    padding: 0;
+    margin: 0;
+    font-family: "PingFang SC", sans-serif;
+    font-size: 16px;
+  }
+
+  /* 修改表单项间距 */
   .form-item {
-    margin-bottom: 8px !important;
+    margin-bottom: 20px !important;
+    font-family: "PingFang SC", sans-serif;
+    font-size: 16px;
   }
 
-  .form-item:nth-child(2) {
-    margin-bottom: 48px !important;
+  /* 特别调整验证码输入框的间距 */
+  .captcha-verify {
+    margin-bottom: 20px !important;
+    display: flex;
+    align-items: center;
+    font-family: "PingFang SC", sans-serif;
+    font-size: 16px;
+  }
+  
+  .captcha-input {
+    flex: 0 0 134px;
+    width: 134px !important;
+    font-family: "PingFang SC", sans-serif;
+    font-size: 16px;
+  }
+  
+  .captcha-image {
+    width: 148px;
+    height: 40px;
+    margin-left: 10px;
+  }
+  
+  .el-icon-refresh {
+    margin-left: 5px;
+    cursor: pointer;
+    color: #7B2CF5;
+    font-size: 16px;
+  }
+
+  /* 登录和取消按钮 */
+  .register-login-btn,
+  .cancel-btn {
+    width: 100% !important;
+    height: 40px !important;
+    border-radius: 4px;
+    font-size: 16px;
+    font-family: "PingFang SC", sans-serif;
+  }
+
+  .register-login-btn {
+    background: #7B2CF5 !important;
+    color: white !important;
+  }
+
+  .cancel-btn {
+    background: transparent !important;
+    color: #606266 !important;
+    border: 1px solid #DCDCDC !important;
   }
 
   :deep(.el-form-item__error) {
     position: absolute;
-    right: 16px;
-    top: 50%;
-    transform: translateY(-50%);
+    left: 0;
+    top: 100%;
     padding: 0;
-    margin: 0;
+    margin: 2px 0 0;
     line-height: normal;
     color: #F56C6C;
-    z-index: 2;
-    background: white;
+    font-size: 12px;
+    font-family: "PingFang SC", sans-serif;
   }
 
-  :deep(.el-input__inner) {
-    padding-right: 100px !important;
-    /* 为错误提示预留空间 */
+  /* 验证码输入框样式 */
+  .verify-input-wrapper {
+    position: relative;
+    width: 320px;
+    height: 40px;
+    font-family: "PingFang SC", sans-serif;
+  }
+
+  .verify-input {
+    width: 320px !important;
+    font-family: "PingFang SC", sans-serif;
+    font-size: 16px;
+  }
+
+  .verify-input .el-input__inner {
+    padding-right: 120px !important;
+  }
+
+  .send-code-text {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #7B2CF5;
+    font-size: 16px;
+    font-family: "PingFang SC", sans-serif;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .send-code-text.disabled {
+    color: #909399;
+    cursor: not-allowed;
   }
 }
 
@@ -2664,9 +2823,12 @@ export default {
 }
 
 .feedback-dialog >>> .el-dialog {
-  width: 620px !important;
-  height: 730px !important;
+  width: 400px !important;
+  height: auto !important;
   margin: 0 !important;
+  position: fixed !important;
+  right: 30px !important;
+  bottom: 30px !important;
   background-color: #fff;
   border-radius: 8px;
   overflow: hidden;
@@ -2690,20 +2852,20 @@ export default {
 .feedback-content {
   width: 100%;
   height: 100%;
-  padding: 40px;
+  padding: 20px;
   box-sizing: border-box;
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 15px;
 }
 
 .feedback-content .close-btn {
   position: absolute;
-  top: 20px;
-  right: 20px;
+  top: 10px;
+  right: 10px;
   cursor: pointer;
-  font-size: 24px;
+  font-size: 20px;
   color: #909399;
 }
 
@@ -2712,22 +2874,22 @@ export default {
 }
 
 .feedback-content h2 {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 500;
   color: #303133;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   text-align: center;
 }
 
 .star-rating {
   display: flex;
   justify-content: center;
-  gap: 30px;
-  margin-bottom: 30px;
+  gap: 20px;
+  margin-bottom: 15px;
 }
 
 .star-rating i {
-  font-size: 40px;
+  font-size: 30px;
   color: #DCDFE6;
   cursor: pointer;
 }
@@ -2737,23 +2899,23 @@ export default {
 }
 
 .auto-show-option {
-  margin-top: 20px;
-  margin-bottom: 10px;
+  margin-top: 10px;
+  margin-bottom: 5px;
 }
 
 .feedback-btns {
   display: flex;
   justify-content: center;
-  gap: 20px;
+  gap: 15px;
   margin-top: auto;
 }
 
 .feedback-btns .cancel-btn,
 .feedback-btns .submit-btn {
-  width: 160px;
-  height: 46px;
-  border-radius: 23px;
-  font-size: 16px;
+  width: 120px;
+  height: 36px;
+  border-radius: 18px;
+  font-size: 14px;
 }
 
 .feedback-btns .submit-btn {
@@ -2762,5 +2924,145 @@ export default {
 
 .feedback-btns .submit-btn:hover {
   opacity: 0.9;
+}
+
+.login-button {
+  font-size: 14px;
+  padding: 8px 20px;
+  border-radius: 4px;
+  background-color: #7B2CF5;
+  border-color: #7B2CF5;
+}
+
+.login-button:hover {
+  background-color: #6521d4;
+  border-color: #6521d4;
+}
+
+.icon-img {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  color: #909399;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  vertical-align: middle;
+}
+
+.icon-img:hover {
+  opacity: 0.8;
+  color: #409EFF;
+}
+
+.qr-tooltip-container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+}
+
+.qr-tooltip {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 10px;
+  width: 200px;
+  height: 200px;
+  background-color: #fff;
+  border-radius: 4px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  display: none;
+  z-index: 1000;
+  padding: 15px;
+  box-sizing: border-box;
+}
+
+.qr-tooltip-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.qr-code-img {
+  width: 140px;
+  height: 140px;
+  object-fit: contain;
+  margin-bottom: 5px;
+}
+
+.qr-tooltip-text {
+  font-size: 12px;
+  color: #333;
+  font-family: "PingFang SC", sans-serif;
+  text-align: center;
+  margin-top: 5px;
+  width: 60px;
+  height: 17px;
+  line-height: 17px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qr-tooltip:before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid #fff;
+}
+
+.qr-tooltip-container:hover .qr-tooltip {
+  display: block;
+}
+
+.nav-icons-wrapper {
+  display: flex;
+  align-items: center;
+  height: 24px;
+  gap: 20px;
+}
+
+.qr-tooltip-container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+}
+
+.icon-img {
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  cursor: pointer;
+  color: #909399;
+  vertical-align: middle;
+  display: flex;
+}
+
+.wallet-icon {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+
+.logout-icon {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  display: block;
 }
 </style>
