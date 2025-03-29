@@ -23,7 +23,9 @@
                 </div>
                 <div class="wallet nav-icon" @click="showRechargeDialog">
                   <img class="wallet-icon" src="@/assets/wallet.png" alt="wallet">
-                  <span class="balance" style="font-size: 14px; color: #111111; font-family: 'Alibaba Sans', sans-serif;">{{ coinBalance }}</span>
+                  <span class="balance"
+                    style="font-size: 14px; color: #111111; font-family: 'Alibaba Sans', sans-serif;">{{ coinBalance
+                    }}</span>
                 </div>
               </div>
             </template>
@@ -45,7 +47,9 @@
           <div class="user-actions">
             <template v-if="isLoggedIn">
               <img src="@/assets/user.png" class="user-icon" alt="user" />
-              <span class="user-phone" style="color: #111111; font-family: 'Alibaba Sans', sans-serif; font-size: 14px;">{{ maskPhoneNumber }}</span>
+              <span class="user-phone"
+                style="color: #111111; font-family: 'Alibaba Sans', sans-serif; font-size: 14px;">{{ maskPhoneNumber
+                }}</span>
               <img src="@/assets/out.png" class="logout-icon" alt="logout" @click="handleLogout" />
             </template>
             <template v-else>
@@ -55,11 +59,46 @@
         </div>
       </div>
     </header>
-    <div style="margin:10px 100px;background-color: rgba(0, 0, 0, 0.05);">
+    <div>
       <!-- 主体内容 -->
-      <main class="main-content">
-        <!-- 翻页区域 -->
-        <!-- <div class="pagination top-pagination">
+      <main class="main-content-row">
+        <div class="drawer-trigger" style="left: 0; right: auto;">
+          <div class="trigger-area" @click="toggleDrawer">
+            <i class="el-icon-notebook-2" />
+            <span>答题表</span>
+          </div>
+        </div>
+        <div class="main-container">
+          <!-- 替换浮动按钮为侧拉栏 -->
+          <transition name="slide-left">
+            <div class="left-panel" v-show="drawerVisible">
+              <div class="drawer-content">
+                <div class="question-list">
+                  <div v-for="(item, i) in orderedHistory" :key="item.answerId"
+                    @click="get_exam_detail(item.questionId, i)"
+                    :class="['question-item', { active: currentQuestionIndex === i }]">
+                    <span>
+                      {{ i + 1 }}.
+                      {{
+                        item.state === 'ANSWERED'
+                          ? '（已作答）'
+                          : (item.state === 'VIEWED' ? '（已阅读）' : '（未阅读）')
+                      }}
+                      {{ item.questionContent }} （{{ item.examTime }} {{ item.questionType }}）
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </transition>
+          <main class="main-content">
+
+
+
+            <!-- 侧拉栏触发区域 -->
+
+            <!-- 翻页区域 -->
+            <!-- <div class="pagination top-pagination">
           <div class="time-region">
             <div class="label-group">
               <span class="label">时间</span>
@@ -83,150 +122,165 @@
             <el-button @click="changeQuestion()">查询</el-button>
             <el-button @click="clearFilters">清空</el-button>
           </div>
-
+         
         </div>  -->
 
-        <!-- 题目区域 -->
-        <div class="question-box">
-          <h1 class="question-title">
-            {{
-              questionContent.questionStateEnum === 'ANSWERED'
-                ? '（已作答）'
-                : (questionContent.questionStateEnum === 'VIEWED' ? '（已阅读）' : '（未阅读）') }} {{ questionContent.content }}
-            <span v-if="questionContent.examTime || questionContent.questionType" class="question-subtitle">
-              （{{ questionContent.examTime }} {{ questionContent.questionType }}）
-            </span>
-          </h1>
-          <div class="page-region">
-            <el-button round @click="prevQuestion">上一题</el-button>
-            <span>{{ currentIndex }}/{{ totalCount }}</span>
-            <el-button round @click="nextQuestion">下一题</el-button>
-          </div>
-        </div>
-
-        <div class="content-wrapper">
-          <!-- 左侧答题区域 -->
-          <div class="answer-box">
-            <div class="tab-group">
-              <span class="tab" :class="{ active: activeTab === 'demo' }" @click="activeTab = 'demo'">示范作答</span>
-              <!-- <span class="tab" :class="{ active: activeTab === 'reference' }"
-                @click="activeTab = 'reference'">参考答案</span> -->
-            </div>
-
-            <div v-if="activeTab === 'demo'" class="demo-area">
-              <template v-if="!isDemoStarted">
-                <div class="demo-start-area" @click="startDemo">
-                  <img class="logo" src="@/assets/deepseek-color.png" alt="Logo">
-                  <div class="demo-text">deepseek</div>
-                  <div class="demo-hint">点击开始示范</div>
+            <!-- 题目区域 -->
+            <div class="question-box">
+              <div class="back-btn" @click="goBack">
+                <i class="el-icon-arrow-left"></i>
+                <span>返回</span>
+                <span class="exam-title">公务员考试</span>
+                <div class="light-btn" @click.stop="showTips">
+                  <img src="@/assets/light.png" alt="提示" class="light-icon">
                 </div>
-              </template>
-              <template v-else>
-                <!-- 添加来源提示 -->
-                <div class="source-hint">
-                  以下内容均来自deepseek-r1生成
-                  <el-button type="text" class="regenerate-btn" @click.stop="startDemo">
-                    <i class="el-icon-refresh" />
-                    重新生成
+              </div>
+              <div class="page-region">
+                <div class="question-number">
+                  <span>{{ currentIndex }}</span>
+                </div>
+                <div class="nav-buttons">
+                  <el-button class="square-nav-btn" @click="prevQuestion">
+                    <img src="@/assets/left.png" alt="上一题" class="arrow-icon">
                   </el-button>
-                  <el-button type="text" @click="toggleAn">
-                    <!-- 根据 isLogoVisible 变量切换内置图标 -->
-                    <i :class="isAnVisible ? 'el-icon-s-fold' : 'el-icon-s-unfold'" />
-                    {{ isAnVisible ? '隐藏' : '显示' }}
+                  <span>{{ currentIndex }}/{{ totalCount }}</span>
+                  <el-button class="square-nav-btn" @click="nextQuestion">
+                    <img src="@/assets/right.png" alt="下一题" class="arrow-icon">
                   </el-button>
                 </div>
-
-                <!-- 示范内容 -->
-                <div class="demo-content" ref="sourceHint" v-if="isAnVisible">
-                  <div class="content-text">
-                    <p class="paragraph model-thinking" v-html="markdownReasonContent"></p>
-                    <p class="paragraph" v-html="markdownModelResult"></p>
-                  </div>
-                </div>
-              </template>
+              </div>
+              <h1 class="question-title">
+                {{
+                  questionContent.questionStateEnum === 'ANSWERED'
+                    ? '（已作答）'
+                    : (questionContent.questionStateEnum === 'VIEWED' ? '（已阅读）' : '（未阅读）') }} {{ questionContent.content }}
+                <span v-if="questionContent.examTime || questionContent.questionType" class="question-subtitle">
+                  （{{ questionContent.examTime }} {{ questionContent.questionType }}）
+                </span>
+              </h1>
             </div>
 
-            <div v-else class="demo-area">
-              <div class="reference-content">
+            <div class="content-wrapper">
+              <!-- 左侧录音区域 -->
+              <div class="record-box">
+                <div class="record-hint">
+                  <template v-if="isRecording || hasRecordedContent">
+                    <div id="status"></div>
+                    <div class="recorded-content" ref="recordContent">
+                      {{ asrResult }}
+                      <!-- 点评框 -->
+                      <div v-if="!showEvaluationContent" class="evaluation-box" @click="showEvaluation">
+                        <img class="eval-logo" src="@/assets/deepseek-color.png" alt="Logo">
+                        <span>作答点评</span>
+                      </div>
+                      <!-- 点评内容 -->
+                      <div v-else class="evaluation-content" ref="evaluationContent">
 
-                <div class="content-text">
-
-
-                  <p class="paragraph">{{ questionContent.answer }}</p>
-
-
+                        点评: <p class="paragraph model-thinking" v-html="markdownReason"></p>
+                        <p class="paragraph" v-html="markdownResult"></p>
+                      </div>
+                    </div>
+                  </template>
+                  <template v-else>
+                    点击录音按钮，开始答题
+                  </template>
                 </div>
-                <!-- 参考答案的具体内容 -->
+                <div class="record-button-wrapper">
+                  <div class="audio-recorder">
+                    <div class="mic-circle" :class="{ 'recording-btn': isRecording }" @click="toggleRecording">
+                      <img v-if="!isRecording" src="@/assets/microphone.png" alt="microphone">
+                      <div v-else class="recording-square"></div>
+                    </div>
+                    <div class="wave-line">
+                      <div class="dotted-line" :class="{ 'recording': isRecording }" />
+                    </div>
+                    <!-- <el-button @click="submitAnswer()">提交答案</el-button> -->
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </main>
+          <transition name="slide-right">
+            <div class="demo-panel" v-show="demoDrawerVisible">
+              <div class="demo-drawer-content">
+                <template v-if="!isDemoStarted">
+                  <div class="demo-start-area" @click="startDemo">
+                    <img class="logo" src="@/assets/deepseek-color.png" alt="Logo">
+                    <div class="demo-text">deepseek</div>
+                    <div class="demo-hint">点击开始示范</div>
+                  </div>
+                </template>
+                <template v-else>
+                  <div class="source-hint">
+                    以下内容均来自deepseek-r1生成
+                    <el-button type="text" class="regenerate-btn" @click.stop="startDemo">
+                      <i class="el-icon-refresh" />
+                      重新生成
+                    </el-button>
+                    <el-button type="text" @click="toggleAn">
+                      <i :class="isAnVisible ? 'el-icon-s-fold' : 'el-icon-s-unfold'" />
+                      {{ isAnVisible ? '隐藏' : '显示' }}
+                    </el-button>
+                  </div>
+                  <div class="demo-content" v-if="isAnVisible" ref="sourceHint">
+                    <div class="content-text">
+                      <p class="paragraph model-thinking" v-html="markdownReasonContent"></p>
+                      <p class="paragraph" v-html="markdownModelResult"></p>
+                    </div>
+                  </div>
+                </template>
               </div>
             </div>
-          </div>
-
-          <!-- 右侧录音区域 -->
-          <div class="record-box">
-            <div class="record-hint">
-              <template v-if="isRecording || hasRecordedContent">
-                <div id="status"></div>
-                <div class="recorded-content" ref="recordContent">
-                  {{ asrResult }}
-                  <!-- 点评框 -->
-                  <div v-if="!showEvaluationContent" class="evaluation-box" @click="showEvaluation">
-                    <img class="eval-logo" src="@/assets/deepseek-color.png" alt="Logo">
-                    <span>作答点评</span>
-                  </div>
-                  <!-- 点评内容 -->
-                  <div v-else class="evaluation-content" ref="evaluationContent">
-
-                    点评: <p class="paragraph model-thinking" v-html="markdownReason"></p>
-                    <p class="paragraph" v-html="markdownResult"></p>
-                  </div>
-                </div>
-              </template>
-              <template v-else>
-                点击录音按钮，开始答题
-              </template>
-            </div>
-            <div class="record-button-wrapper">
-              <div class="audio-recorder">
-                <div class="mic-circle" :class="{ 'recording-btn': isRecording }" @click="toggleRecording">
-                  <img v-if="!isRecording" src="@/assets/microphone.png" alt="microphone">
-                  <div v-else class="recording-square"></div>
-                </div>
-                <div class="wave-line">
-                  <div class="dotted-line" :class="{ 'recording': isRecording }" />
-                </div>
-                <!-- <el-button @click="submitAnswer()">提交答案</el-button> -->
-              </div>
-            </div>
-          </div>
+          </transition>
         </div>
       </main>
 
-      <!-- 替换浮动按钮为侧拉栏 -->
-      <el-drawer title="答题列表" :visible.sync="drawerVisible" direction="rtl" size="30%" style="overflow-y: auto;">
-
-        <div class="drawer-content">
-          <div class="question-list">
-            <div v-for="(item, i) in orderedHistory" :key="item.answerId" @click="get_exam_detail(item.questionId, i)"
-              :class="['question-item', { active: currentQuestionIndex === i }]">
-              <span>
-                {{ i + 1 }}. {{
-                  item.state === 'ANSWERED'
-                    ? '（已作答）'
-                    : (item.state === 'VIEWED' ? '（已阅读）' : '（未阅读）') }} {{ item.questionContent }} （{{ item.examTime }} {{
-                  item.questionType }}）
-              </span>
-            </div>
-          </div>
+      <!-- 示范作答侧拉按钮 -->
+      <div class="demo-trigger">
+        <div class="demo-trigger-area" @click="toggleDemoDrawer">
+          <span>示范作答</span>
+          <i :class="demoDrawerVisible ? 'el-icon-arrow-right' : 'el-icon-arrow-left'"></i>
         </div>
-      </el-drawer>
-    </div>
-    <!-- 侧拉栏触发区域 -->
-    <div class="drawer-trigger">
-      <div class="trigger-area" @click="toggleDrawer">
-        <i class="el-icon-notebook-2" />
-        <span>答题表</span>
       </div>
+
+
+
+
     </div>
+
+    <!-- 添加消息对话框 -->
+    <el-dialog :visible.sync="messageDialogVisible" :show-close="false" class="welcome-dialog">
+      <div class="welcome-content">
+        <h1 class="welcome-title">欢迎使用结构化面试陪练助手！</h1>
+
+        <p class="user-greeting">亲爱的考生:</p>
+
+        <p class="intro-text">感谢您对我们产品的信任！ 在这里，我们将为您简单介绍一下本系统的功能和使用方法。</p>
+
+        <p class="feature-text">
+          结构化面试是当前公务员/事业编考试中，最常见的面试形式。结构化面试常见的评分维度存在......等评分维度。根据过往经验，我们将结构化面试分为了5个维度：分析能力、应变能力、计划组织能力、人际交往意识与技巧、言语表达能力。
+        </p>
+
+        <p class="dots">......</p>
+
+        <p class="feature-text">在结构化面试陪练助手中，基于国内顶尖的人工智能大模型，我们为您提供了专业、智能的面试练习体验。</p>
+
+        <p class="dots">......</p>
+
+        <p class="more-info">访问xx网站以获取更多信息：<a href="http://www.example.com">http://www.example.com</a></p>
+
+        <div class="signature">
+          <p>您的职业伙伴</p>
+          <p>aigcpm</p>
+          <p>2025年4月19日</p>
+        </div>
+
+        <div class="btn-container">
+          <button class="confirm-btn" @click="messageDialogVisible = false">确定</button>
+        </div>
+      </div>
+    </el-dialog>
 
     <!-- 添加充值弹窗 -->
     <el-dialog :visible.sync="rechargeDialogVisible" class="recharge-dialog" width="720px" :show-close="false" center>
@@ -348,38 +402,6 @@
       </div>
     </el-dialog>
 
-    <!-- 添加消息对话框 -->
-    <el-dialog :visible.sync="messageDialogVisible" :show-close="false" class="welcome-dialog" center>
-      <div class="welcome-content">
-        <h1 class="welcome-title">欢迎使用结构化面试陪练助手！</h1>
-
-        <p class="user-greeting">亲爱的考生:</p>
-
-        <p class="intro-text">感谢您对我们产品的信任！ 在这里，我们将为您简单介绍当前工具的使用场景及特色功能:</p>
-
-        <p class="feature-text">结构化面试是当前公务员/事业编考试中，最常见的面试手段， 它具备......的特点， 考试形式是......，
-          存在......等评分维度；根据过往经验，我们将结构化面试分为了5个维度，分别是:</p>
-
-        <p class="dots">......</p>
-
-        <p class="feature-text">在结构化面试陪练助手中，基于国内顶尖的人工智能基础设施，我们为您准备了以下的特色功能:</p>
-
-        <p class="dots">......</p>
-
-        <p class="more-info">访问xx网站以获取更多信息: <a href="http://www.example.com" class="link">www.example.com</a></p>
-
-        <div class="signature">
-          <p>您的职业伙伴</p>
-          <p>aigcpm</p>
-          <p>2025年4月19日</p>
-        </div>
-
-        <div class="btn-container">
-          <button class="confirm-btn" @click="messageDialogVisible = false">好的，我知道了</button>
-        </div>
-      </div>
-    </el-dialog>
-
     <!-- 添加反馈对话框 -->
     <el-dialog :visible.sync="feedbackDialogVisible" :show-close="false" class="feedback-dialog" center>
       <div class="feedback-content">
@@ -387,20 +409,32 @@
           <i class="el-icon-close"></i>
         </div>
 
-        <h2>陪练助手对您的面试有帮助吗?</h2>
+        <h2>言e面试对您的面试有帮助吗?</h2>
         <div class="star-rating">
           <i class="el-icon-star-off" v-for="i in 5" :key="'help' + i" @click="setHelpRating(i)"
             :class="{ 'el-icon-star-on': helpRating >= i }"></i>
         </div>
 
-        <h2>陪练助手的使用足够方便吗?</h2>
+        <h2>言e面试的使用体验好吗?</h2>
         <div class="star-rating">
           <i class="el-icon-star-off" v-for="i in 5" :key="'use' + i" @click="setUseRating(i)"
             :class="{ 'el-icon-star-on': useRating >= i }"></i>
         </div>
 
+        <h2>言e面试的解答是否专业?</h2>
+        <div class="star-rating">
+          <i class="el-icon-star-off" v-for="i in 5" :key="'professional' + i" @click="setProfessionalRating(i)"
+            :class="{ 'el-icon-star-on': professionalRating >= i }"></i>
+        </div>
+
+        <h2>言e面试的定价是否合理?</h2>
+        <div class="star-rating">
+          <i class="el-icon-star-off" v-for="i in 5" :key="'price' + i" @click="setPriceRating(i)"
+            :class="{ 'el-icon-star-on': priceRating >= i }"></i>
+        </div>
+
         <h2>如果您还有更多想说的，请告诉我:</h2>
-        <el-input type="textarea" :rows="6" v-model="feedbackComment" placeholder="请输入您的反馈意见..."></el-input>
+        <el-input type="textarea" :rows="3" v-model="feedbackComment" placeholder="请输入您的反馈意见..."></el-input>
 
         <div class="auto-show-option">
           <el-checkbox v-model="notAutoShow">不再自动弹出</el-checkbox>
@@ -412,6 +446,11 @@
         </div>
       </div>
     </el-dialog>
+
+    <!-- 添加悬浮按钮 -->
+    <div class="float-button" @click="feedbackDialogVisible = true">
+      <img src="@/assets/QA.png" alt="QA" class="qa-icon">
+    </div>
   </div>
 </template>
 
@@ -448,6 +487,7 @@ export default {
       messageDialogVisible: false,
       feedbackDialogVisible: false,
       drawerVisible: false,
+      demoDrawerVisible: false,
       isRecording: false,
       loginDialogVisible: false,
       loading: false,
@@ -542,7 +582,9 @@ export default {
       helpRating: 0,
       useRating: 0,
       feedbackComment: '',
-      notAutoShow: false
+      notAutoShow: false,
+      professionalRating: 0,
+      priceRating: 0
     }
   },
 
@@ -593,7 +635,7 @@ export default {
 
     // 检查是否需要显示欢迎对话框
     this.checkWelcomeDialog()
-    
+
     // 添加全局点击监听器
     document.addEventListener('click', this.handlePageClick)
   },
@@ -626,14 +668,36 @@ export default {
       this.useRating = rating;
     },
 
+    setProfessionalRating(rating) {
+      this.professionalRating = rating;
+    },
+
+    setPriceRating(rating) {
+      this.priceRating = rating;
+    },
+
     submitFeedback() {
-      // 这里可以添加提交反馈的逻辑
-      this.$message.success('感谢您的反馈！');
+      // 准备要提交的数据
+      const feedbackData = {
+        helpRating: this.helpRating,
+        useRating: this.useRating,
+        professionalRating: this.professionalRating,
+        priceRating: this.priceRating,
+        comment: this.feedbackComment,
+        notAutoShow: this.notAutoShow
+      };
+
+      // 这里可以添加API请求来提交数据
+      console.log('提交的反馈数据:', feedbackData);
+
+      this.$message.success('感谢您的参与，祝您生活愉快！');
       this.feedbackDialogVisible = false;
       // 重置表单数据
       this.helpRating = 0;
       this.useRating = 0;
       this.feedbackComment = '';
+      this.professionalRating = 0;
+      this.priceRating = 0;
     },
 
     // 添加检查欢迎对话框的方法
@@ -1111,13 +1175,13 @@ export default {
         this.$refs.loginForm.resetFields()
         this.$refs.loginForm.clearValidate()
       }
-      
+
       // 再打开对话框
       this.loginDialogVisible = true
-      
+
       // 清空图形验证码输入框
       this.captcha.captchaCode = ''
-      
+
       // 获取新的图形验证码
       this.$nextTick(() => {
         this.getCaptcha()
@@ -1201,13 +1265,13 @@ export default {
       if (!this.canSendCode) {
         return // 如果正在倒计时，直接返回不做任何操作
       }
-      
+
       // 先验证手机号
       this.$refs.loginForm.validateField('phone', async (errorMessage) => {
         if (errorMessage) {
           return // 如果手机号验证不通过，直接返回
         }
-        
+
         // 验证验证码不为空
         if (!this.captcha.captchaCode) {
           this.$message.warning('请输入图片验证码')
@@ -1268,7 +1332,7 @@ export default {
         clearInterval(this.timer)
         this.timer = null
       }
-      
+
       // 移除点击监听器
       document.removeEventListener('click', this.handlePageClick)
     },
@@ -1410,11 +1474,102 @@ export default {
       this.searchInput.region = '';
       this.searchInput.questionType = '';
     },
+    goBack() {
+      // 返回面试广场
+      this.$router.push('/interview-square');
+    },
+    showTips() {
+      // 显示消息对话框
+      this.messageDialogVisible = true;
+    },
+    toggleDemoDrawer() {
+      this.demoDrawerVisible = !this.demoDrawerVisible
+    }
   }
 }
 </script>
 
 <style scoped>
+/* 外层容器：左右中三栏布局 */
+/* 外层容器：左右中三栏布局 */
+.main-container {
+  display: flex;
+  width: 100%;
+  position: relative;
+  margin-left: 0px !important;
+  /* 如果需要定位触发按钮，可以相对定位 */
+}
+
+/* ===== 左侧面板 ===== */
+.left-panel {
+  /* 你可以根据需要固定宽度，也可以用flex: 0 0 300px; */
+  width: 300px;
+  /* 默认情况下先隐藏，可以配合 transition + transform 实现动画 */
+  background-color: #f5f7fa;
+  overflow-y: auto;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+  /* 如果想用"位移"动画，可以先在 .slide-left-enter、.slide-left-leave-to 里 transform: translateX(-100%) */
+}
+
+/* ===== 右侧面板 ===== */
+.demo-panel {
+  width: 320px;
+  /* 根据需要设置示范作答面板宽度 */
+  background-color: #f5f7fa;
+  overflow-y: auto;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+  /* 同理，如果要用 transform，就在过渡里处理 */
+}
+
+/* 中间内容区，flex:1 撑开 */
+.main-content {
+  flex: 1;
+  background: #fff;
+  /* 其余样式不变 */
+}
+
+/* 左侧触发按钮（原先的 drawer-trigger），可贴在左侧做一个收起/展开效果 */
+.drawer-trigger {
+
+  background: #ffffff;
+  /* 其他样式略 */
+}
+
+/* 右侧触发按钮（demo-trigger） */
+.demo-trigger {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: 36px;
+  height: 140px;
+  background-color: #FFFFFF;
+  border: 1px solid #1E9FFF;
+  border-radius: 4px 0 0 4px;
+  cursor: pointer;
+  /* 其他样式略 */
+}
+
+/* 过渡动画示例，可根据需要自定义 */
+.slide-left-enter-active,
+.slide-left-leave-active {
+  transition: transform 0.3s ease;
+}
+
+.slide-left-enter,
+.slide-left-leave-to {
+  transform: translateX(-100%);
+}
+
+.slide-right-enter-active,
+.slide-right-leave-active {
+  transition: transform 0.3s ease;
+}
+
+.slide-right-enter,
+.slide-right-leave-to {
+  transform: translateX(100%);
+}
+
 .captcha-verify {
   height: 40px;
   margin-left: 0;
@@ -1439,7 +1594,7 @@ export default {
 }
 
 .header {
-  padding: 8px 0;
+  padding: 0px 0;
   background: #fff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
@@ -1449,7 +1604,7 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 50px;
+  height: 56px;
 }
 
 .header-left {
@@ -1551,9 +1706,13 @@ export default {
 }
 
 .main-content {
-  max-width: 1200px;
+  width: 100%;
   margin: 0 auto;
-  padding: 24px;
+}
+
+.main-content-row {
+  display: flex;
+  flex-direction: row;
 }
 
 .top-pagination {
@@ -1595,13 +1754,39 @@ export default {
 .page-region {
   display: flex;
   align-items: center;
-  justify-content: end;
+  justify-content: space-between;
   gap: 16px;
+  margin-bottom: 16px;
 }
 
 .page-region span {
   font-size: 14px;
   color: #606266;
+}
+
+/* 题号样式 */
+.question-number {
+  width: 29px;
+  height: 24px;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+  margin-right: auto;
+}
+
+.question-number span {
+  color: #7B2CF5 !important;
+  font-size: 24px !important;
+}
+
+/* 右侧翻页区域 */
+.page-region .nav-buttons {
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
 /* 添加翻页按钮的统一样式 */
@@ -1626,14 +1811,18 @@ export default {
 .question-box {
   background: #fff;
   padding: 24px;
-  border-radius: 8px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-  margin-bottom: 24px;
+  border: 1px solid #F0F2FA;
+  height: 156px;
 }
 
 .question-title {
   font-size: 18px;
   font-weight: 500;
+  margin-top: 0;
+  margin-bottom: 0;
+  line-height: 1.4;
+  max-height: 75px;
+  overflow: hidden;
 }
 
 .question-subtitle {
@@ -1649,7 +1838,7 @@ export default {
 }
 
 .answer-box {
-  flex: 1;
+  width: 580px;
   background: #fff;
   padding: 24px;
   border-radius: 8px;
@@ -1657,11 +1846,15 @@ export default {
 }
 
 .record-box {
-  width: 580px;
+  flex: 1;
   background: #fff;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  height: calc(100vh - 270px); /* 添加高度以匹配页面高度，减去头部和其他元素的高度 */
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto; /* 添加滚动以防内容溢出 */
 }
 
 
@@ -1753,10 +1946,11 @@ export default {
   background: #f5f7fa;
   border-radius: 8px;
   margin-bottom: 24px;
-  height: 320px;
+  flex: 1; /* 填充剩余空间 */
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow-y: auto; /* 如果内容太多，允许滚动 */
 }
 
 .record-button-wrapper {
@@ -1854,27 +2048,23 @@ export default {
 }
 
 .drawer-trigger {
-  position: absolute;
-  right: 0;
-  top: 60px;
+
   height: calc(100% - 60px);
   z-index: 100;
 }
 
 .trigger-area {
-  width: 100px;
-  /* 增加宽度 */
-  height: 100%;
+  width: 72px;
+  height: 844px;
   background: #ffffff;
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* 水平居中 */
   justify-content: center;
-  /* 垂直居中 */
   padding-bottom: 120px;
   cursor: pointer;
   color: #606266;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
 }
 
 .trigger-area i {
@@ -1884,9 +2074,8 @@ export default {
 
 .trigger-area span {
   writing-mode: vertical-lr;
-  /* 文字垂直排列 */
   letter-spacing: 4px;
-  /* 增加文字间距 */
+  margin-bottom: 120px;
 }
 
 .drawer-content {
@@ -1922,7 +2111,8 @@ export default {
 .dialog-container {
   .el-dialog__header {
     padding: 0;
-    display: none; /* 完全隐藏header */
+    display: none;
+    /* 完全隐藏header */
   }
 
   .el-dialog {
@@ -1963,7 +2153,7 @@ export default {
     font-family: "PingFang SC", sans-serif;
     font-size: 16px;
   }
-  
+
   .login-logo {
     width: 400px;
     height: 100px;
@@ -1971,13 +2161,13 @@ export default {
     align-items: center;
     justify-content: center;
   }
-  
+
   .logo-image {
     width: 37px;
     height: 40px;
     object-fit: contain;
   }
-  
+
   .el-button--primary {
     border-color: #FFF;
     font-family: "PingFang SC", sans-serif;
@@ -2051,20 +2241,20 @@ export default {
     font-family: "PingFang SC", sans-serif;
     font-size: 16px;
   }
-  
+
   .captcha-input {
     flex: 0 0 134px;
     width: 134px !important;
     font-family: "PingFang SC", sans-serif;
     font-size: 16px;
   }
-  
+
   .captcha-image {
     width: 148px;
     height: 40px;
     margin-left: 10px;
   }
-  
+
   .el-icon-refresh {
     margin-left: 5px;
     cursor: pointer;
@@ -2230,7 +2420,9 @@ export default {
   font-size: 14px;
   line-height: 1.8;
   color: #333333;
-  overflow-y: scroll;
+  overflow-y: auto; /* 改为 auto 而不是 scroll，只在需要时显示滚动条 */
+  flex: 1; /* 填充可用空间 */
+  padding: 10px; /* 添加一些内边距 */
 }
 
 .recorded-content::-webkit-scrollbar {
@@ -2827,17 +3019,18 @@ export default {
 }
 
 .feedback-dialog>>>.el-dialog {
-  width: 620px !important;
-  height: 730px !important;
+  width: 580px !important;
+  height: 720px !important;
   margin: 0 !important;
-  position: fixed !important;
-  right: 30px !important;
-  bottom: 30px !important;
   background-color: #fff;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
   padding: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .feedback-dialog>>>.el-dialog__header,
@@ -2856,40 +3049,37 @@ export default {
 .feedback-content {
   width: 100%;
   height: 100%;
-  padding: 20px;
+  padding: 15px 30px 25px;
   box-sizing: border-box;
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 10px;
+  justify-content: center;
 }
 
 .feedback-content .close-btn {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 15px;
+  right: 15px;
   cursor: pointer;
-  font-size: 20px;
+  font-size: 24px;
   color: #909399;
 }
 
-.feedback-content .close-btn:hover {
-  color: #606266;
-}
-
 .feedback-content h2 {
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 500;
   color: #303133;
-  margin-bottom: 8px;
+  margin-bottom: 5px;
   text-align: center;
 }
 
 .star-rating {
   display: flex;
   justify-content: center;
-  gap: 20px;
-  margin-bottom: 15px;
+  gap: 25px;
+  margin-bottom: 8px;
 }
 
 .star-rating i {
@@ -2910,16 +3100,16 @@ export default {
 .feedback-btns {
   display: flex;
   justify-content: center;
-  gap: 15px;
-  margin-top: auto;
+  gap: 20px;
+  margin-top: 15px;
 }
 
 .feedback-btns .cancel-btn,
 .feedback-btns .submit-btn {
-  width: 120px;
-  height: 36px;
-  border-radius: 18px;
-  font-size: 14px;
+  width: 140px;
+  height: 42px;
+  border-radius: 21px;
+  font-size: 16px;
 }
 
 .feedback-btns .submit-btn {
@@ -3068,5 +3258,1291 @@ export default {
   height: 24px;
   cursor: pointer;
   display: block;
+}
+
+/* 悬浮按钮样式 */
+.float-button {
+  position: fixed;
+  right: 30px;
+  bottom: 60px;
+  width: 60px;
+  height: 60px;
+  background-color: #FFFFFF;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 9999;
+  transition: all 0.3s;
+  padding: 0;
+  overflow: hidden;
+}
+
+.float-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.float-button:active {
+  transform: scale(0.95);
+}
+
+.qa-icon {
+  width: 28px;
+  height: 28px;
+  display: block;
+  margin: 0;
+  padding: 0;
+  object-fit: contain;
+  object-position: center;
+}
+
+/* 翻页正方形按钮样式 */
+.page-region .square-nav-btn {
+  width: 24px !important;
+  height: 24px !important;
+  padding: 0 !important;
+  border-radius: 4px;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 12px !important;
+  min-height: 24px !important;
+  background-color: rgba(123, 44, 245, 0.1) !important;
+  border-color: rgba(123, 44, 245, 0.1) !important;
+}
+
+/* 箭头图标样式 */
+.arrow-icon {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+/* 返回按钮样式 */
+.back-btn {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: #909399;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.back-btn i {
+  margin-right: 4px;
+}
+
+.back-btn span {
+  color: #606266;
+}
+
+.back-btn .exam-title {
+  margin-left: 8px;
+  font-size: 18px;
+  font-weight: 500;
+  color: #303133;
+  width: 90px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+}
+
+.back-btn:hover span:first-of-type {
+  color: #7B2CF5;
+}
+
+.page-region {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.light-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-left: 6px;
+}
+
+.light-icon {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+
+.light-btn:hover {
+  opacity: 0.8;
+}
+
+/* 添加消息对话框样式 */
+.message-dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.message-dialog>>>.el-dialog {
+  width: 1600px !important;
+  height: 800px !important;
+  margin: 0 !important;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  padding: 0;
+}
+
+.message-dialog>>>.el-dialog__header,
+.message-dialog>>>.el-dialog__footer {
+  display: none;
+}
+
+.message-dialog>>>.el-dialog__body {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* 新增welcome-dialog样式（与图片中保持一致） */
+.welcome-dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.welcome-dialog>>>.el-dialog {
+  width: 1600px !important;
+  height: 800px !important;
+  margin: 0 !important;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  padding: 0;
+}
+
+.welcome-dialog>>>.el-dialog__header,
+.welcome-dialog>>>.el-dialog__footer {
+  display: none;
+}
+
+.welcome-dialog>>>.el-dialog__body {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.demo-trigger {
+  position: fixed;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 140px;
+  background-color: #FFFFFF;
+  border: 1px solid #1E9FFF;
+  border-radius: 4px 0 0 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  z-index: 9999;
+  transition: all 0.3s;
+  padding: 0;
+  overflow: hidden;
+}
+
+.demo-trigger:hover {
+  background-color: #F0F9FF;
+}
+
+.demo-trigger-area {
+  width: 100%;
+  height: 100%;
+  display: -webkit-box;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #7B2CF5;
+  transition: all 0.3s;
+  writing-mode: vertical-lr;
+  font-size: 16px;
+  letter-spacing: 2px;
+}
+
+.demo-trigger-area span {
+  writing-mode: vertical-lr;
+  transform: rotate(180deg);
+  font-weight: 500;
+}
+
+.demo-trigger-area i {
+  display: none;
+}
+
+.demo-drawer {
+  :deep(.el-drawer) {
+    border-radius: 8px;
+    overflow: hidden;
+    padding: 0;
+    max-width: 560px;
+    margin-top: 15vh !important;
+  }
+
+  :deep(.el-drawer__body) {
+    padding: 0;
+  }
+
+  :deep(.el-drawer__header) {
+    display: none !important;
+    padding: 0 !important;
+    padding-bottom: 0 !important;
+    margin: 0 !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    line-height: 0 !important;
+    border: none !important;
+    overflow: hidden !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    position: absolute !important;
+    z-index: -1 !important;
+  }
+}
+
+.demo-drawer-content {
+  padding: 40px 20px;
+  height: calc(100% - 60px) !important;
+  background-color: #f5f7fa;
+  overflow: auto;
+}
+
+.demo-drawer-content .demo-start-area {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.demo-drawer-content .demo-start-area:hover {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.demo-drawer-content .demo-start-area:hover .demo-text,
+.demo-drawer-content .demo-start-area:hover .demo-hint {
+  color: #409EFF;
+}
+
+.demo-drawer-content .demo-start-area:active {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.demo-drawer-content .logo {
+  width: 96px;
+  height: 96px;
+  margin-bottom: 16px;
+  transition: all 0.3s;
+}
+
+.demo-drawer-content .demo-text {
+  font-size: 20px;
+  color: #909399;
+  margin-bottom: 8px;
+  transition: all 0.3s;
+}
+
+.demo-drawer-content .demo-hint {
+  color: #909399;
+  transition: all 0.3s;
+}
+
+.demo-drawer-content .source-hint {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #909399;
+}
+
+.demo-drawer-content .regenerate-btn {
+  padding: 0;
+  font-size: 14px;
+  color: #909399;
+}
+
+.demo-drawer-content .regenerate-btn:hover {
+  color: #409EFF;
+}
+
+.demo-drawer-content .content-text {
+  text-align: left;
+  font-size: 15px;
+  line-height: 1.8;
+  color: #333333;
+  letter-spacing: 0.5px;
+}
+
+.demo-drawer-content .paragraph {
+  margin-bottom: 20px;
+  text-indent: 2em;
+}
+
+.demo-drawer-content .section {
+  margin: 24px 0;
+}
+
+.demo-drawer-content .section-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: #262626;
+  margin-bottom: 12px;
+}
+
+.demo-drawer-content .section-content {
+  text-indent: 2em;
+  color: #404040;
+}
+
+/* 优化滚动条样式 */
+.demo-drawer-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.demo-drawer-content::-webkit-scrollbar-thumb {
+  background: #C0C4CC;
+  border-radius: 3px;
+}
+
+.demo-drawer-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.demo-drawer-content .user-phone {
+  font-size: 14px;
+  color: #909399;
+}
+
+.demo-drawer-content .logout-text {
+  cursor: pointer;
+  font-size: 14px;
+  color: #F56C6C;
+}
+
+.demo-drawer-content .logout-text:hover {
+  color: #f78989;
+}
+
+/* 修改select的宽度样式 */
+.demo-drawer-content .label-group .el-select {
+  width: 80px;
+  /* 减小时间选择框的宽度 */
+}
+
+/* 地区select单独设置宽度 */
+.demo-drawer-content .label-group:nth-child(2) .el-select {
+  width: 100px;
+}
+
+/* select单独设置宽度 */
+.demo-drawer-content .label-group:nth-child(3) .el-select {
+  width: 100px;
+}
+
+/* 恢复value的灰色背景样式 */
+.demo-drawer-content .value {
+  padding: 4px 12px;
+  background: #E4E7ED;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #606266;
+  height: 28px;
+  line-height: 20px;
+  display: inline-block;
+}
+
+.demo-drawer-content .model-thinking {
+  color: #909399;
+  /* 使用浅灰色 */
+}
+
+.demo-drawer-content .recharge-dialog {
+  :deep(.el-dialog) {
+    border-radius: 8px;
+    overflow: hidden;
+    padding: 0;
+    max-width: 560px;
+    margin-top: 15vh !important;
+  }
+
+  :deep(.el-dialog__body) {
+    padding: 0;
+  }
+
+  :deep(.el-dialog__header) {
+    display: none !important;
+    padding: 0 !important;
+    padding-bottom: 0 !important;
+    margin: 0 !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    line-height: 0 !important;
+    border: none !important;
+    overflow: hidden !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    position: absolute !important;
+    z-index: -1 !important;
+  }
+}
+
+.demo-drawer-content .recharge-container {
+  position: relative;
+  background-color: #fff;
+}
+
+.demo-drawer-content .recharge-header {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 16px 24px;
+  border-bottom: 1px solid #EBEEF5;
+  gap: 24px;
+}
+
+.demo-drawer-content .user-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #606266;
+}
+
+.demo-drawer-content .user-info .el-icon-user {
+  font-size: 16px;
+}
+
+.demo-drawer-content .wallet-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #606266;
+}
+
+.demo-drawer-content .wallet-info img {
+  width: 16px;
+  height: 16px;
+}
+
+.demo-drawer-content .close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  cursor: pointer;
+  font-size: 24px;
+  color: #909399;
+}
+
+.demo-drawer-content .close-btn:hover {
+  color: #606266;
+}
+
+.demo-drawer-content .recharge-options {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  padding: 24px;
+}
+
+.demo-drawer-content .recharge-option {
+  background-color: #fff;
+  border: 1px solid #EBEEF5;
+  border-radius: 4px;
+  padding: 16px 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.demo-drawer-content .recharge-option:first-child {
+  background-color: #fff;
+}
+
+.demo-drawer-content .recharge-option.selected {
+  border-color: #409EFF;
+  background-color: #f5f5f5;
+}
+
+.demo-drawer-content .original-price {
+  color: #909399;
+  text-decoration: line-through;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.demo-drawer-content .discount-price {
+  color: #303133;
+  font-size: 20px;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.demo-drawer-content .points {
+  color: #606266;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.demo-drawer-content .points .el-icon-info {
+  font-size: 12px;
+  color: #909399;
+}
+
+.demo-drawer-content .payment-section {
+  display: flex;
+  padding: 0;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 0 24px 20px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.05);
+}
+
+.demo-drawer-content .qr-code {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f5f5f5;
+  padding: 20px;
+  height: 240px;
+  border-right: 1px dashed #ccc;
+}
+
+.demo-drawer-content .qr-code img {
+  width: 140px;
+  height: 140px;
+  object-fit: contain;
+}
+
+.demo-drawer-content .payment-right-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: #f5f5f5;
+  padding: 20px;
+  justify-content: space-between;
+}
+
+.demo-drawer-content .payment-options {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 0 20px;
+  gap: 15px;
+}
+
+.demo-drawer-content .payment-option {
+  margin-bottom: 0;
+  border-radius: 30px;
+  overflow: hidden;
+  border: 1px solid #dcdfe6;
+  background-color: #fff;
+  transition: all 0.3s;
+  height: 44px;
+}
+
+.demo-drawer-content .payment-option.selected {
+  border-color: #409EFF;
+  background-color: #fff;
+}
+
+.demo-drawer-content .radio-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 0 20px;
+  width: 100%;
+  height: 100%;
+}
+
+.demo-drawer-content .radio-label input[type="radio"] {
+  display: none;
+}
+
+.demo-drawer-content .radio-custom {
+  width: 18px;
+  height: 18px;
+  border: 1px solid #dcdfe6;
+  border-radius: 50%;
+  margin-right: 10px;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.demo-drawer-content .radio-custom::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #409EFF;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.demo-drawer-content .radio-label input[type="radio"]:checked+.radio-custom::after {
+  opacity: 1;
+}
+
+.demo-drawer-content .payment-option.selected .radio-custom {
+  border-color: #409EFF;
+}
+
+.demo-drawer-content .payment-option img {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.demo-drawer-content .payment-option span {
+  font-size: 14px;
+  color: #606266;
+}
+
+.demo-drawer-content .payment-notes {
+  padding: 0;
+  color: #909399;
+  font-size: 12px;
+  line-height: 1.6;
+  background-color: #f5f5f5;
+}
+
+.demo-drawer-content .payment-notes p {
+  margin: 4px 0;
+  display: flex;
+  align-items: flex-start;
+  line-height: 1.8;
+}
+
+.demo-drawer-content .agreement {
+  color: #409EFF;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.demo-drawer-content .welcome-dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.demo-drawer-content .welcome-dialog>>>.el-dialog {
+  width: 1600px !important;
+  height: 800px !important;
+  margin: 0 !important;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  padding: 0;
+}
+
+.demo-drawer-content .welcome-dialog>>>.el-dialog__header,
+.demo-drawer-content .welcome-dialog>>>.el-dialog__footer {
+  display: none;
+}
+
+.demo-drawer-content .welcome-dialog>>>.el-dialog__body {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.demo-drawer-content .welcome-content {
+  width: 100%;
+  height: 100%;
+  padding: 40px 100px;
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.demo-drawer-content .welcome-title {
+  font-size: 32px;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 40px;
+}
+
+.demo-drawer-content .user-greeting {
+  font-size: 18px;
+  margin-left: 40px;
+  margin-bottom: 30px;
+  font-weight: normal;
+}
+
+.demo-drawer-content .intro-text,
+.demo-drawer-content .feature-text {
+  font-size: 16px;
+  line-height: 1.8;
+  margin-bottom: 20px;
+  text-indent: 2em;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.demo-drawer-content .dots {
+  font-size: 22px;
+  text-align: center;
+  letter-spacing: 10px;
+  margin: 20px 0;
+}
+
+.demo-drawer-content .more-info {
+  font-size: 16px;
+  margin-bottom: 20px;
+  margin-top: 20px;
+  text-indent: 2em;
+}
+
+.demo-drawer-content .link {
+  color: #409EFF;
+  text-decoration: none;
+}
+
+.demo-drawer-content .signature {
+  text-align: right;
+  margin-top: 40px;
+  line-height: 1.6;
+  margin-right: 0;
+}
+
+.demo-drawer-content .signature p {
+  margin: 5px 0;
+}
+
+.demo-drawer-content .btn-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: auto;
+  margin-bottom: 40px;
+}
+
+.demo-drawer-content .confirm-btn {
+  width: 300px;
+  height: 46px;
+  background-color: #3384ff;
+  color: white;
+  border: none;
+  border-radius: 23px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.demo-drawer-content .confirm-btn:hover {
+  opacity: 0.9;
+}
+
+.demo-drawer-content .feedback-dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.demo-drawer-content .feedback-dialog>>>.el-dialog {
+  width: 580px !important;
+  height: 720px !important;
+  margin: 0 !important;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  padding: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.demo-drawer-content .feedback-dialog>>>.el-dialog__header,
+.demo-drawer-content .feedback-dialog>>>.el-dialog__footer {
+  display: none;
+}
+
+.demo-drawer-content .feedback-dialog>>>.el-dialog__body {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.demo-drawer-content .feedback-content {
+  width: 100%;
+  height: 100%;
+  padding: 15px 30px 25px;
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: center;
+}
+
+.demo-drawer-content .feedback-content .close-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  cursor: pointer;
+  font-size: 24px;
+  color: #909399;
+}
+
+.demo-drawer-content .feedback-content h2 {
+  font-size: 17px;
+  font-weight: 500;
+  color: #303133;
+  margin-bottom: 5px;
+  text-align: center;
+}
+
+.demo-drawer-content .star-rating {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  margin-bottom: 8px;
+}
+
+.demo-drawer-content .star-rating i {
+  font-size: 30px;
+  color: #DCDFE6;
+  cursor: pointer;
+}
+
+.demo-drawer-content .star-rating i.el-icon-star-on {
+  color: #F7BA2A;
+}
+
+.demo-drawer-content .auto-show-option {
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+
+.demo-drawer-content .feedback-btns {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 15px;
+}
+
+.demo-drawer-content .feedback-btns .cancel-btn,
+.demo-drawer-content .feedback-btns .submit-btn {
+  width: 140px;
+  height: 42px;
+  border-radius: 21px;
+  font-size: 16px;
+}
+
+.demo-drawer-content .feedback-btns .submit-btn {
+  background: #3384ff;
+}
+
+.demo-drawer-content .feedback-btns .submit-btn:hover {
+  opacity: 0.9;
+}
+
+.demo-drawer-content .login-button {
+  font-size: 14px;
+  padding: 8px 20px;
+  border-radius: 4px;
+  background-color: #7B2CF5;
+  border-color: #7B2CF5;
+}
+
+.demo-drawer-content .login-button:hover {
+  background-color: #6521d4;
+  border-color: #6521d4;
+}
+
+.demo-drawer-content .icon-img {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  color: #909399;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  vertical-align: middle;
+}
+
+.demo-drawer-content .icon-img:hover {
+  opacity: 0.8;
+  color: #409EFF;
+}
+
+.demo-drawer-content .qr-tooltip-container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+}
+
+.demo-drawer-content .qr-tooltip {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 10px;
+  width: 200px;
+  height: 200px;
+  background-color: #fff;
+  border-radius: 4px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  display: none;
+  z-index: 1000;
+  padding: 15px;
+  box-sizing: border-box;
+}
+
+.demo-drawer-content .qr-tooltip-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.demo-drawer-content .qr-code-img {
+  width: 140px;
+  height: 140px;
+  object-fit: contain;
+  margin-bottom: 5px;
+}
+
+.demo-drawer-content .qr-tooltip-text {
+  font-size: 12px;
+  color: #333;
+  font-family: "PingFang SC", sans-serif;
+  text-align: center;
+  margin-top: 5px;
+  width: 60px;
+  height: 17px;
+  line-height: 17px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.demo-drawer-content .qr-tooltip:before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid #fff;
+}
+
+.demo-drawer-content .qr-tooltip-container:hover .qr-tooltip {
+  display: block;
+}
+
+.demo-drawer-content .nav-icons-wrapper {
+  display: flex;
+  align-items: center;
+  height: 24px;
+  gap: 20px;
+}
+
+.demo-drawer-content .qr-tooltip-container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+}
+
+.demo-drawer-content .icon-img {
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  cursor: pointer;
+  color: #909399;
+  vertical-align: middle;
+  display: flex;
+}
+
+.demo-drawer-content .wallet-icon {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+
+.demo-drawer-content .logout-icon {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  display: block;
+}
+
+/* 悬浮按钮样式 */
+.demo-drawer-content .float-button {
+  position: fixed;
+  right: 30px;
+  bottom: 60px;
+  width: 60px;
+  height: 60px;
+  background-color: #FFFFFF;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 9999;
+  transition: all 0.3s;
+  padding: 0;
+  overflow: hidden;
+}
+
+.demo-drawer-content .float-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.demo-drawer-content .float-button:active {
+  transform: scale(0.95);
+}
+
+.demo-drawer-content .qa-icon {
+  width: 28px;
+  height: 28px;
+  display: block;
+  margin: 0;
+  padding: 0;
+  object-fit: contain;
+  object-position: center;
+}
+
+/* 翻页正方形按钮样式 */
+.demo-drawer-content .page-region .square-nav-btn {
+  width: 24px !important;
+  height: 24px !important;
+  padding: 0 !important;
+  border-radius: 4px;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 12px !important;
+  min-height: 24px !important;
+  background-color: rgba(123, 44, 245, 0.1) !important;
+  border-color: rgba(123, 44, 245, 0.1) !important;
+}
+
+/* 箭头图标样式 */
+.demo-drawer-content .arrow-icon {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+/* 返回按钮样式 */
+.demo-drawer-content .back-btn {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: #909399;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.demo-drawer-content .back-btn i {
+  margin-right: 4px;
+}
+
+.demo-drawer-content .back-btn span {
+  color: #606266;
+}
+
+.demo-drawer-content .back-btn .exam-title {
+  margin-left: 8px;
+  font-size: 18px;
+  font-weight: 500;
+  color: #303133;
+  width: 90px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+}
+
+.demo-drawer-content .back-btn:hover span:first-of-type {
+  color: #7B2CF5;
+}
+
+.demo-drawer-content .page-region {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.demo-drawer-content .light-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-left: 6px;
+}
+
+.demo-drawer-content .light-icon {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+
+.demo-drawer-content .light-btn:hover {
+  opacity: 0.8;
+}
+
+/* 添加消息对话框样式 */
+.demo-drawer-content .message-dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.demo-drawer-content .message-dialog>>>.el-dialog {
+  width: 1600px !important;
+  height: 800px !important;
+  margin: 0 !important;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  padding: 0;
+}
+
+.demo-drawer-content .message-dialog>>>.el-dialog__header,
+.demo-drawer-content .message-dialog>>>.el-dialog__footer {
+  display: none;
+}
+
+.demo-drawer-content .message-dialog>>>.el-dialog__body {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* 新增welcome-dialog样式（与图片中保持一致） */
+.demo-drawer-content .welcome-dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.demo-drawer-content .welcome-dialog>>>.el-dialog {
+  width: 1600px !important;
+  height: 800px !important;
+  margin: 0 !important;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  padding: 0;
+}
+
+.demo-drawer-content .welcome-dialog>>>.el-dialog__header,
+.demo-drawer-content .welcome-dialog>>>.el-dialog__footer {
+  display: none;
+}
+
+.demo-drawer-content .welcome-dialog>>>.el-dialog__body {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
 </style>

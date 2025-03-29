@@ -27,7 +27,7 @@
         </div>
       </div>
     </header>
-    <div style="margin:10px 100px;background-color: rgba(0, 0, 0, 0.05);">
+    <div>
       <!-- 主体内容 -->
       <main class="main-content">
         <!-- 翻页区域 -->
