@@ -1,10 +1,12 @@
 <template>
   <div class="interview-plaza" @click="handlePageClick">
     <!-- 顶部导航 -->
-    <!-- <header class="header">
+    <header class="header">
       <div style="margin:0 100px;">
         <div class="header-content">
-          <div class="logo">言elogo</div>
+          <div class="logo">
+            <img src="../assets/logo1.png" alt="">
+          </div>
           <div class="header-right">
             <div class="wallet">
               <img class="wallet-icon" src="@/assets/wallet.png" alt="wallet">
@@ -23,7 +25,10 @@
           </div>
         </div>
       </div>
-    </header> -->
+    </header>
+    <div class="message">
+      <i class="el-icon-document"></i>
+    </div>
 
     <!-- 主体内容 -->
     <div style="margin:10px 100px;background-color: #ffffff;">
@@ -32,25 +37,16 @@
 
         <!-- 导航标签 -->
         <div class="tab-container">
-          <span
-            v-for="tab in tabs"
-            :key="tab.value"
-            :class="['tab', { active: activeTab === tab.value }]"
-            @click="activeTab = tab.value"
-          >
+          <span v-for="tab in tabs" :key="tab.value" :class="['tab', { active: activeTab === tab.value }]"
+            @click="activeTab = tab.value">
             {{ tab.label }}
           </span>
         </div>
 
         <!-- 面试卡片列表 -->
         <div class="card-list">
-          <div
-            v-for="(interview, index) in filteredInterviews"
-            :key="index"
-            :style="interview.title !== '公务员考试' ? { filter: 'blur(3px)' } : {}"
-            class="interview-card"
-            @click="goToInterview(interview)"
-          >
+          <div v-for="(interview, index) in filteredInterviews" :key="index" class="interview-card"
+            @click="goToInterview(interview)">
             <div class="card-icon">
               <i :class="interview.icon" />
             </div>
@@ -58,23 +54,18 @@
               <h3 class="card-title">{{ interview.title }}</h3>
               <p class="card-desc">{{ interview.description }}</p>
             </div>
-            <div class="card-action">
+            <!-- <div class="card-action">
               <span class="action-text">立即加入</span>
-            </div>
+            </div> -->
+            <div class="forWaiting" v-if="interview.isForWaiting">敬请期待</div>
           </div>
         </div>
       </main>
     </div>
 
     <!-- 登录弹窗 -->
-    <el-dialog
-      :visible.sync="loginDialogVisible"
-      class="dialog-container"
-      width="560px"
-      :show-close="false"
-      :before-close="handleCloseDialog"
-      center
-    >
+    <el-dialog :visible.sync="loginDialogVisible" class="dialog-container" width="560px" :show-close="false"
+      :before-close="handleCloseDialog" center>
       <div class="login-container">
         <!-- LOGO区域 -->
         <div class="login-logo">
@@ -84,25 +75,14 @@
         <el-form ref="loginForm" :model="loginForm" :rules="loginRules" label-width="0">
           <!-- 手机号输入框 -->
           <el-form-item prop="phone" class="form-item">
-            <el-input
-              v-model="loginForm.phone"
-              placeholder="手机号"
-            />
+            <el-input v-model="loginForm.phone" placeholder="手机号" />
           </el-form-item>
 
           <!-- 验证码区域 -->
           <el-form-item prop="code" class="form-item">
             <div class="code-input-group">
-              <el-input
-                v-model="loginForm.code"
-                placeholder="验证码"
-              />
-              <el-button
-                type="primary"
-                class="send-code-btn"
-                :disabled="!canSendCode"
-                @click="sendCode"
-              >
+              <el-input v-model="loginForm.code" placeholder="验证码" />
+              <el-button type="primary" class="send-code-btn" :disabled="!canSendCode" @click="sendCode">
                 {{ canSendCode ? '发送短信' : `${countdown}秒后重新发送` }}
               </el-button>
             </div>
@@ -164,28 +144,64 @@ export default {
           title: '公务员考试',
           description: '涵盖全国31省市近5年真题，500+高仿真模拟题，协助考生语言表达训练、应急应变技巧、考官评分视角分析',
           type: 'structured',
-          icon: 'el-icon-user'
+          icon: 'el-icon-user',
+          isForWaiting: false,
         },
         {
           id: 2,
           title: '教师资格证考试',
           description: '这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述',
           type: 'structured',
-          icon: 'el-icon-user-solid'
+          icon: 'el-icon-user-solid',
+          isForWaiting: false,
         },
         {
           id: 3,
           title: '教师资格证考试',
           description: '这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述',
           type: 'structured',
-          icon: 'el-icon-user-solid'
+          icon: 'el-icon-user-solid',
+          isForWaiting: false,
         },
         {
           id: 4,
           title: '教师资格证考试',
           description: '这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述',
           type: 'internet',
-          icon: 'el-icon-user-solid'
+          icon: 'el-icon-user-solid',
+          isForWaiting: false,
+        },
+        {
+          id: 1,
+          title: '公务员考试',
+          description: '涵盖全国31省市近5年真题，500+高仿真模拟题，协助考生语言表达训练、应急应变技巧、考官评分视角分析',
+          type: 'structured',
+          icon: 'el-icon-user',
+          isForWaiting: false,
+        },
+        {
+          id: 2,
+          title: '教师资格证考试',
+          description: '这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述',
+          type: 'structured',
+          icon: 'el-icon-user-solid',
+          isForWaiting: false,
+        },
+        {
+          id: 3,
+          title: '教师资格证考试',
+          description: '这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述',
+          type: 'structured',
+          icon: 'el-icon-user-solid',
+          isForWaiting: true,
+        },
+        {
+          id: 4,
+          title: '教师资格证考试',
+          description: '这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述',
+          type: 'internet',
+          icon: 'el-icon-user-solid',
+          isForWaiting: true,
         }
       ],
       isLoggedIn: false,
@@ -285,7 +301,7 @@ export default {
     // 发送验证码
     async sendCode() {
       // 先验证手机号
-      this.$refs.loginForm.validateField('phone', async(errorMessage) => {
+      this.$refs.loginForm.validateField('phone', async (errorMessage) => {
         if (errorMessage) {
           return // 如果手机号验证不通过，直接返回
         }
@@ -321,8 +337,8 @@ export default {
     handlePageClick(e) {
       // 判断点击的是否是输入框或按钮
       const isFormElement = e.target.closest('.el-input') ||
-                          e.target.closest('.el-button') ||
-                          e.target.closest('.el-form-item__error')
+        e.target.closest('.el-button') ||
+        e.target.closest('.el-form-item__error')
 
       // 如果不是表单元素，则清除验证信息
       if (!isFormElement && this.$refs.loginForm) {
@@ -358,10 +374,30 @@ export default {
   align-items: center;
 }
 
-.logo {
-  font-size: 20px;
-  font-weight: 600;
-  color: #333;
+.message {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 35px;
+  right: 100px;
+  bottom: 80px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform .2s linear;
+}
+
+.message:hover {
+  background: #efefef;
+  cursor: pointer;
+  transform: translateY(-2px);
+}
+
+.logo img {
+  width: 30px;
+  height: 30px;
 }
 
 .header-right {
@@ -438,7 +474,7 @@ export default {
 
 .tab-container {
   display: flex;
-  justify-content: center;
+  justify-content: start;
   margin-bottom: 30px;
 }
 
@@ -453,21 +489,25 @@ export default {
 }
 
 .tab.active {
-  color: #409EFF;
-  border-bottom-color: #409EFF;
+  background: #ccc;
+  border-radius: 5px;
+  height: 40px;
 }
 
 .tab:hover {
-  color: #409EFF;
+  background: #eee;
+  border-radius: 5px;
+  height: 40px;
 }
 
 .card-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
   gap: 20px;
 }
 
 .interview-card {
+  padding-top: 10px;
   background: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
@@ -475,9 +515,29 @@ export default {
   transition: all 0.3s;
   cursor: pointer;
   position: relative;
-  height: 200px;
+  height: 180px;
   display: flex;
   flex-direction: column;
+}
+
+.forWaiting {
+  position: absolute;
+  text-align: center;
+  top: 0;
+  right: 10px;
+  width: 20px;
+  height: 80px;
+  background-color: #fad964;
+  font-size: 14px;
+  padding-top: 5px;
+
+  clip-path: polygon(0 0,
+      100% 0,
+      100% 100%,
+      calc(50% + 10px) 100%,
+      50% calc(100% - 10px),
+      calc(50% - 10px) 100%,
+      0 100%);
 }
 
 .interview-card:hover {
@@ -489,12 +549,12 @@ export default {
   width: 50px;
   height: 50px;
   background: #f0f2f5;
-  border-radius: 50%;
+  border-radius: 5px;
   display: flex;
   align-items: center;
   justify-content: center;
   position: absolute;
-  top: 20px;
+  top: 30px;
   left: 20px;
 }
 
@@ -504,15 +564,16 @@ export default {
 }
 
 .card-content {
-  padding: 20px 20px 20px 80px;
+  padding: 20px 20px 20px 20px;
   flex: 1;
 }
 
 .card-title {
   font-size: 18px;
   font-weight: 500;
-  color: #303133;
-  margin-bottom: 10px;
+  color: #ca7ff6;
+  margin-bottom: 20px;
+  margin-left: 60px;
 }
 
 .card-desc {
@@ -611,12 +672,14 @@ export default {
 
       /* 修改表单项间距 */
       .form-item {
-        margin-bottom: 24px !important;  /* 普通表单项的底部间距 */
+        margin-bottom: 24px !important;
+        /* 普通表单项的底部间距 */
       }
 
       /* 特别调整验证码输入框（第二个表单项）的间距 */
       .form-item:nth-child(2) {
-        margin-bottom: 32px !important;  /* 增加或减少这个值来调整验证码输入框的位置 */
+        margin-bottom: 32px !important;
+        /* 增加或减少这个值来调整验证码输入框的位置 */
       }
 
       /* 调整登录按钮（第三个表单项）的间距 */
@@ -663,33 +726,34 @@ export default {
     margin-bottom: 48px !important;
   }
 
-:deep(.el-form) {
-  width: 80% !important;
-}
+  :deep(.el-form) {
+    width: 80% !important;
+  }
 
-.form-item {
-  margin-bottom: 8px !important;
-}
+  .form-item {
+    margin-bottom: 8px !important;
+  }
 
-.form-item:nth-child(2) {
-  margin-bottom: 48px !important;
-}
+  .form-item:nth-child(2) {
+    margin-bottom: 48px !important;
+  }
 
-:deep(.el-form-item__error) {
-  position: absolute;
-  right: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-  padding: 0;
-  margin: 0;
-  line-height: normal;
-  color: #F56C6C;
-  z-index: 2;
-  background: white;
-}
+  :deep(.el-form-item__error) {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 0;
+    margin: 0;
+    line-height: normal;
+    color: #F56C6C;
+    z-index: 2;
+    background: white;
+  }
 
-:deep(.el-input__inner) {
-  padding-right: 100px !important; /* 为错误提示预留空间 */
-}
+  :deep(.el-input__inner) {
+    padding-right: 100px !important;
+    /* 为错误提示预留空间 */
+  }
 }
 </style>
