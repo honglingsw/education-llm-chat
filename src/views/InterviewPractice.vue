@@ -665,17 +665,17 @@ export default {
     get_exam_history(page, size) {
       const token = localStorage.getItem('token');
 
-      var data = JSON.stringify({
+      var data = {
         page: page || 1,
         size: size || 10,
-        serviceTypeEnum: this.serviceTypeEnum || ''
-      });
-
+        serviceTypeEnum: this.serviceTypeEnum || "GOV_EXAM"
+      }
+      
       var config = {
         method: 'get',
         url: 'https://test.aigcpmer.com/api/api/exam/history',
         headers: { 'Authorization': `Bearer ${token}` },
-        data: data
+        params: data
       };
 
       axios(config)
