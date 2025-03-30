@@ -2,25 +2,58 @@
   <div class="interview-plaza" @click="handlePageClick">
     <!-- 顶部导航 -->
     <header class="header">
-      <div style="margin:0 100px;">
-        <div class="header-content">
-          <div class="logo">
-            <img src="../assets/logo1.png" alt="">
-          </div>
-          <div class="header-right">
-            <div class="wallet">
-              <img class="wallet-icon" src="@/assets/wallet.png" alt="wallet">
-              <span class="balance">{{ isLoggedIn ? '4000' : '----' }}</span>
-            </div>
-            <i class="el-icon-question" />
+      <div class="header-container">
+        <!-- 左侧logo -->
+        <div class="header-left">
+          <img class="nav-logo" src="@/assets/logo1.png" alt="Logo">
+        </div>
+        <!-- 右侧工具栏 -->
+        <div class="header-right">
+          <div class="nav-icons">
             <template v-if="isLoggedIn">
-              <i class="el-icon-user" />
-              <span class="user-phone">{{ maskPhoneNumber }}</span>
-              <span class="logout-text" @click="handleLogout">退出登录</span>
+              <div class="nav-icons-wrapper">
+                <div class="qr-tooltip-container">
+                  <img class="icon-img" src="@/assets/all.png" alt="all">
+                  <div class="qr-tooltip">
+                    <div class="qr-tooltip-content">
+                      <img src="@/assets/qr_code.png" alt="QR Code" class="qr-code-img">
+                      <div class="qr-tooltip-text">进群送次数</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="wallet nav-icon" @click="showRechargeDialog">
+                  <img class="wallet-icon" src="@/assets/wallet.png" alt="wallet">
+                  <span class="balance"
+                    style="font-size: 14px; color: #111111; font-family: 'Alibaba Sans', sans-serif;">{{ coinBalance
+                    }}</span>
+                </div>
+              </div>
             </template>
             <template v-else>
-              <i class="el-icon-user" @click="showLoginDialog" />
-              <span class="not-login-text" @click="showLoginDialog">未登录</span>
+              <div class="nav-icons-wrapper">
+                <div class="qr-tooltip-container">
+                  <img class="icon-img" src="@/assets/all.png" alt="all">
+                  <div class="qr-tooltip">
+                    <div class="qr-tooltip-content">
+                      <img src="@/assets/qr_code.png" alt="QR Code" class="qr-code-img">
+                      <div class="qr-tooltip-text">进群送次数</div>
+                    </div>
+                  </div>
+                </div>
+                <img class="icon-img" src="@/assets/wallet.png" alt="wallet" @click="showRechargeDialog">
+              </div>
+            </template>
+          </div>
+          <div class="user-actions">
+            <template v-if="isLoggedIn">
+              <img src="@/assets/user.png" class="user-icon" alt="user" />
+              <span class="user-phone"
+                style="color: #111111; font-family: 'Alibaba Sans', sans-serif; font-size: 14px;">{{ maskPhoneNumber
+                }}</span>
+              <img src="@/assets/out.png" class="logout-icon" alt="logout" @click="handleLogout" />
+            </template>
+            <template v-else>
+              <el-button class="login-button" type="primary" @click="showLoginDialog">登录</el-button>
             </template>
           </div>
         </div>
@@ -63,13 +96,13 @@
       </main>
     </div>
 
-    <!-- 登录弹窗 -->
-    <el-dialog :visible.sync="loginDialogVisible" class="dialog-container" width="560px" :show-close="false"
-      :before-close="handleCloseDialog" center>
+    <!-- 添加登录弹框 -->
+    <el-dialog :visible.sync="loginDialogVisible" class="dialog-container" width="400px" :show-close="false"
+      :before-close="handleCloseDialog" :close-on-click-modal="false" center>
       <div class="login-container">
         <!-- LOGO区域 -->
         <div class="login-logo">
-          LOGO
+          <img src="@/assets/logo1.png" alt="Logo" class="logo-image">
         </div>
 
         <el-form ref="loginForm" :model="loginForm" :rules="loginRules" label-width="0">
@@ -78,13 +111,24 @@
             <el-input v-model="loginForm.phone" placeholder="手机号" />
           </el-form-item>
 
+          <!-- 图形验证码 -->
+          <el-form-item prop="captcha" class="captcha-verify">
+            <el-input v-model="captcha.captchaCode" placeholder="图片验证" class="captcha-input" />
+            <el-image :src="captcha.captchaImg" alt="" class="captcha-image">
+              <div slot="placeholder" class="image-slot">
+                加载中<span class="dot">...</span>
+              </div>
+            </el-image>
+            <i class="el-icon-refresh" @click="getCaptcha"></i>
+          </el-form-item>
+
           <!-- 验证码区域 -->
           <el-form-item prop="code" class="form-item">
-            <div class="code-input-group">
-              <el-input v-model="loginForm.code" placeholder="验证码" />
-              <el-button type="primary" class="send-code-btn" :disabled="!canSendCode" @click="sendCode">
-                {{ canSendCode ? '发送短信' : `${countdown}秒后重新发送` }}
-              </el-button>
+            <div class="verify-input-wrapper">
+              <el-input v-model="loginForm.code" placeholder="输入验证码" class="verify-input" />
+              <span class="send-code-text" :class="{ 'disabled': !canSendCode }" @click="sendCode">
+                {{ canSendCode ? '获取短信验证码' : `${countdown}秒后重新发送` }}
+              </span>
             </div>
           </el-form-item>
 
@@ -100,6 +144,75 @@
             <el-button class="cancel-btn" @click="handleCloseDialog">取消</el-button>
           </el-form-item>
         </el-form>
+      </div>
+    </el-dialog>
+
+    <!-- 添加充值弹窗 -->
+    <el-dialog :visible.sync="rechargeDialogVisible" class="recharge-dialog" width="720px" :show-close="false" center>
+      <div class="recharge-container">
+        <!-- 顶部用户信息 -->
+        <div class="recharge-header">
+          <div class="user-info">
+            <i class="el-icon-user" />
+            <span>{{ maskPhoneNumber }}</span>
+          </div>
+          <div class="wallet-info">
+            <img class="wallet-icon" src="@/assets/wallet.png" alt="wallet">
+            <span>{{ isLoggedIn ? '4000' : '----' }}</span>
+          </div>
+          <div class="close-btn" @click="rechargeDialogVisible = false">
+            <i class="el-icon-close" />
+          </div>
+        </div>
+
+        <!-- 充值选项 -->
+        <div class="recharge-options">
+          <div v-for="(option, index) in rechargeOptions" :key="index" class="recharge-option"
+            :class="{ 'selected': selectedRechargeOption === index }" @click="selectedRechargeOption = index">
+            <div class="original-price">{{ option.originalPrice }}元</div>
+            <div class="discount-price">{{ option.discountPrice }}元</div>
+            <div class="points">{{ option.points }} <i class="el-icon-info" /></div>
+          </div>
+        </div>
+
+        <!-- 支付方式 -->
+        <div class="payment-section">
+          <!-- 二维码区域 -->
+          <div class="qr-code">
+            <img src="@/assets/qr_code.png" alt="QR Code">
+          </div>
+
+          <!-- 右侧区域：支付选项和说明文字 -->
+          <div class="payment-right-section">
+            <!-- 支付选项 -->
+            <div class="payment-options">
+              <div class="payment-option" :class="{ 'selected': paymentMethod === 'wechat' }"
+                @click="paymentMethod = 'wechat'">
+                <label class="radio-label">
+                  <input type="radio" name="payment" :checked="paymentMethod === 'wechat'">
+                  <span class="radio-custom"></span>
+                  <img src="@/assets/wechat_pay.png" alt="WeChat Pay">
+                  <span>微信支付</span>
+                </label>
+              </div>
+              <div class="payment-option" :class="{ 'selected': paymentMethod === 'alipay' }"
+                @click="paymentMethod = 'alipay'">
+                <label class="radio-label">
+                  <input type="radio" name="payment" :checked="paymentMethod === 'alipay'">
+                  <span class="radio-custom"></span>
+                  <img src="@/assets/alipay.png" alt="Alipay">
+                  <span>支付宝支付</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- 说明文字 -->
+            <div class="payment-notes">
+              <p>• 每次答题点评消耗积分，每次智能示范消耗积分；点数不足时，无法使用对应服务</p>
+              <p>• 完成支付即视为同意<span class="agreement">《用户协议》</span></p>
+            </div>
+          </div>
+        </div>
       </div>
     </el-dialog>
   </div>
@@ -208,6 +321,7 @@ export default {
       userPhone: '',
       loginDialogVisible: false,
       loading: false,
+      token: '',
       loginForm: {
         phone: '',
         code: ''
@@ -225,7 +339,22 @@ export default {
       countdown: 60,
       timer: null,
       canSendCode: true,
-      validPhone: '13012343322' // 可登录手机号
+      validPhone: '13012343322', // 可登录手机号
+      coinBalance: 0,
+      captcha: {
+        captchaId: '',
+        captchaImg: '',
+        captchaCode: '',
+      },
+      rechargeDialogVisible: false,
+      selectedRechargeOption: 0,
+      paymentMethod: 'wechat',
+      rechargeOptions: [
+        { originalPrice: '129.9', discountPrice: '99.99', points: '2000' },
+        { originalPrice: '129.9', discountPrice: '99.99', points: '2000' },
+        { originalPrice: '129.9', discountPrice: '99.99', points: '2000' },
+        { originalPrice: '129.9', discountPrice: '99.99', points: '2000' }
+      ],
     }
   },
 
@@ -362,7 +491,7 @@ export default {
   background-color: #fff;
 }
 
-.header {
+/* .header {
   padding: 16px 0;
   background: #fff;
   border-bottom: 1px solid #eaeaea;
@@ -372,6 +501,244 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+} */
+.header {
+  padding: 0px 0;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.header-container {
+  margin: 0 100px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 56px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+.nav-logo {
+  height: 40px;
+  width: auto;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.nav-icons {
+  display: flex;
+  align-items: center;
+  height: 24px;
+}
+
+.nav-icon {
+  font-size: 24px;
+  color: #666666;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+}
+
+.nav-icon:hover {
+  color: #409EFF;
+}
+
+.wallet {
+  display: flex;
+  align-items: center;
+  height: 24px;
+  gap: 4px;
+}
+
+.wallet-icon {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+
+.balance {
+  font-size: 14px;
+  color: #111111;
+  font-family: 'Alibaba Sans', sans-serif;
+}
+
+.user-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+}
+
+.user-icon {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+
+.user-phone {
+  font-size: 14px !important;
+  color: #111111 !important;
+  font-family: 'Alibaba Sans', sans-serif !important;
+  margin-right: 8px;
+}
+
+.logout-text {
+  cursor: pointer;
+  font-size: 14px;
+  color: #F56C6C;
+}
+
+.logout-text:hover {
+  color: #f78989;
+}
+
+.login-button {
+  font-size: 14px;
+  padding: 8px 20px;
+  border-radius: 4px;
+  background-color: #7B2CF5;
+  border-color: #7B2CF5;
+}
+
+.login-button:hover {
+  background-color: #6521d4;
+  border-color: #6521d4;
+}
+
+.icon-img {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  color: #909399;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  vertical-align: middle;
+}
+
+.icon-img:hover {
+  opacity: 0.8;
+  color: #409EFF;
+}
+
+.qr-tooltip-container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+}
+
+.qr-tooltip {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 10px;
+  width: 200px;
+  height: 200px;
+  background-color: #fff;
+  border-radius: 4px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  display: none;
+  z-index: 1000;
+  padding: 15px;
+  box-sizing: border-box;
+}
+
+.qr-tooltip-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.qr-code-img {
+  width: 140px;
+  height: 140px;
+  object-fit: contain;
+  margin-bottom: 5px;
+}
+
+.qr-tooltip-text {
+  font-size: 12px;
+  color: #333;
+  font-family: "PingFang SC", sans-serif;
+  text-align: center;
+  margin-top: 5px;
+  width: 60px;
+  height: 17px;
+  line-height: 17px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qr-tooltip:before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid #fff;
+}
+
+.qr-tooltip-container:hover .qr-tooltip {
+  display: block;
+}
+
+.nav-icons-wrapper {
+  display: flex;
+  align-items: center;
+  height: 24px;
+  gap: 20px;
+}
+
+.qr-tooltip-container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+}
+
+.icon-img {
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  cursor: pointer;
+  color: #909399;
+  vertical-align: middle;
+  display: flex;
+}
+
+.wallet-icon {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+
+.logout-icon {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  display: block;
 }
 
 .message {
@@ -755,5 +1122,284 @@ export default {
     padding-right: 100px !important;
     /* 为错误提示预留空间 */
   }
+}
+
+/* 充值弹窗样式 */
+.recharge-dialog {
+  :deep(.el-dialog) {
+    border-radius: 8px;
+    overflow: hidden;
+    padding: 0;
+    max-width: 560px;
+    margin-top: 15vh !important;
+  }
+
+  :deep(.el-dialog__body) {
+    padding: 0;
+  }
+
+  :deep(.el-dialog__header) {
+    display: none !important;
+    padding: 0 !important;
+    padding-bottom: 0 !important;
+    margin: 0 !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    line-height: 0 !important;
+    border: none !important;
+    overflow: hidden !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    position: absolute !important;
+    z-index: -1 !important;
+  }
+}
+
+.recharge-container {
+  position: relative;
+  background-color: #fff;
+}
+
+.recharge-header {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 16px 24px;
+  border-bottom: 1px solid #EBEEF5;
+  gap: 24px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #606266;
+}
+
+.user-info .el-icon-user {
+  font-size: 16px;
+}
+
+.wallet-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #606266;
+}
+
+.wallet-info img {
+  width: 16px;
+  height: 16px;
+}
+
+.close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  cursor: pointer;
+  font-size: 24px;
+  color: #909399;
+}
+
+.close-btn:hover {
+  color: #606266;
+}
+
+.recharge-options {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  padding: 24px;
+}
+
+.recharge-option {
+  background-color: #fff;
+  border: 1px solid #EBEEF5;
+  border-radius: 4px;
+  padding: 16px 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.recharge-option:first-child {
+  background-color: #fff;
+}
+
+.recharge-option.selected {
+  border-color: #409EFF;
+  background-color: #f5f5f5;
+}
+
+.original-price {
+  color: #909399;
+  text-decoration: line-through;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.discount-price {
+  color: #303133;
+  font-size: 20px;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.points {
+  color: #606266;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.points .el-icon-info {
+  font-size: 12px;
+  color: #909399;
+}
+
+.payment-section {
+  display: flex;
+  padding: 0;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 0 24px 20px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.05);
+}
+
+.qr-code {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f5f5f5;
+  padding: 20px;
+  height: 240px;
+  border-right: 1px dashed #ccc;
+}
+
+.qr-code img {
+  width: 140px;
+  height: 140px;
+  object-fit: contain;
+}
+
+.payment-right-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: #f5f5f5;
+  padding: 20px;
+  justify-content: space-between;
+}
+
+.payment-options {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 0 20px;
+  gap: 15px;
+}
+
+.payment-option {
+  margin-bottom: 0;
+  border-radius: 30px;
+  overflow: hidden;
+  border: 1px solid #dcdfe6;
+  background-color: #fff;
+  transition: all 0.3s;
+  height: 44px;
+}
+
+.payment-option.selected {
+  border-color: #409EFF;
+  background-color: #fff;
+}
+
+.radio-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 0 20px;
+  width: 100%;
+  height: 100%;
+}
+
+.radio-label input[type="radio"] {
+  display: none;
+}
+
+.radio-custom {
+  width: 18px;
+  height: 18px;
+  border: 1px solid #dcdfe6;
+  border-radius: 50%;
+  margin-right: 10px;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.radio-custom::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #409EFF;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.radio-label input[type="radio"]:checked+.radio-custom::after {
+  opacity: 1;
+}
+
+.payment-option.selected .radio-custom {
+  border-color: #409EFF;
+}
+
+.payment-option img {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.payment-option span {
+  font-size: 14px;
+  color: #606266;
+}
+
+.payment-notes {
+  padding: 0;
+  color: #909399;
+  font-size: 12px;
+  line-height: 1.6;
+  background-color: #f5f5f5;
+}
+
+.payment-notes p {
+  margin: 4px 0;
+  display: flex;
+  align-items: flex-start;
+  line-height: 1.8;
+}
+
+.agreement {
+  color: #409EFF;
+  cursor: pointer;
+  text-decoration: underline;
 }
 </style>

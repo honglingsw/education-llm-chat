@@ -391,7 +391,7 @@
 <script>
 import axios from 'axios';
 import ASRClient from '@/utils/asr'
-import { stream } from 'xlsx';
+import AudioPlayer from '@/utils/tts'
 import { marked } from 'marked'
 export default {
   data() {
