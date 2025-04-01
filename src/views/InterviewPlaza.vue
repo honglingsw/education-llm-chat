@@ -80,6 +80,7 @@
         <div class="card-list">
           <div v-for="(interview, index) in filteredInterviews" :key="index" class="interview-card"
             @click="goToInterview(interview)">
+            
             <div class="card-icon">
               <i :class="interview.icon" />
             </div>
@@ -257,14 +258,17 @@ export default {
           title: '公务员考试',
           description: '涵盖全国31省市近5年真题，500+高仿真模拟题，协助考生语言表达训练、应急应变技巧、考官评分视角分析',
           type: 'structured',
+          code:'GOV_EXAM',
           icon: 'el-icon-user',
           isForWaiting: false,
         },
         {
           id: 2,
-          title: '教师资格证考试',
+          title: '互联网考试',
           description: '这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述',
           type: 'structured',
+          code:'INTERNET',
+
           icon: 'el-icon-user-solid',
           isForWaiting: false,
         },
@@ -285,15 +289,16 @@ export default {
           isForWaiting: false,
         },
         {
-          id: 1,
+          id: 5,
           title: '公务员考试',
           description: '涵盖全国31省市近5年真题，500+高仿真模拟题，协助考生语言表达训练、应急应变技巧、考官评分视角分析',
           type: 'structured',
+          code:'GOV_EXAM',
           icon: 'el-icon-user',
           isForWaiting: false,
         },
         {
-          id: 2,
+          id: 6,
           title: '教师资格证考试',
           description: '这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述',
           type: 'structured',
@@ -301,7 +306,7 @@ export default {
           isForWaiting: false,
         },
         {
-          id: 3,
+          id: 7,
           title: '教师资格证考试',
           description: '这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述',
           type: 'structured',
@@ -309,7 +314,7 @@ export default {
           isForWaiting: true,
         },
         {
-          id: 4,
+          id: 8,
           title: '教师资格证考试',
           description: '这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述',
           type: 'internet',
@@ -382,7 +387,7 @@ export default {
 
   methods: {
     goToInterview(interview) {
-      this.$router.push(`/interview-practice`)
+      this.$router.push({name: 'InterviewPracticeTest',params: { code: interview.code }})
       // 导航到面试练习页面
       // this.$router.push({
       //   name: 'InterviewPractice',
@@ -405,7 +410,9 @@ export default {
       // 重置表单数据和验证状态
       this.$refs.loginForm.resetFields()
     },
+    showRechargeDialog(){
 
+    },
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {

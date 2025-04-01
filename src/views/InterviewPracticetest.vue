@@ -5,7 +5,7 @@
       <div class="header-container">
         <!-- 左侧logo -->
         <div class="header-left">
-          <img class="nav-logo" src="@/assets/logo1.png" alt="Logo">
+          <img class="nav-logo" src="@/assets/logo1.png" alt="Logo" />
         </div>
         <!-- 右侧工具栏 -->
         <div class="header-right">
@@ -13,47 +13,86 @@
             <template v-if="isLoggedIn">
               <div class="nav-icons-wrapper">
                 <div class="qr-tooltip-container">
-                  <img class="icon-img" src="@/assets/all.png" alt="all">
+                  <img class="icon-img" src="@/assets/all.png" alt="all" />
                   <div class="qr-tooltip">
                     <div class="qr-tooltip-content">
-                      <img src="@/assets/qr_code.png" alt="QR Code" class="qr-code-img">
+                      <img
+                        src="@/assets/qr_code.png"
+                        alt="QR Code"
+                        class="qr-code-img"
+                      />
                       <div class="qr-tooltip-text">进群送次数</div>
                     </div>
                   </div>
                 </div>
                 <div class="wallet nav-icon" @click="showRechargeDialog">
-                  <img class="wallet-icon" src="@/assets/wallet.png" alt="wallet">
-                  <span class="balance"
-                    style="font-size: 14px; color: #111111; font-family: 'Alibaba Sans', sans-serif;">{{ coinBalance
-                    }}</span>
+                  <img
+                    class="wallet-icon"
+                    src="@/assets/wallet.png"
+                    alt="wallet"
+                  />
+                  <span
+                    class="balance"
+                    style="
+                      font-size: 14px;
+                      color: #111111;
+                      font-family: 'Alibaba Sans', sans-serif;
+                    "
+                    >{{ coinBalance }}</span
+                  >
                 </div>
               </div>
             </template>
             <template v-else>
               <div class="nav-icons-wrapper">
                 <div class="qr-tooltip-container">
-                  <img class="icon-img" src="@/assets/all.png" alt="all">
+                  <img class="icon-img" src="@/assets/all.png" alt="all" />
                   <div class="qr-tooltip">
                     <div class="qr-tooltip-content">
-                      <img src="@/assets/qr_code.png" alt="QR Code" class="qr-code-img">
+                      <img
+                        src="@/assets/qr_code.png"
+                        alt="QR Code"
+                        class="qr-code-img"
+                      />
                       <div class="qr-tooltip-text">进群送次数</div>
                     </div>
                   </div>
                 </div>
-                <img class="icon-img" src="@/assets/wallet.png" alt="wallet" @click="showRechargeDialog">
+                <img
+                  class="icon-img"
+                  src="@/assets/wallet.png"
+                  alt="wallet"
+                  @click="showRechargeDialog"
+                />
               </div>
             </template>
           </div>
           <div class="user-actions">
             <template v-if="isLoggedIn">
               <img src="@/assets/user.png" class="user-icon" alt="user" />
-              <span class="user-phone"
-                style="color: #111111; font-family: 'Alibaba Sans', sans-serif; font-size: 14px;">{{ maskPhoneNumber
-                }}</span>
-              <img src="@/assets/out.png" class="logout-icon" alt="logout" @click="handleLogout" />
+              <span
+                class="user-phone"
+                style="
+                  color: #111111;
+                  font-family: 'Alibaba Sans', sans-serif;
+                  font-size: 14px;
+                "
+                >{{ maskPhoneNumber }}</span
+              >
+              <img
+                src="@/assets/out.png"
+                class="logout-icon"
+                alt="logout"
+                @click="handleLogout"
+              />
             </template>
             <template v-else>
-              <el-button class="login-button" type="primary" @click="showLoginDialog">登录</el-button>
+              <el-button
+                class="login-button"
+                type="primary"
+                @click="showLoginDialog"
+                >登录</el-button
+              >
             </template>
           </div>
         </div>
@@ -62,7 +101,11 @@
     <div>
       <!-- 主体内容 -->
       <main class="main-content-row">
-        <div v-show="!drawerVisible" class="drawer-trigger" style="left: 0; right: auto;">
+        <div
+          v-show="!drawerVisible"
+          class="drawer-trigger"
+          style="left: 0; right: auto"
+        >
           <div class="trigger-area" @click="toggleDrawer">
             <i class="el-icon-notebook-2" />
             <span>答题表</span>
@@ -71,27 +114,46 @@
         <div class="main-container">
           <!-- 替换浮动按钮为侧拉栏 -->
           <transition name="slide-left">
-
             <div class="left-panel" v-show="drawerVisible">
               <!-- 抽屉顶部区域：标题和折叠图标 -->
               <div class="drawer-header">
                 <span class="title">答题表</span>
-                <img class="logo" src="@/assets/logoOrderedHistory.png" alt="折叠" @click="toggleDrawer" />
+                <img
+                  class="logo"
+                  src="@/assets/logoOrderedHistory.png"
+                  alt="折叠"
+                  @click="toggleDrawer"
+                />
               </div>
               <div class="drawer-content">
                 <div class="question-list">
-                  <div v-for="(item, i) in orderedHistory" :key="item.answerId"
+                  <div
+                    v-for="(item, i) in orderedHistory"
+                    :key="item.answerId"
                     @click="get_exam_detail(item.questionId, i)"
-                    :class="['question-item', { active: currentQuestionIndex === i }]">
+                    :class="[
+                      'question-item',
+                      { active: currentQuestionIndex === i },
+                    ]"
+                  >
                     <span>
                       {{ i + 1 }}.
-                      <span v-if="item.state === 'ANSWERED' || item.state === 'VIEWED'" :class="['question-item-status', {
-                        'item-status-answered': item.state === 'ANSWERED',
-                        'item-status-viewed': item.state === 'VIEWED'
-                      }]">
-                        {{ item.state === 'ANSWERED' ? '已作答' : '已阅读' }}
+                      <span
+                        v-if="
+                          item.state === 'ANSWERED' || item.state === 'VIEWED'
+                        "
+                        :class="[
+                          'question-item-status',
+                          {
+                            'item-status-answered': item.state === 'ANSWERED',
+                            'item-status-viewed': item.state === 'VIEWED',
+                          },
+                        ]"
+                      >
+                        {{ item.state === "ANSWERED" ? "已作答" : "已阅读" }}
                       </span>
-                      {{ item.questionContent }} （{{ item.examTime }} {{ item.questionType }}）
+                      {{ item.questionContent }} （{{ item.examTime }}
+                      {{ item.questionType }}）
                     </span>
                   </div>
                 </div>
@@ -99,9 +161,6 @@
             </div>
           </transition>
           <main class="main-content">
-
-
-
             <!-- 侧拉栏触发区域 -->
 
             <!-- 翻页区域 -->
@@ -137,37 +196,69 @@
               <div class="back-btn" @click="goBack">
                 <i class="el-icon-arrow-left"></i>
                 <span>返回</span>
-                <span class="exam-title">公务员考试</span>
+                <span class="exam-title">
+                  {{
+                    {
+                      GOV_EXAM: "公务员考试",
+                      INTERNET: "互联网考试",
+                    }[examCode] || "考试"
+                  }}
+                </span>
                 <div class="light-btn" @click.stop="showTips">
-                  <img src="@/assets/light.png" alt="提示" class="light-icon">
+                  <img src="@/assets/light.png" alt="提示" class="light-icon" />
                 </div>
               </div>
               <div class="page-region">
                 <div class="question-number">
                   <span>{{ currentIndex }}</span>
-                  <div class="question-status-tag"
-                    v-if="questionContent.questionStateEnum === 'ANSWERED' || questionContent.questionStateEnum === 'VIEWED'"
+                  <div
+                    class="question-status-tag"
+                    v-if="
+                      questionContent.questionStateEnum === 'ANSWERED' ||
+                      questionContent.questionStateEnum === 'VIEWED'
+                    "
                     :class="{
-                      'status-answered': questionContent.questionStateEnum === 'ANSWERED',
-                      'status-viewed': questionContent.questionStateEnum === 'VIEWED'
-                    }">
-                    {{ questionContent.questionStateEnum === 'ANSWERED' ? '已作答' : '已阅读' }}
+                      'status-answered':
+                        questionContent.questionStateEnum === 'ANSWERED',
+                      'status-viewed':
+                        questionContent.questionStateEnum === 'VIEWED',
+                    }"
+                  >
+                    {{
+                      questionContent.questionStateEnum === "ANSWERED"
+                        ? "已作答"
+                        : "已阅读"
+                    }}
                   </div>
                 </div>
                 <div class="nav-buttons">
                   <el-button class="square-nav-btn" @click="prevQuestion">
-                    <img src="@/assets/left.png" alt="上一题" class="arrow-icon">
+                    <img
+                      src="@/assets/left.png"
+                      alt="上一题"
+                      class="arrow-icon"
+                    />
                   </el-button>
                   <span>{{ currentIndex }}/{{ totalCount }}</span>
                   <el-button class="square-nav-btn" @click="nextQuestion">
-                    <img src="@/assets/right.png" alt="下一题" class="arrow-icon">
+                    <img
+                      src="@/assets/right.png"
+                      alt="下一题"
+                      class="arrow-icon"
+                    />
                   </el-button>
                 </div>
               </div>
               <h1 class="question-title">
                 {{ questionContent.content }}
-                <span v-if="questionContent.examTime || questionContent.questionType" class="question-subtitle">
-                  （{{ questionContent.examTime }} {{ questionContent.questionType }}）
+                <span
+                  v-if="
+                    questionContent.examTime || questionContent.questionType
+                  "
+                  class="question-subtitle"
+                >
+                  （{{ questionContent.examTime }}
+                  {{ questionContent.questionType }}）
                 </span>
               </h1>
             </div>
@@ -184,22 +275,38 @@
 
                   <!-- 录音中显示结束作答按钮 -->
                   <div class="header-actions" v-if="isRecording">
-                    <button class="action-btn end-record-btn" @click="endRecording">
+                    <button
+                      class="action-btn end-record-btn"
+                      @click="endRecording"
+                    >
                       结束作答
                     </button>
                   </div>
 
                   <!-- 录音结束后显示三个操作按钮 -->
-                  <div class="header-actions" v-if="!isRecording && hasRecordedContent">
-                    <button class="action-btn restart-btn" @click="restartRecording">
+                  <div
+                    class="header-actions"
+                    v-if="!isRecording && hasRecordedContent"
+                  >
+                    <button
+                      class="action-btn restart-btn"
+                      @click="restartRecording"
+                    >
                       <i class="el-icon-microphone"></i>
                       重新回答
                     </button>
-                    <button class="action-btn fullscreen-btn" @click="toggleFullscreen">
+                    <button
+                      class="action-btn fullscreen-btn"
+                      @click="toggleFullscreen"
+                    >
                       <i class="el-icon-full-screen"></i>
                       全屏
                     </button>
-                    <button class="action-btn evaluation-btn" @click="showEvaluation" v-if="!showEvaluationContent">
+                    <button
+                      class="action-btn evaluation-btn"
+                      @click="showEvaluation"
+                      v-if="!showEvaluationContent"
+                    >
                       <i class="el-icon-s-comment"></i>
                       作答点评
                     </button>
@@ -207,13 +314,16 @@
                 </div>
 
                 <!-- 录音前的提示 -->
-                <div class="record-hint" v-if="!isRecording && !hasRecordedContent">
+                <div
+                  class="record-hint"
+                  v-if="!isRecording && !hasRecordedContent"
+                >
                   点击录音按钮，开始答题
 
                   <!-- 录音按钮 - 只在录音前显示 -->
                   <div class="record-button-wrapper">
                     <div class="mic-circle" @click="toggleRecording">
-                      <img src="@/assets/microphone.png" alt="microphone">
+                      <img src="@/assets/microphone.png" alt="microphone" />
                     </div>
                   </div>
                 </div>
@@ -222,45 +332,95 @@
                 <template v-else>
                   <div id="status"></div>
                   <div class="recorded-content" ref="recordContent">
-                    <div  :class="['evaluation-content-input', showEvaluationContentIn ? 'half-width' : 'full-width']" >
-                      <p class="paragraph" >{{ asrResult }}This is a comprehensive Vue single-file component for an interview page, handling user authentication, audio recording, question navigation, feedback dialogs, and more. Could you let me know what you'd like assistance with? For example, do you need help debugging an issue, refactoring the code, or understanding how a specific part works?</p>
+                    <div
+                      :class="[
+                        'evaluation-content-input',
+                        showEvaluationContentIn ? 'half-width' : 'full-width',
+                      ]"
+                    >
+                      <p class="paragraph">
+                        {{ asrResult }}This is a comprehensive Vue single-file
+                        component for an interview page, handling user
+                        authentication, audio recording, question navigation,
+                        feedback dialogs, and more. Could you let me know what
+                        you'd like assistance with? For example, do you need
+                        help debugging an issue, refactoring the code, or
+                        understanding how a specific part works?
+                      </p>
                     </div>
                     <!-- 点评内容 -->
-                    <div v-if="showEvaluationContentIn" class="evaluation-content" ref="evaluationContent">
-                      点评: <p class="paragraph model-thinking" v-html="markdownReason"></p>
+                    <div
+                      v-if="showEvaluationContentIn"
+                      class="evaluation-content"
+                      ref="evaluationContent"
+                    >
+                      点评:
+                      <p
+                        class="paragraph model-thinking"
+                        v-html="markdownReason"
+                      ></p>
                       <p class="paragraph" v-html="markdownResult"></p>
                     </div>
                   </div>
                 </template>
               </div>
-
             </div>
           </main>
           <transition name="slide-right">
             <div class="demo-panel" v-show="demoDrawerVisible">
               <div class="demo-drawer-content">
                 <template v-if="!isDemoStarted">
-                  <div class="demo-start-area" @click="startDemo">
-                    <img class="logo" src="@/assets/deepseek-color.png" alt="Logo">
-                    <div class="demo-text">deepseek</div>
-                    <div class="demo-hint">点击开始示范</div>
+                  <div class="demo-start-area">
+                    <button class="demo-button" @click="startDemo">
+                      查看示范
+                    </button>
+                    <div class="demo-hint-text">
+                      不知道怎么回答？让AI做个示范
+                    </div>
                   </div>
                 </template>
                 <template v-else>
-                  <div class="source-hint">
-                    以下内容均来自deepseek-r1生成
-                    <el-button type="text" class="regenerate-btn" @click.stop="startDemo">
-                      <i class="el-icon-refresh" />
-                      重新生成
-                    </el-button>
-                    <el-button type="text" @click="toggleAn">
-                      <i :class="isAnVisible ? 'el-icon-s-fold' : 'el-icon-s-unfold'" />
-                      {{ isAnVisible ? '隐藏' : '显示' }}
-                    </el-button>
+                  <div class="source-hint-header">
+                    <div class="source-hint-title">示范作答</div>
+                    <div class="source-hint-actions">
+                      <button class="icon-btn" @click.stop="readDemo">
+                        <i class="el-icon-headset"></i> 朗读
+                      </button>
+                      <button class="icon-btn" @click.stop="startDemo">
+                        <i class="el-icon-refresh"></i> 重试
+                      </button>
+                      <button
+                        class="icon-btn"
+                        @click.stop="toggleDemoFullscreen"
+                      >
+                        <i class="el-icon-full-screen"></i> 全屏
+                      </button>
+                      <button class="icon-btn" @click="toggleAn">
+                        <img
+                          v-if="isAnVisible"
+                          src="@/assets/eyein.png"
+                          class="eye-icon"
+                        />
+                        <i v-else class="el-icon-view"></i>
+                        {{ isAnVisible ? "隐藏" : "显示" }}
+                      </button>
+                    </div>
                   </div>
-                  <div class="demo-content" v-if="isAnVisible" ref="sourceHint">
+                  <div
+                    class="demo-content"
+                    :class="{ blurred: !isAnVisible }"
+                    v-if="true"
+                    ref="sourceHint"
+                  >
+                    <!-- 添加第二个source-hint标题栏 -->
+                    <div class="source-hint-header thinking-header">
+                      <div class="source-hint-title">以下内容来自DeepSeek</div>
+                    </div>
                     <div class="content-text">
-                      <p class="paragraph model-thinking" v-html="markdownReasonContent"></p>
+                      <p
+                        class="paragraph model-thinking"
+                        v-html="markdownReasonContent"
+                      ></p>
                       <p class="paragraph" v-html="markdownModelResult"></p>
                     </div>
                   </div>
@@ -272,26 +432,33 @@
       </main>
 
       <!-- 示范作答侧拉按钮 -->
-      <div class="demo-trigger">
+      <div class="demo-trigger" :class="{ 'drawer-open': demoDrawerVisible }">
         <div class="demo-trigger-area" @click="toggleDemoDrawer">
-          <span>示范作答</span>
-          <i :class="demoDrawerVisible ? 'el-icon-arrow-right' : 'el-icon-arrow-left'"></i>
+          <template v-if="!demoDrawerVisible">
+            <span>示范作答</span>
+          </template>
+          <template v-else>
+            <img src="@/assets/rightarrow.png" class="arrow-icon" alt="右箭头" />
+          </template>
         </div>
       </div>
-
-
-
-
     </div>
 
     <!-- 添加消息对话框 -->
-    <el-dialog :visible.sync="messageDialogVisible" :show-close="false" class="welcome-dialog">
+    <el-dialog
+      :visible.sync="messageDialogVisible"
+      :show-close="false"
+      class="welcome-dialog"
+    >
       <div class="welcome-content">
         <h1 class="welcome-title">欢迎使用结构化面试陪练助手！</h1>
 
         <p class="user-greeting">亲爱的考生:</p>
 
-        <p class="intro-text">感谢您对我们产品的信任！ 在这里，我们将为您简单介绍一下本系统的功能和使用方法。</p>
+        <p class="intro-text">
+          感谢您对我们产品的信任！
+          在这里，我们将为您简单介绍一下本系统的功能和使用方法。
+        </p>
 
         <p class="feature-text">
           结构化面试是当前公务员/事业编考试中，最常见的面试形式。结构化面试常见的评分维度存在......等评分维度。根据过往经验，我们将结构化面试分为了5个维度：分析能力、应变能力、计划组织能力、人际交往意识与技巧、言语表达能力。
@@ -299,11 +466,17 @@
 
         <p class="dots">......</p>
 
-        <p class="feature-text">在结构化面试陪练助手中，基于国内顶尖的人工智能大模型，我们为您提供了专业、智能的面试练习体验。</p>
+        <p class="feature-text">
+          在结构化面试陪练助手中，基于国内顶尖的人工智能大模型，我们为您提供了专业、智能的面试练习体验。
+        </p>
 
         <p class="dots">......</p>
 
-        <p class="more-info">访问xx网站以获取更多信息：<a href="http://www.example.com">http://www.example.com</a></p>
+        <p class="more-info">
+          访问xx网站以获取更多信息：<a href="http://www.example.com"
+            >http://www.example.com</a
+          >
+        </p>
 
         <div class="signature">
           <p>您的职业伙伴</p>
@@ -312,13 +485,21 @@
         </div>
 
         <div class="btn-container">
-          <button class="confirm-btn" @click="messageDialogVisible = false">确定</button>
+          <button class="confirm-btn" @click="messageDialogVisible = false">
+            确定
+          </button>
         </div>
       </div>
     </el-dialog>
 
     <!-- 添加充值弹窗 -->
-    <el-dialog :visible.sync="rechargeDialogVisible" class="recharge-dialog" width="720px" :show-close="false" center>
+    <el-dialog
+      :visible.sync="rechargeDialogVisible"
+      class="recharge-dialog"
+      width="720px"
+      :show-close="false"
+      center
+    >
       <div class="recharge-container">
         <!-- 顶部用户信息 -->
         <div class="recharge-header">
@@ -327,8 +508,8 @@
             <span>{{ maskPhoneNumber }}</span>
           </div>
           <div class="wallet-info">
-            <img class="wallet-icon" src="@/assets/wallet.png" alt="wallet">
-            <span>{{ isLoggedIn ? '4000' : '----' }}</span>
+            <img class="wallet-icon" src="@/assets/wallet.png" alt="wallet" />
+            <span>{{ isLoggedIn ? "4000" : "----" }}</span>
           </div>
           <div class="close-btn" @click="rechargeDialogVisible = false">
             <i class="el-icon-close" />
@@ -337,11 +518,18 @@
 
         <!-- 充值选项 -->
         <div class="recharge-options">
-          <div v-for="(option, index) in rechargeOptions" :key="index" class="recharge-option"
-            :class="{ 'selected': selectedRechargeOption === index }" @click="selectedRechargeOption = index">
+          <div
+            v-for="(option, index) in rechargeOptions"
+            :key="index"
+            class="recharge-option"
+            :class="{ selected: selectedRechargeOption === index }"
+            @click="selectedRechargeOption = index"
+          >
             <div class="original-price">{{ option.originalPrice }}元</div>
             <div class="discount-price">{{ option.discountPrice }}元</div>
-            <div class="points">{{ option.points }} <i class="el-icon-info" /></div>
+            <div class="points">
+              {{ option.points }} <i class="el-icon-info" />
+            </div>
           </div>
         </div>
 
@@ -349,28 +537,42 @@
         <div class="payment-section">
           <!-- 二维码区域 -->
           <div class="qr-code">
-            <img src="@/assets/qr_code.png" alt="QR Code">
+            <img src="@/assets/qr_code.png" alt="QR Code" />
           </div>
 
           <!-- 右侧区域：支付选项和说明文字 -->
           <div class="payment-right-section">
             <!-- 支付选项 -->
             <div class="payment-options">
-              <div class="payment-option" :class="{ 'selected': paymentMethod === 'wechat' }"
-                @click="paymentMethod = 'wechat'">
+              <div
+                class="payment-option"
+                :class="{ selected: paymentMethod === 'wechat' }"
+                @click="paymentMethod = 'wechat'"
+              >
                 <label class="radio-label">
-                  <input type="radio" name="payment" :checked="paymentMethod === 'wechat'">
+                  <input
+                    type="radio"
+                    name="payment"
+                    :checked="paymentMethod === 'wechat'"
+                  />
                   <span class="radio-custom"></span>
-                  <img src="@/assets/wechat_pay.png" alt="WeChat Pay">
+                  <img src="@/assets/wechat_pay.png" alt="WeChat Pay" />
                   <span>微信支付</span>
                 </label>
               </div>
-              <div class="payment-option" :class="{ 'selected': paymentMethod === 'alipay' }"
-                @click="paymentMethod = 'alipay'">
+              <div
+                class="payment-option"
+                :class="{ selected: paymentMethod === 'alipay' }"
+                @click="paymentMethod = 'alipay'"
+              >
                 <label class="radio-label">
-                  <input type="radio" name="payment" :checked="paymentMethod === 'alipay'">
+                  <input
+                    type="radio"
+                    name="payment"
+                    :checked="paymentMethod === 'alipay'"
+                  />
                   <span class="radio-custom"></span>
-                  <img src="@/assets/alipay.png" alt="Alipay">
+                  <img src="@/assets/alipay.png" alt="Alipay" />
                   <span>支付宝支付</span>
                 </label>
               </div>
@@ -378,8 +580,13 @@
 
             <!-- 说明文字 -->
             <div class="payment-notes">
-              <p>• 每次答题点评消耗积分，每次智能示范消耗积分；点数不足时，无法使用对应服务</p>
-              <p>• 完成支付即视为同意<span class="agreement">《用户协议》</span></p>
+              <p>
+                •
+                每次答题点评消耗积分，每次智能示范消耗积分；点数不足时，无法使用对应服务
+              </p>
+              <p>
+                • 完成支付即视为同意<span class="agreement">《用户协议》</span>
+              </p>
             </div>
           </div>
         </div>
@@ -387,15 +594,27 @@
     </el-dialog>
 
     <!-- 添加登录弹框 -->
-    <el-dialog :visible.sync="loginDialogVisible" class="dialog-container" width="400px" :show-close="false"
-      :before-close="handleCloseDialog" :close-on-click-modal="false" center>
+    <el-dialog
+      :visible.sync="loginDialogVisible"
+      class="dialog-container"
+      width="400px"
+      :show-close="false"
+      :before-close="handleCloseDialog"
+      :close-on-click-modal="false"
+      center
+    >
       <div class="login-container">
         <!-- LOGO区域 -->
         <div class="login-logo">
-          <img src="@/assets/logo1.png" alt="Logo" class="logo-image">
+          <img src="@/assets/logo1.png" alt="Logo" class="logo-image" />
         </div>
 
-        <el-form ref="loginForm" :model="loginForm" :rules="loginRules" label-width="0">
+        <el-form
+          ref="loginForm"
+          :model="loginForm"
+          :rules="loginRules"
+          label-width="0"
+        >
           <!-- 手机号输入框 -->
           <el-form-item prop="phone" class="form-item">
             <el-input v-model="loginForm.phone" placeholder="手机号" />
@@ -403,7 +622,11 @@
 
           <!-- 图形验证码 -->
           <el-form-item prop="captcha" class="captcha-verify">
-            <el-input v-model="captcha.captchaCode" placeholder="图片验证" class="captcha-input" />
+            <el-input
+              v-model="captcha.captchaCode"
+              placeholder="图片验证"
+              class="captcha-input"
+            />
             <el-image :src="captcha.captchaImg" alt="" class="captcha-image">
               <div slot="placeholder" class="image-slot">
                 加载中<span class="dot">...</span>
@@ -415,30 +638,52 @@
           <!-- 验证码区域 -->
           <el-form-item prop="code" class="form-item">
             <div class="verify-input-wrapper">
-              <el-input v-model="loginForm.code" placeholder="输入验证码" class="verify-input" />
-              <span class="send-code-text" :class="{ 'disabled': !canSendCode }" @click="sendCode">
-                {{ canSendCode ? '获取短信验证码' : `${countdown}秒后重新发送` }}
+              <el-input
+                v-model="loginForm.code"
+                placeholder="输入验证码"
+                class="verify-input"
+              />
+              <span
+                class="send-code-text"
+                :class="{ disabled: !canSendCode }"
+                @click="sendCode"
+              >
+                {{
+                  canSendCode ? "获取短信验证码" : `${countdown}秒后重新发送`
+                }}
               </span>
             </div>
           </el-form-item>
 
           <!-- 注册/登录按钮 -->
           <el-form-item class="form-item">
-            <el-button type="primary" class="register-login-btn" :loading="loading" @click="handleLogin">
+            <el-button
+              type="primary"
+              class="register-login-btn"
+              :loading="loading"
+              @click="handleLogin"
+            >
               注册/登录
             </el-button>
           </el-form-item>
 
           <!-- 取消按钮 -->
           <el-form-item class="form-item">
-            <el-button class="cancel-btn" @click="handleCloseDialog">取消</el-button>
+            <el-button class="cancel-btn" @click="handleCloseDialog"
+              >取消</el-button
+            >
           </el-form-item>
         </el-form>
       </div>
     </el-dialog>
 
     <!-- 添加反馈对话框 -->
-    <el-dialog :visible.sync="feedbackDialogVisible" :show-close="false" class="feedback-dialog" center>
+    <el-dialog
+      :visible.sync="feedbackDialogVisible"
+      :show-close="false"
+      class="feedback-dialog"
+      center
+    >
       <div class="feedback-content">
         <div class="close-btn" @click="feedbackDialogVisible = false">
           <i class="el-icon-close"></i>
@@ -446,79 +691,133 @@
 
         <h2>言e面试对您的面试有帮助吗?</h2>
         <div class="star-rating">
-          <i class="el-icon-star-off" v-for="i in 5" :key="'help' + i" @click="setHelpRating(i)"
-            :class="{ 'el-icon-star-on': helpRating >= i }"></i>
+          <i
+            class="el-icon-star-off"
+            v-for="i in 5"
+            :key="'help' + i"
+            @click="setHelpRating(i)"
+            :class="{ 'el-icon-star-on': helpRating >= i }"
+          ></i>
         </div>
 
         <h2>言e面试的使用体验好吗?</h2>
         <div class="star-rating">
-          <i class="el-icon-star-off" v-for="i in 5" :key="'use' + i" @click="setUseRating(i)"
-            :class="{ 'el-icon-star-on': useRating >= i }"></i>
+          <i
+            class="el-icon-star-off"
+            v-for="i in 5"
+            :key="'use' + i"
+            @click="setUseRating(i)"
+            :class="{ 'el-icon-star-on': useRating >= i }"
+          ></i>
         </div>
 
         <h2>言e面试的解答是否专业?</h2>
         <div class="star-rating">
-          <i class="el-icon-star-off" v-for="i in 5" :key="'professional' + i" @click="setProfessionalRating(i)"
-            :class="{ 'el-icon-star-on': professionalRating >= i }"></i>
+          <i
+            class="el-icon-star-off"
+            v-for="i in 5"
+            :key="'professional' + i"
+            @click="setProfessionalRating(i)"
+            :class="{ 'el-icon-star-on': professionalRating >= i }"
+          ></i>
         </div>
 
         <h2>言e面试的定价是否合理?</h2>
         <div class="star-rating">
-          <i class="el-icon-star-off" v-for="i in 5" :key="'price' + i" @click="setPriceRating(i)"
-            :class="{ 'el-icon-star-on': priceRating >= i }"></i>
+          <i
+            class="el-icon-star-off"
+            v-for="i in 5"
+            :key="'price' + i"
+            @click="setPriceRating(i)"
+            :class="{ 'el-icon-star-on': priceRating >= i }"
+          ></i>
         </div>
 
         <h2>如果您还有更多想说的，请告诉我:</h2>
-        <el-input type="textarea" :rows="3" v-model="feedbackComment" placeholder="请输入您的反馈意见..."></el-input>
+        <el-input
+          type="textarea"
+          :rows="3"
+          v-model="feedbackComment"
+          placeholder="请输入您的反馈意见..."
+        ></el-input>
 
         <div class="auto-show-option">
           <el-checkbox v-model="notAutoShow">不再自动弹出</el-checkbox>
         </div>
 
         <div class="feedback-btns">
-          <el-button class="cancel-btn" @click="feedbackDialogVisible = false">不了，谢谢</el-button>
-          <el-button type="primary" class="submit-btn" @click="submitFeedback">提交反馈</el-button>
+          <el-button class="cancel-btn" @click="feedbackDialogVisible = false"
+            >不了，谢谢</el-button
+          >
+          <el-button type="primary" class="submit-btn" @click="submitFeedback"
+            >提交反馈</el-button
+          >
         </div>
       </div>
     </el-dialog>
 
     <!-- 添加悬浮按钮 -->
     <div class="float-button" @click="feedbackDialogVisible = true">
-      <img src="@/assets/QA.png" alt="QA" class="qa-icon">
+      <img src="@/assets/QA.png" alt="QA" class="qa-icon" />
     </div>
 
-    
+    <!-- 添加示范作答全屏模态框 -->
+    <div class="fullscreen-modal" v-if="isDemoFullscreen">
+      <div class="fullscreen-content">
+        <div class="fullscreen-header">
+          <div class="fullscreen-title">示范作答</div>
+          <button class="close-fullscreen-btn" @click="toggleDemoFullscreen">
+            <i class="el-icon-close"></i>
+          </button>
+        </div>
+        <div class="fullscreen-body">
+          <div class="fullscreen-columns">
+            <!-- 示范作答全屏内容 -->
+            <div class="fullscreen-demo-column">
+              <div class="column-title">以下内容来自DeepSeek</div>
+              <div class="column-content" :class="{ blurred: !isAnVisible }">
+                <p
+                  class="paragraph model-thinking"
+                  v-html="markdownReasonContent"
+                ></p>
+                <p class="paragraph" v-html="markdownModelResult"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
-import ASRClient from '@/utils/asr'
-import { stream } from 'xlsx';
-import { marked } from 'marked'
+import axios from "axios";
+import ASRClient from "@/utils/asr";
+import { stream } from "xlsx";
+import { marked } from "marked";
 export default {
   data() {
     // 自定义手机号验证规则
     const validatePhone = (rule, value, callback) => {
       if (!value) {
-        callback(new Error('请输入手机号'))
+        callback(new Error("请输入手机号"));
       } else if (!/^1[3-9]\d{9}$/.test(value)) {
-        callback(new Error('不合法的手机号！'))
+        callback(new Error("不合法的手机号！"));
       } else {
-        callback()
+        callback();
       }
-    }
+    };
 
     // 添加验证码验证规则
     const validateCode = (rule, value, callback) => {
       if (!value) {
-        callback(new Error('请输入验证码'))
+        callback(new Error("请输入验证码"));
         // } else if (value !== '1234') {
         //   callback(new Error('验证码错误！'))
       } else {
-        callback()
+        callback();
       }
-    }
+    };
 
     return {
       messageDialogVisible: false,
@@ -528,30 +827,30 @@ export default {
       isRecording: false,
       loginDialogVisible: false,
       loading: false,
-      token: '',
+      token: "",
       loginForm: {
-        phone: '',
-        code: ''
+        phone: "",
+        code: "",
       },
       coinBalance: 0,
       asrClient: null,
       captcha: {
-        captchaId: '',
-        captchaImg: '',
-        captchaCode: '',
+        captchaId: "",
+        captchaImg: "",
+        captchaCode: "",
       },
       loginRules: {
         phone: [
-          { required: true, message: '请输入手机号', trigger: 'submit' },
-          { validator: validatePhone, trigger: 'submit' }
+          { required: true, message: "请输入手机号", trigger: "submit" },
+          { validator: validatePhone, trigger: "submit" },
         ],
         code: [
-          { required: true, message: '请输入验证码', trigger: 'submit' },
-          { validator: validateCode, trigger: 'submit' }
+          { required: true, message: "请输入验证码", trigger: "submit" },
+          { validator: validateCode, trigger: "submit" },
         ],
       },
-
-      activeTab: 'demo',
+      examCode: "",
+      activeTab: "demo",
       countdown: 60,
       timer: null,
       canSendCode: true,
@@ -561,13 +860,13 @@ export default {
       recordCount: 0, // 添加录音次数计数
       showTipMessage: false, // 控制提示消息的显示
       isLoggedIn: false,
-      userPhone: '',
-      validPhone: '13012343322', // 可登录手机号先写
-      modelResult: '',
-      selectedQuestionType: '',
-      selectedYear: '',
-      selectedRegion: '',
-      questionContentitem: '',
+      userPhone: "",
+      validPhone: "13012343322", // 可登录手机号先写
+      modelResult: "",
+      selectedQuestionType: "",
+      selectedYear: "",
+      selectedRegion: "",
+      questionContentitem: "",
       orderedHistory: [], // 用于存储按答题顺序排列的历史记录
       history: [],
       errorLock: false,
@@ -576,16 +875,16 @@ export default {
       questionTypes: [],
 
       questionContent: {
-        questionId: '',
-        content: '',
-        answer: '',
-        totalCount: '',
-        currentIndex: ''
+        questionId: "",
+        content: "",
+        answer: "",
+        totalCount: "",
+        currentIndex: "",
       },
       questionContentitem: {
-        questionContent: '',
-        region: '',
-        questionType: ''
+        questionContent: "",
+        region: "",
+        questionType: "",
       },
       questionIdList: [],
       questionCount: 0,
@@ -593,107 +892,117 @@ export default {
 
       rechargeDialogVisible: false,
       selectedRechargeOption: 0,
-      paymentMethod: 'wechat',
+      paymentMethod: "wechat",
       rechargeOptions: [
-        { originalPrice: '129.9', discountPrice: '99.99', points: '2000' },
-        { originalPrice: '129.9', discountPrice: '99.99', points: '2000' },
-        { originalPrice: '129.9', discountPrice: '99.99', points: '2000' },
-        { originalPrice: '129.9', discountPrice: '99.99', points: '2000' }
+        { originalPrice: "129.9", discountPrice: "99.99", points: "2000" },
+        { originalPrice: "129.9", discountPrice: "99.99", points: "2000" },
+        { originalPrice: "129.9", discountPrice: "99.99", points: "2000" },
+        { originalPrice: "129.9", discountPrice: "99.99", points: "2000" },
       ],
 
       searchInput: {
-        examType: '',
-        questionType: '',
-        year: '',
-        region: ''
+        examType: "",
+        questionType: "",
+        year: "",
+        region: "",
       },
-      showEvaluationContentIn:false,
-      asrResult: '',
+      showEvaluationContentIn: false,
+      asrResult: "",
       submitting: false,
       currentIndex: 1,
       totalCount: 22,
-      aiResponseReasonContent: '',
-      aiResponseResult: '',
-      reasonContent: '',
+      aiResponseReasonContent: "",
+      aiResponseResult: "",
+      reasonContent: "",
       isAnVisible: true,
       helpRating: 0,
       useRating: 0,
-      feedbackComment: '',
+      feedbackComment: "",
       notAutoShow: false,
       professionalRating: 0,
       priceRating: 0,
-      isFullscreenModalVisible: false
-    }
+      isFullscreenModalVisible: false,
+      isDemoFullscreen: false,
+    };
   },
 
   computed: {
     maskPhoneNumber() {
-      if (!this.userPhone) return ''
-      return this.userPhone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2')
+      if (!this.userPhone) return "";
+      return this.userPhone.replace(/(\d{3})\d{4}(\d{4})/, "$1****$2");
     },
     markdownReason() {
-      return marked(this.aiResponseReasonContent || '')
+      return marked(this.aiResponseReasonContent || "");
     },
     markdownResult() {
-      return marked(this.aiResponseResult || '')
+      return marked(this.aiResponseResult || "");
     },
     markdownReasonContent() {
-      return marked(this.reasonContent || '')
+      return marked(this.reasonContent || "");
     },
     markdownModelResult() {
-      return marked(this.modelResult || '')
-    }
+      return marked(this.modelResult || "");
+    },
   },
   mounted() {
-    this.getUserInfo()
-    this.getToken()
-    this.get_exam_history()
-    this.changeQuestion()
-    this.searchInput.examType = this.$route.query.type
-    const token = localStorage.getItem('token');
+    this.examCode = this.getExamCode();
+    this.getUserInfo();
+    this.getToken();
+    this.get_exam_history();
+    this.changeQuestion();
+    this.searchInput.examType = this.$route.query.type;
+    const token = localStorage.getItem("token");
     var config = {
-      method: 'get',
-      url: 'https://test.aigcpmer.com/api/api/exam/tags',
-      headers: { 'Authorization': `Bearer ${token}` }
+      method: "get",
+      url: "https://test.aigcpmer.com/api/api/exam/tags",
+      headers: { Authorization: `Bearer ${token}` },
     };
     axios(config)
       .then((response) => {
         console.log(response.data);
-        this.questionTypes = response.data.data[0].tags
-        this.years = response.data.data[1].tags
-        this.regions = response.data.data[2].tags
+        this.questionTypes = response.data.data[0].tags;
+        this.years = response.data.data[1].tags;
+        this.regions = response.data.data[2].tags;
       })
       .catch(function (error) {
         console.log(error);
       });
 
-    this.getCaptcha()
-    this.asrRecording()
-    this.changeQuestion()
+    this.getCaptcha();
+    this.asrRecording();
+    this.changeQuestion();
 
     // 检查是否需要显示欢迎对话框
-    this.checkWelcomeDialog()
+    this.checkWelcomeDialog();
 
     // 添加全局点击监听器
-    document.addEventListener('click', this.handlePageClick)
+    document.addEventListener("click", this.handlePageClick);
   },
   watch: {
     selectedQuestionType(newVal, oldVal) {
-      this.searchInput.questionType = newVal
+      this.searchInput.questionType = newVal;
     },
     selectedYear(newVal, oldVal) {
-      this.searchInput.year = newVal
+      this.searchInput.year = newVal;
     },
     selectedRegion(newVal, oldVal) {
-      this.searchInput.region = newVal
-    }
+      this.searchInput.region = newVal;
+    },
   },
 
   methods: {
     showMessageDialog() {
       this.messageDialogVisible = true;
     },
-
+    getExamCode() {
+      let examCode = this.$route.params.code;
+      if (examCode) {
+        localStorage.setItem("examCode", examCode);
+      } else {
+        examCode = localStorage.getItem("examCode");
+      }
+      return examCode;
+    },
     showFeedbackDialog() {
       this.feedbackDialogVisible = true;
     },
@@ -715,32 +1024,51 @@ export default {
     },
 
     submitFeedback() {
+      const token = localStorage.getItem("token");
+
       // 准备要提交的数据
       const feedbackData = {
-        helpRating: this.helpRating,
-        useRating: this.useRating,
+        helpfulnessRating: this.helpRating,
+        convenienceRating: this.useRating,
         professionalRating: this.professionalRating,
         priceRating: this.priceRating,
-        comment: this.feedbackComment,
-        notAutoShow: this.notAutoShow
+        additionalComments: this.feedbackComment,
+        noPopup: this.notAutoShow,
       };
 
-      // 这里可以添加API请求来提交数据
-      console.log('提交的反馈数据:', feedbackData);
+      var config = {
+        method: "post",
+        url: "https://test.aigcpmer.com/api/userFeedback/create",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        data: feedbackData,
+      };
 
-      this.$message.success('感谢您的参与，祝您生活愉快！');
-      this.feedbackDialogVisible = false;
-      // 重置表单数据
-      this.helpRating = 0;
-      this.useRating = 0;
-      this.feedbackComment = '';
-      this.professionalRating = 0;
-      this.priceRating = 0;
+      axios(config)
+        .then((response) => {
+          // 这里可以添加API请求来提交数据
+          console.log("提交的反馈数据:", feedbackData);
+
+          this.$message.success("感谢您的参与，祝您生活愉快！");
+          this.feedbackDialogVisible = false;
+          // 重置表单数据
+          this.helpRating = 0;
+          this.useRating = 0;
+          this.feedbackComment = "";
+          this.professionalRating = 0;
+          this.priceRating = 0;
+        })
+        .catch((error) => {
+          this.feedbackDialogVisible = false;
+          this.$message.success("网络故障，请重新提交");
+        });
     },
 
     // 添加检查欢迎对话框的方法
     checkWelcomeDialog() {
-      let storageKey = 'lastVisitTime_guest';
+      let storageKey = "lastVisitTime_guest";
 
       // 如果用户已登录，使用用户手机号作为唯一标识符
       if (this.isLoggedIn && this.userPhone) {
@@ -749,7 +1077,9 @@ export default {
 
       const lastVisitTime = localStorage.getItem(storageKey);
       const currentTime = Date.now();
-      const daysPassed = lastVisitTime ? this.getDaysPassed(parseInt(lastVisitTime), currentTime) : null;
+      const daysPassed = lastVisitTime
+        ? this.getDaysPassed(parseInt(lastVisitTime), currentTime)
+        : null;
 
       // 检查是否是180天内的首次访问或者从未访问过
       if (!lastVisitTime || daysPassed > 180) {
@@ -767,19 +1097,19 @@ export default {
     },
 
     get_exam_history(page, size) {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
 
       var data = {
         page: page || 1,
         size: size || 10,
-        serviceTypeEnum: this.serviceTypeEnum || "GOV_EXAM"
-      }
+        serviceTypeEnum: this.$route.params.code,
+      };
 
       var config = {
-        method: 'get',
-        url: 'https://test.aigcpmer.com/api/api/exam/history',
-        headers: { 'Authorization': `Bearer ${token}` },
-        params: data
+        method: "get",
+        url: "https://test.aigcpmer.com/api/api/exam/history",
+        headers: { Authorization: `Bearer ${token}` },
+        params: data,
       };
 
       axios(config)
@@ -788,7 +1118,9 @@ export default {
             this.history = response.data.data;
             console.log(this.history);
             // 根据 answerId 排序，较新的 ID 排在前面
-            this.orderedHistory = [...this.history].sort((a, b) => b.answerId - a.answerId);
+            this.orderedHistory = [...this.history].sort(
+              (a, b) => b.answerId - a.answerId
+            );
           }
         })
         .catch(function (error) {
@@ -796,26 +1128,26 @@ export default {
         });
     },
     toggleAn() {
-      this.isAnVisible = !this.isAnVisible
+      this.isAnVisible = !this.isAnVisible;
     },
     get_exam_detail(id, I) {
-      this.currentQuestionIndex = I
-      console.log('id', id);
-      const token = localStorage.getItem('token');
+      this.currentQuestionIndex = I;
+      console.log("id", id);
+      const token = localStorage.getItem("token");
       const data = {
-        currentId: id
-      }
+        currentId: id,
+      };
 
       axios({
-        method: 'post',
-        url: 'https://test.aigcpmer.com/api/api/exam/switchQuestionById',
+        method: "post",
+        url: "https://test.aigcpmer.com/api/api/exam/switchQuestionById",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        data: data
+        data: data,
       })
-        .then(response => {
+        .then((response) => {
           if (response.data.code === 200) {
             const data = response.data.data;
 
@@ -825,9 +1157,9 @@ export default {
               content: data.content,
               answer: data.answer,
               questionStateEnum: data.questionStateEnum,
-              totalCount: data.totalCount || this.totalCount
+              totalCount: data.totalCount || this.totalCount,
             };
-            this.questionContent.questionId = data.questionId
+            this.questionContent.questionId = data.questionId;
             // 更新页面显示的题目内容
 
             // 更新其他状态
@@ -838,8 +1170,8 @@ export default {
             this.hasRecordedContent = true;
             this.asrResult = data.userContent;
             this.aiResponseReasonContent = data.reasonContent;
-            this.aiResponseResult = data.modelResult
-            this.currentIndex = data.currentIndex
+            this.aiResponseResult = data.modelResult;
+            this.currentIndex = data.currentIndex;
             // 重置相关状态
             this.isDemoStarted = false;
             this.showEvaluationContent = true;
@@ -851,16 +1183,16 @@ export default {
     },
     getCaptcha() {
       var config = {
-        method: 'get',
-        url: 'https://test.aigcpmer.com/api/auth/captcha',
-        headers: {}
+        method: "get",
+        url: "https://test.aigcpmer.com/api/auth/captcha",
+        headers: {},
       };
 
       axios(config)
         .then((response) => {
           // console.log(response.data);
-          this.captcha.captchaId = response.data.data.captchaId
-          this.captcha.captchaImg = response.data.data.captchaImage
+          this.captcha.captchaId = response.data.data.captchaId;
+          this.captcha.captchaImg = response.data.data.captchaImage;
         })
         .catch(function (error) {
           console.log(error);
@@ -874,7 +1206,7 @@ export default {
       // console.log(startBtn, stopBtn, resultDiv, statusDiv);
 
       // 创建ASR客户端
-      this.asrClient = new ASRClient('wss://test.aigcpmer.com/asr/ws');
+      this.asrClient = new ASRClient("wss://test.aigcpmer.com/asr/ws");
 
       // 设置回调函数
       this.asrClient.setCallbacks({
@@ -887,7 +1219,7 @@ export default {
         },
         onPartialResult: (text) => {
           // resultDiv.textContent = text;
-          this.asrResult = text
+          this.asrResult = text;
         },
         onFinalResult: (text) => {
           resultDiv.textContent = text;
@@ -898,31 +1230,34 @@ export default {
         },
         onError: (error) => {
           // statusDiv.textContent = `错误: ${error}`;
-        }
+        },
       });
 
       // 连接到WebSocket服务器
-      this.asrClient.connect().then(() => {
-        // 连接成功后主动启用开始按钮
-        this.$refs.asrRecording.disabled = false;
-        // statusDiv.textContent = '已连接到服务器，可以开始识别';
-      }).catch(error => {
-        // statusDiv.textContent = `连接错误: ${error.message}`;
-      });
+      this.asrClient
+        .connect()
+        .then(() => {
+          // 连接成功后主动启用开始按钮
+          this.$refs.asrRecording.disabled = false;
+          // statusDiv.textContent = '已连接到服务器，可以开始识别';
+        })
+        .catch((error) => {
+          // statusDiv.textContent = `连接错误: ${error.message}`;
+        });
 
       // 开始按钮
-      this.$refs.asrRecording.addEventListener('click', () => {
-        this.asrResult = '';
-        this.aiResponseReasonContent = '';
-        this.aiResponseResult = '';
+      this.$refs.asrRecording.addEventListener("click", () => {
+        this.asrResult = "";
+        this.aiResponseReasonContent = "";
+        this.aiResponseResult = "";
         // this.$refs.asrRecording.disabled = true;
         // this.$refs.stopBtn.disabled = false;
         this.asrClient.startRecognition();
       });
 
       // 停止按钮
-      this.$refs.stopBtn.addEventListener('click', () => {
-        console.log('this.asrClient.stopRecognition');
+      this.$refs.stopBtn.addEventListener("click", () => {
+        console.log("this.asrClient.stopRecognition");
         // this.$refs.asrRecording.disabled = false;
         // this.$refs.stopBtn.disabled = true;
         this.asrClient.stopRecognition();
@@ -930,26 +1265,26 @@ export default {
       });
 
       // 页面卸载时断开连接
-      window.addEventListener('beforeunload', () => {
+      window.addEventListener("beforeunload", () => {
         this.asrClient.disconnect();
       });
     },
     startRecognition() {
-      this.asrResult = '';
-      this.aiResponseReasonContent = '';
-      this.aiResponseResult = '';
+      this.asrResult = "";
+      this.aiResponseReasonContent = "";
+      this.aiResponseResult = "";
 
       // 如果ASR客户端不存在或已断开连接，重新创建并连接
       if (!this.asrClient) {
-        this.asrClient = new ASRClient('wss://test.aigcpmer.com/asr/ws');
+        this.asrClient = new ASRClient("wss://test.aigcpmer.com/asr/ws");
 
         // 设置回调函数
         this.asrClient.setCallbacks({
           onReady: () => {
-            console.log('ASR客户端准备就绪');
+            console.log("ASR客户端准备就绪");
           },
           onStart: () => {
-            console.log('开始识别');
+            console.log("开始识别");
           },
           onPartialResult: (text) => {
             this.asrResult = text;
@@ -960,20 +1295,23 @@ export default {
             this.hasRecordedContent = !!text; // 有内容时设置为true
           },
           onComplete: () => {
-            console.log('识别完成');
+            console.log("识别完成");
           },
           onError: (error) => {
-            console.error('识别错误:', error);
-          }
+            console.error("识别错误:", error);
+          },
         });
 
-        this.asrClient.connect().then(() => {
-          this.asrClient.startRecognition();
-        }).catch(error => {
-          console.error('ASR客户端连接失败:', error);
-          this.$message.error('语音识别服务连接失败，请重试');
-          this.isRecording = false;
-        });
+        this.asrClient
+          .connect()
+          .then(() => {
+            this.asrClient.startRecognition();
+          })
+          .catch((error) => {
+            console.error("ASR客户端连接失败:", error);
+            this.$message.error("语音识别服务连接失败，请重试");
+            this.isRecording = false;
+          });
       } else {
         this.asrClient.startRecognition();
       }
@@ -995,22 +1333,22 @@ export default {
       console.log(this.searchInput);
 
       var data = JSON.stringify({
-        "examType": this.searchInput.examType || '',
-        "examTime": this.searchInput.year || '2017',
-        "region": this.searchInput.region || 'HuBei',
-        "questionType": this.searchInput.questionType || '',
-        "pageNum": 1,
-        "pageSize": 10
+        examType: this.searchInput.examType || "",
+        examTime: this.searchInput.year || "2017",
+        region: this.searchInput.region || "HuBei",
+        questionType: this.searchInput.questionType || "",
+        pageNum: 1,
+        pageSize: 10,
       });
 
       var config = {
-        method: 'post',
-        url: '/api/exam/filter',
+        method: "post",
+        url: "/api/exam/filter",
         headers: {
-          'Content-Type': 'application/json',
-          'Accept': '*/*',
+          "Content-Type": "application/json",
+          Accept: "*/*",
         },
-        data: data
+        data: data,
       };
 
       axios(config)
@@ -1020,38 +1358,39 @@ export default {
         .catch(function (error) {
           console.log(error);
         });
-
     },
     changeQuestion(direction) {
       if (this.isLoading) return;
       this.isLoading = true;
 
       // 构建请求数据
-      const data = this.questionContent.questionId ? {
-        currentId: this.questionContent.questionId, // 当前题目ID
-        direction: direction, // 方向：-1 上一题，1 下一题
-        tags: {
-          examType: '',        // 根据需要设置
-          examTime: this.selectedYear || '',
-          region: this.selectedRegion || '',
-          questionType: this.selectedQuestionType || '',
-          pageNum: 1,
-          pageSize: 1
-        },
-        keyword: ''
-      } : {};
-      const token = localStorage.getItem('token');
+      const data = this.questionContent.questionId
+        ? {
+            currentId: this.questionContent.questionId, // 当前题目ID
+            direction: direction, // 方向：-1 上一题，1 下一题
+            tags: {
+              examType: "", // 根据需要设置
+              examTime: this.selectedYear || "",
+              region: this.selectedRegion || "",
+              questionType: this.selectedQuestionType || "",
+              pageNum: 1,
+              pageSize: 1,
+            },
+            keyword: "",
+          }
+        : {};
+      const token = localStorage.getItem("token");
 
       axios({
-        method: 'post',
-        url: 'https://test.aigcpmer.com/api/api/exam/switch',
+        method: "post",
+        url: "https://test.aigcpmer.com/api/api/exam/switch",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        data: data
+        data: data,
       })
-        .then(response => {
+        .then((response) => {
           this.isLoading = false;
 
           if (response.data.code === 200 && response.data.data) {
@@ -1061,7 +1400,7 @@ export default {
               questionId: questionData.questionId,
               content: questionData.content,
               answer: questionData.answer,
-              questionStateEnum: questionData.questionStateEnum
+              questionStateEnum: questionData.questionStateEnum,
               // examTime: questionData.examTime,
               // region: questionData.region,
               // questionType: questionData.questionType
@@ -1101,27 +1440,29 @@ export default {
             this.isDemoStarted = false;
             this.hasRecordedContent = false;
             this.showEvaluationContent = false;
-            this.asrResult = '';
-            this.modelResult = '';
+            this.asrResult = "";
+            this.modelResult = "";
           } else {
             // 处理错误情况
             if (!this.errorLock) {
               this.errorLock = true;
-              this.$message.error(response.data.message || '切换题目失败');
+              this.$message.error(response.data.message || "切换题目失败");
               setTimeout(() => {
                 this.errorLock = false;
               }, 2000);
             }
           }
         })
-        .catch(error => {
-          console.log('接口错误：', error);
+        .catch((error) => {
+          console.log("接口错误：", error);
           this.isLoading = false;
           if (!this.errorLock) {
             this.errorLock = true;
             const msg =
-              (error.response && error.response.data && error.response.data.message) ||
-              '切换题目失败';
+              (error.response &&
+                error.response.data &&
+                error.response.data.message) ||
+              "切换题目失败";
             this.$message.error(msg);
             setTimeout(() => {
               this.errorLock = false;
@@ -1130,36 +1471,39 @@ export default {
         });
     },
     async submitAnswer() {
-      let stream = true
-      const token = localStorage.getItem('token');
+      let stream = true;
+      const token = localStorage.getItem("token");
 
       const config = {
-        method: 'POST', // 根据实际需求设置请求方法
+        method: "POST", // 根据实际需求设置请求方法
         headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'text/plain',
-          'Authorization': `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Accept: "text/plain",
+          Authorization: `Bearer ${token}`,
         },
         // 如果需要请求体数据，请在 body 中传入字符串化后的 JSON
         body: JSON.stringify({
-          "questionId": this.questionContent.questionId,
-          "submitContent": this.asrResult
-        })
+          questionId: this.questionContent.questionId,
+          submitContent: this.asrResult,
+        }),
       };
 
       try {
-        const response = await fetch('https://test.aigcpmer.com/api/api/exam/submit', config);
+        const response = await fetch(
+          "https://test.aigcpmer.com/api/api/exam/submit",
+          config
+        );
         if (!response.body) {
-          throw new Error('当前浏览器不支持流式响应');
+          throw new Error("当前浏览器不支持流式响应");
         }
 
         const reader = response.body.getReader();
-        const decoder = new TextDecoder('utf-8');
+        const decoder = new TextDecoder("utf-8");
         let done = false;
 
-        this.aiResponseReasonContent = '';
-        this.aiResponseResult = '';
-        let partialData = '';
+        this.aiResponseReasonContent = "";
+        this.aiResponseResult = "";
+        let partialData = "";
 
         while (!done) {
           const { value, done: streamDone } = await reader.read();
@@ -1172,24 +1516,24 @@ export default {
             partialData += chunk;
 
             // 按换行符分割成多行
-            const lines = partialData.split('\n');
+            const lines = partialData.split("\n");
             // 保留最后可能不完整的一行，等待后续数据拼接
             partialData = lines.pop();
 
             // 逐行处理
             for (const line of lines) {
-              if (line.startsWith('data:')) {
+              if (line.startsWith("data:")) {
                 // 去掉开头 "data:" 后获得 JSON 字符串
                 const jsonStr = line.slice(5).trim();
                 try {
                   const obj = JSON.parse(jsonStr);
-                  if (obj.contentType === 'reason') {
+                  if (obj.contentType === "reason") {
                     this.aiResponseReasonContent += obj.content;
                     this.$nextTick(() => {
                       const container = this.$refs.evaluationContent;
                       container.scrollTop = container.scrollHeight;
                     });
-                  } else if (obj.contentType === 'answer') {
+                  } else if (obj.contentType === "answer") {
                     this.aiResponseResult += obj.content;
                     this.$nextTick(() => {
                       const container = this.$refs.evaluationContent;
@@ -1198,26 +1542,24 @@ export default {
                   }
                   await this.$nextTick();
                 } catch (err) {
-                  console.error('JSON 解析出错:', err);
+                  console.error("JSON 解析出错:", err);
                 }
               }
             }
           }
         }
-        console.log('数据流接收完毕');
+        console.log("数据流接收完毕");
       } catch (error) {
-        console.error('请求错误：', error);
+        console.error("请求错误：", error);
       }
     },
-    demoAnswer() {
-
-    },
+    demoAnswer() {},
     toggleDrawer() {
-      this.drawerVisible = !this.drawerVisible
-      this.get_exam_history()
+      this.drawerVisible = !this.drawerVisible;
+      this.get_exam_history();
     },
     onLogoClick() {
-      this.drawerVisible = !this.drawerVisible
+      this.drawerVisible = !this.drawerVisible;
     },
     toggleRecording() {
       this.isRecording = !this.isRecording;
@@ -1233,9 +1575,9 @@ export default {
           if (this.recordCount >= 5) {
             this.$message({
               message: `您已经第${this.recordCount}次回答本题，可以试用一下点评功能`,
-              type: 'info',
+              type: "info",
               duration: 3000,
-              offset: 80
+              offset: 80,
             });
           }
         }
@@ -1248,153 +1590,151 @@ export default {
       }
     },
     showEvaluation() {
-      this.showEvaluationContentIn = true
-      this.aiResponseReasonContent = '';
-      this.aiResponseResult = '';
-      this.recordCount = 0 // 使用点评功能后重置计数
+      this.showEvaluationContentIn = true;
+      this.aiResponseReasonContent = "";
+      this.aiResponseResult = "";
+      this.recordCount = 0; // 使用点评功能后重置计数
       if (this.isRecording) {
-        this.isRecording = false
-        this.hasRecordedContent = true
+        this.isRecording = false;
+        this.hasRecordedContent = true;
       }
-      this.submitAnswer()
-      console.log('endRecording');
-      this.endRecording()
+      this.submitAnswer();
+      console.log("endRecording");
+      this.endRecording();
     },
     // 新增登录相关方法
     showLoginDialog() {
       // 先重置表单数据和验证状态，防止打开对话框时触发验证
       if (this.$refs.loginForm) {
-        this.$refs.loginForm.resetFields()
-        this.$refs.loginForm.clearValidate()
+        this.$refs.loginForm.resetFields();
+        this.$refs.loginForm.clearValidate();
       }
 
       // 再打开对话框
-      this.loginDialogVisible = true
+      this.loginDialogVisible = true;
 
       // 清空图形验证码输入框
-      this.captcha.captchaCode = ''
+      this.captcha.captchaCode = "";
 
       // 获取新的图形验证码
       this.$nextTick(() => {
-        this.getCaptcha()
-      })
+        this.getCaptcha();
+      });
     },
     handleCloseDialog() {
-      this.loginDialogVisible = false
+      this.loginDialogVisible = false;
       // 重置表单数据和验证状态
-      this.$refs.loginForm.resetFields()
-      this.captcha.captchaCode = ''
+      this.$refs.loginForm.resetFields();
+      this.captcha.captchaCode = "";
     },
     getUserInfo() {
-      const userPhone = localStorage.getItem('userPhone');
-      const token = localStorage.getItem('token');
+      const userPhone = localStorage.getItem("userPhone");
+      const token = localStorage.getItem("token");
       if (userPhone && token) {
-        this.isLoggedIn = true
-        this.userPhone = userPhone
+        this.isLoggedIn = true;
+        this.userPhone = userPhone;
       }
     },
     getToken() {
-      const token = localStorage.getItem('token');
-
-
+      const token = localStorage.getItem("token");
+      
       var config = {
-        method: 'get',
-        url: 'https://test.aigcpmer.com/api/user/detail',
-        headers: { 'Authorization': `Bearer ${token}` }
+        method: "get",
+        url: "https://test.aigcpmer.com/api/user/detail",
+        headers: { Authorization: `Bearer ${token}` },
       };
 
       axios(config)
         .then((response) => {
           // console.log(response.data);
-          this.coinBalance = response.data.data.coinBalance
+          this.coinBalance = response.data.data.coinBalance;
         })
         .catch(function (error) {
           console.log(error);
         });
-
     },
     handleLogin() {
-      this.$refs.loginForm.validate(valid => {
+      this.$refs.loginForm.validate((valid) => {
         if (valid) {
-          this.loading = true
+          this.loading = true;
           var config = {
-            method: 'post',
-            url: 'https://test.aigcpmer.com/api/auth/login',
+            method: "post",
+            url: "https://test.aigcpmer.com/api/auth/login",
             headers: {
-              'Content-Type': 'application/json',
-              'Accept': '*/*',
+              "Content-Type": "application/json",
+              Accept: "*/*",
             },
-            data: { 'phone': this.loginForm.phone, 'captcha': this.loginForm.code }
+            data: { phone: this.loginForm.phone, captcha: this.loginForm.code },
           };
 
           axios(config)
             .then((response) => {
               if (response.data.code === 200) {
-                this.loading = false
-                this.isLoggedIn = true
-                this.userPhone = this.loginForm.phone
-                localStorage.setItem('userPhone', this.loginForm.phone);
+                this.loading = false;
+                this.isLoggedIn = true;
+                this.userPhone = this.loginForm.phone;
+                localStorage.setItem("userPhone", this.loginForm.phone);
 
-                localStorage.setItem('token', response.data.data.token);
-                this.handleCloseDialog()
-                this.$message.success('登录成功')
-                this.getToken()
+                localStorage.setItem("token", response.data.data.token);
+                this.handleCloseDialog();
+                this.$message.success("登录成功");
+                this.getToken();
               } else {
-                this.loading = false
-                this.$message.error('手机号或验证码错误')
+                this.loading = false;
+                this.$message.error("手机号或验证码错误");
               }
             })
             .catch((error) => {
-              this.loading = false
-              this.$message.error('登录失败，请重试')
+              this.loading = false;
+              this.$message.error("登录失败，请重试");
               console.log(error);
             });
         }
-      })
+      });
     },
     // 发送验证码
     async sendCode() {
       if (!this.canSendCode) {
-        return // 如果正在倒计时，直接返回不做任何操作
+        return; // 如果正在倒计时，直接返回不做任何操作
       }
 
       // 先验证手机号
-      this.$refs.loginForm.validateField('phone', async (errorMessage) => {
+      this.$refs.loginForm.validateField("phone", async (errorMessage) => {
         if (errorMessage) {
-          return // 如果手机号验证不通过，直接返回
+          return; // 如果手机号验证不通过，直接返回
         }
 
         // 验证验证码不为空
         if (!this.captcha.captchaCode) {
-          this.$message.warning('请输入图片验证码')
-          return
+          this.$message.warning("请输入图片验证码");
+          return;
         }
 
         try {
           // 直接发送短信验证码，接口内部会验证图形验证码
           var data = JSON.stringify({
-            "phone": this.loginForm.phone,
-            "captcha": this.captcha.captchaCode,
-            "captchaId": this.captcha.captchaId,
-            "macAddress": "1232"
+            phone: this.loginForm.phone,
+            captcha: this.captcha.captchaCode,
+            captchaId: this.captcha.captchaId,
+            macAddress: "1232",
           });
 
           var config = {
-            method: 'post',
-            url: 'https://test.aigcpmer.com/api/auth/sms',
+            method: "post",
+            url: "https://test.aigcpmer.com/api/auth/sms",
             headers: {
-              'Content-Type': 'application/json'
+              "Content-Type": "application/json",
             },
-            data: data
+            data: data,
           };
 
           const response = await axios(config);
-          console.log('短信验证码响应:', response.data);
+          console.log("短信验证码响应:", response.data);
 
           // 检查响应状态
           if (response.data.code !== 200) {
             // 处理各种错误情况
-            this.$message.error(response.data.message || '发送失败，请重试');
+            this.$message.error(response.data.message || "发送失败，请重试");
             return;
           }
 
@@ -1411,70 +1751,73 @@ export default {
             }
           }, 1000);
 
-          this.$message.success('验证码发送成功');
+          this.$message.success("验证码发送成功");
         } catch (error) {
-          console.log('发送短信验证码出错:', error);
-          this.$message.error('验证码发送失败，请重试');
+          console.log("发送短信验证码出错:", error);
+          this.$message.error("验证码发送失败，请重试");
         }
       });
     },
     // 在组件销毁前清除定时器
     beforeDestroy() {
       if (this.timer) {
-        clearInterval(this.timer)
-        this.timer = null
+        clearInterval(this.timer);
+        this.timer = null;
       }
 
       // 移除点击监听器
-      document.removeEventListener('click', this.handlePageClick)
+      document.removeEventListener("click", this.handlePageClick);
     },
     // 添加点击页面空白处的处理方法
     handlePageClick(e) {
       // 判断点击的是否是输入框或按钮
-      const isFormElement = e.target.closest('.el-input') ||
-        e.target.closest('.el-button') ||
-        e.target.closest('.el-form-item__error') ||
-        e.target.closest('.send-code-text')
+      const isFormElement =
+        e.target.closest(".el-input") ||
+        e.target.closest(".el-button") ||
+        e.target.closest(".el-form-item__error") ||
+        e.target.closest(".send-code-text");
 
       // 如果不是表单元素，则清除验证信息，但不触发新的验证
       if (!isFormElement && this.$refs.loginForm) {
-        this.$refs.loginForm.clearValidate()
+        this.$refs.loginForm.clearValidate();
       }
     },
     async startDemo() {
-
       var data = {
-        "questionId": this.questionContent.questionId
+        questionId: this.questionContent.questionId,
       };
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
 
       var config = {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(data)  // 注意这里要用 body
+        body: JSON.stringify(data), // 注意这里要用 body
       };
       try {
         if (!this.isDemoStarted) {
-          this.isDemoStarted = true
+          this.isDemoStarted = true;
         }
-        const response = await fetch('https://test.aigcpmer.com/api/api/exam/demoAnswner', config);
+        const response = await fetch(
+          "https://test.aigcpmer.com/api/api/exam/demoAnswner",
+          config
+        );
         if (!response.body) {
-          throw new Error('当前浏览器不支持流式响应');
+          throw new Error("当前浏览器不支持流式响应");
         }
         const now = new Date();
         // 记录触发时间，可以选择打印日志或存入数组中显示在页面上
         console.log(`开始接收：${now.toLocaleTimeString()}`);
 
         const reader = response.body.getReader();
-        const decoder = new TextDecoder('utf-8');
+        const decoder = new TextDecoder("utf-8");
         let done = false;
 
-        this.reasonContent = '';
-        this.modelResult = '';
-        let partialData = '';
+        this.reasonContent = "";
+        this.modelResult = "";
+        let partialData = "";
         console.log(`开始处理${now.toLocaleTimeString()}`);
         while (!done) {
           const { value, done: streamDone } = await reader.read();
@@ -1487,28 +1830,32 @@ export default {
             partialData += chunk;
 
             // 按换行符分割成多行
-            const lines = partialData.split('\n');
+            const lines = partialData.split("\n");
             // 保留最后可能不完整的一行，等待后续数据拼接
             partialData = lines.pop();
 
             // 逐行处理
             for (const line of lines) {
-              if (line.startsWith('data:')) {
+              if (line.startsWith("data:")) {
                 // 去掉开头 "data:" 后获得 JSON 字符串
                 const jsonStr = line.slice(5).trim();
                 try {
                   const obj = JSON.parse(jsonStr);
                   const now = new Date();
                   // 记录触发时间，可以选择打印日志或存入数组中显示在页面上
-                  console.log(`开始每行处理：${now.toLocaleTimeString()} ${obj.contentType} `);
+                  console.log(
+                    `开始每行处理：${now.toLocaleTimeString()} ${
+                      obj.contentType
+                    } `
+                  );
 
-                  if (obj.contentType === 'reason') {
+                  if (obj.contentType === "reason") {
                     this.reasonContent += obj.content;
                     this.$nextTick(() => {
                       const container = this.$refs.sourceHint;
                       container.scrollTop = container.scrollHeight;
                     });
-                  } else if (obj.contentType === 'answer') {
+                  } else if (obj.contentType === "answer") {
                     this.modelResult += obj.content;
                     this.$nextTick(() => {
                       const container = this.$refs.sourceHint;
@@ -1519,33 +1866,32 @@ export default {
 
                   // await this.$nextTick();
                 } catch (err) {
-                  console.error('JSON 解析出错:', err);
+                  console.error("JSON 解析出错:", err);
                 }
               }
             }
-
           }
         }
-        console.log('数据流接收完毕');
+        console.log("数据流接收完毕");
       } catch (error) {
-        console.error('请求错误：', error);
+        console.error("请求错误：", error);
       }
     },
     // 添加退出登录方法
     handleLogout() {
-      localStorage.removeItem('userPhone');
-      localStorage.removeItem('token');
-      this.isLoggedIn = false
-      this.userPhone = ''
-      this.$message.success('已退出登录')
+      localStorage.removeItem("userPhone");
+      localStorage.removeItem("token");
+      this.isLoggedIn = false;
+      this.userPhone = "";
+      this.$message.success("已退出登录");
     },
     // 显示充值弹窗
     showRechargeDialog() {
       if (this.isLoggedIn) {
-        this.rechargeDialogVisible = true
+        this.rechargeDialogVisible = true;
       } else {
-        this.showLoginDialog()
-        this.$message.warning('请先登录后再进行充值操作')
+        this.showLoginDialog();
+        this.$message.warning("请先登录后再进行充值操作");
       }
     },
     prevQuestion() {
@@ -1559,44 +1905,47 @@ export default {
       }
     },
     clearFilters() {
-      this.selectedYear = '';
-      this.selectedRegion = '';
-      this.selectedQuestionType = '';
-      this.searchInput.year = '';
-      this.searchInput.region = '';
-      this.searchInput.questionType = '';
+      this.selectedYear = "";
+      this.selectedRegion = "";
+      this.selectedQuestionType = "";
+      this.searchInput.year = "";
+      this.searchInput.region = "";
+      this.searchInput.questionType = "";
     },
     goBack() {
       // 返回面试广场
-      this.$router.push('/interview-square');
+      this.$router.push("/interview-square");
     },
     showTips() {
       // 显示消息对话框
       this.messageDialogVisible = true;
     },
     toggleDemoDrawer() {
-      this.demoDrawerVisible = !this.demoDrawerVisible
+      this.demoDrawerVisible = !this.demoDrawerVisible;
     },
     stopRecording() {
-      console.log('触发停止录音');
+      console.log("触发停止录音");
       if (this.asrClient) {
         this.asrClient.stopRecognition();
         this.asrClient.disconnect();
 
         // 重新连接ASR客户端，以便下次使用
-        this.asrClient.connect().then(() => {
-          console.log('ASR客户端重新连接成功');
-        }).catch(error => {
-          console.error('ASR客户端重新连接失败:', error);
-        });
+        this.asrClient
+          .connect()
+          .then(() => {
+            console.log("ASR客户端重新连接成功");
+          })
+          .catch((error) => {
+            console.error("ASR客户端重新连接失败:", error);
+          });
       }
     },
     // 添加重新回答方法
     restartRecording() {
       // 重置状态
-      this.asrResult = '';
-      this.aiResponseReasonContent = '';
-      this.aiResponseResult = '';
+      this.asrResult = "";
+      this.aiResponseReasonContent = "";
+      this.aiResponseResult = "";
       this.showEvaluationContent = false;
 
       // 开始新的录音
@@ -1610,9 +1959,26 @@ export default {
     },
     closeFullscreenModal() {
       this.isFullscreenModalVisible = false;
-    }
-  }
-}
+    },
+    readDemo() {
+      // 实现朗读功能
+      if (this.markdownModelResult) {
+        // 去除HTML标签，获取纯文本
+        const text = this.markdownModelResult.replace(/<[^>]*>?/gm, "");
+
+        // 使用Web Speech API进行朗读
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = "zh-CN"; // 设置中文朗读
+        utterance.rate = 1.0; // 语速
+        window.speechSynthesis.speak(utterance);
+      }
+    },
+    toggleDemoFullscreen() {
+      // 显示全屏模态框
+      this.isDemoFullscreen = !this.isDemoFullscreen;
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -1642,12 +2008,12 @@ export default {
 
 /* ===== 右侧面板 ===== */
 .demo-panel {
-  width: 320px;
-  /* 根据需要设置示范作答面板宽度 */
+  width: 456px; /* 修改为固定宽度456px */
+  max-width: 40%; /* 调整最大宽度比例，确保在小屏幕上不会过宽 */
   background-color: #f5f7fa;
-  overflow-y: auto;
+  overflow: hidden; /* 防止内容溢出 */
   box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
-  /* 同理，如果要用 transform，就在过渡里处理 */
+  position: relative; /* 确保绝对定位的子元素相对于它定位 */
 }
 
 /* 中间内容区，flex:1 撑开 */
@@ -1662,23 +2028,69 @@ export default {
 
 /* 左侧触发按钮（原先的 drawer-trigger），可贴在左侧做一个收起/展开效果 */
 .drawer-trigger {
-
   background: #ffffff;
   /* 其他样式略 */
 }
 
-/* 右侧触发按钮（demo-trigger） */
+/* 右侧触发按钮（demo-trigger）- 添加过渡效果和位置调整 */
 .demo-trigger {
-  position: absolute;
+  position: fixed;
   top: 50%;
   right: 0;
+  transform: translateY(-50%);
   width: 36px;
   height: 140px;
-  background-color: #FFFFFF;
-  border: 1px solid #1E9FFF;
+  background-color: #f5f7fa;
+  border: none; /* 移除蓝色边框 */
   border-radius: 4px 0 0 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  /* 其他样式略 */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  z-index: 9999;
+  transition: right 0.3s ease; /* 添加过渡效果 */
+  padding: 0;
+  overflow: hidden;
+}
+
+/* 当抽屉打开时，按钮跟随移动 */
+.demo-trigger.drawer-open {
+  right: 456px; /* 抽屉宽度，使按钮贴在抽屉左侧 */
+}
+
+.demo-trigger-area {
+  width: 100%;
+  height: 100%;
+  display: -webkit-box;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #7b2cf5;
+  transition: all 0.3s;
+  writing-mode: vertical-lr;
+  font-size: 16px;
+  letter-spacing: 2px;
+}
+
+.demo-trigger-area span {
+  writing-mode: vertical-lr;
+  transform: rotate(180deg);
+  font-weight: 500;
+}
+
+.demo-trigger-area .arrow-icon {
+  width: 20px;
+  height: 20px;
+  display: block;
+  margin: 0 auto;
+  writing-mode: horizontal-tb;
+  transform: none;
+}
+
+.demo-trigger-area i {
+  display: none;
 }
 
 /* 过渡动画示例，可根据需要自定义 */
@@ -1710,7 +2122,6 @@ export default {
 
 .captcha-verify .captcha-input {
   width: 60%;
-
 }
 
 .captcha-verify .captcha-image {
@@ -1778,7 +2189,7 @@ export default {
 }
 
 .nav-icon:hover {
-  color: #409EFF;
+  color: #409eff;
 }
 
 .wallet {
@@ -1797,7 +2208,7 @@ export default {
 .balance {
   font-size: 14px;
   color: #111111;
-  font-family: 'Alibaba Sans', sans-serif;
+  font-family: "Alibaba Sans", sans-serif;
 }
 
 .user-actions {
@@ -1816,14 +2227,14 @@ export default {
 .user-phone {
   font-size: 14px !important;
   color: #111111 !important;
-  font-family: 'Alibaba Sans', sans-serif !important;
+  font-family: "Alibaba Sans", sans-serif !important;
   margin-right: 8px;
 }
 
 .logout-text {
   cursor: pointer;
   font-size: 14px;
-  color: #F56C6C;
+  color: #f56c6c;
 }
 
 .logout-text:hover {
@@ -1834,8 +2245,8 @@ export default {
   font-size: 14px;
   padding: 8px 20px;
   border-radius: 4px;
-  background-color: #7B2CF5;
-  border-color: #7B2CF5;
+  background-color: #7b2cf5;
+  border-color: #7b2cf5;
 }
 
 .login-button:hover {
@@ -1883,7 +2294,7 @@ export default {
 
 .value {
   padding: 4px 12px;
-  background: #E4E7ED;
+  background: #e4e7ed;
   border-radius: 4px;
   font-size: 14px;
   color: #606266;
@@ -1921,7 +2332,7 @@ export default {
 }
 
 .question-number span {
-  color: #7B2CF5 !important;
+  color: #7b2cf5 !important;
   font-size: 24px !important;
 }
 
@@ -1941,14 +2352,14 @@ export default {
 }
 
 .status-answered {
-  background-color: #7B2CF5;
+  background-color: #7b2cf5;
   /* 已作答-紫色 */
   color: #fff;
   /* 已作答-白色字体 */
 }
 
 .status-viewed {
-  background-color: #EEEEEE;
+  background-color: #eeeeee;
   /* 已阅读-灰色 */
   color: #333333;
   /* 已阅读-黑色字体 */
@@ -1969,26 +2380,26 @@ export default {
 /* 添加翻页按钮的统一样式 */
 .page-region .el-button {
   background: #fff;
-  border: 1px solid #DCDFE6;
+  border: 1px solid #dcdfe6;
   color: #606266;
 }
 
 .page-region .el-button:hover {
-  color: #409EFF;
+  color: #409eff;
   border-color: #c6e2ff;
   background-color: #ecf5ff;
 }
 
 .page-region .el-button:active {
-  color: #409EFF;
-  border-color: #409EFF;
+  color: #409eff;
+  border-color: #409eff;
   background-color: #ecf5ff;
 }
 
 .question-box {
   background: #fff;
   padding: 24px;
-  border: 1px solid #F0F2FA;
+  border: 1px solid #f0f2fa;
   height: 156px;
 }
 
@@ -2048,8 +2459,6 @@ export default {
   overflow-y: auto;
 }
 
-
-
 /* 录音按钮区域 - 居中显示 */
 .record-button-wrapper {
   display: flex;
@@ -2063,7 +2472,7 @@ export default {
 .mic-circle {
   width: 60px;
   height: 60px;
-  background: #7B2CF5;
+  background: #7b2cf5;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -2077,19 +2486,6 @@ export default {
   width: 24px;
   height: 24px;
   filter: brightness(0) invert(1);
-}
-
-.recording-btn {
-  background: transparent;
-  border: 4px solid #FF4D4F;
-  box-sizing: border-box;
-}
-
-.recording-square {
-  width: 20px;
-  height: 20px;
-  background-color: #FF4D4F;
-  border-radius: 2px;
 }
 
 /* 修改操作按钮区域样式 */
@@ -2107,8 +2503,8 @@ export default {
   justify-content: center;
   gap: 8px;
   background-color: #ffffff;
-  color: #7B2CF5;
-  border: 1px solid #7B2CF5;
+  color: #7b2cf5;
+  border: 1px solid #7b2cf5;
   border-radius: 4px;
   padding: 10px 20px;
   font-size: 16px;
@@ -2131,8 +2527,8 @@ export default {
   justify-content: center;
   gap: 8px;
   background-color: #ffffff;
-  color: #7B2CF5;
-  border: 1px solid #7B2CF5;
+  color: #7b2cf5;
+  border: 1px solid #7b2cf5;
   border-radius: 4px;
   padding: 10px 20px;
   font-size: 16px;
@@ -2154,7 +2550,7 @@ export default {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  background-color: #7B2CF5;
+  background-color: #7b2cf5;
   color: #ffffff;
   border: none;
   border-radius: 4px;
@@ -2210,7 +2606,7 @@ export default {
 /* 修改图标样式 */
 .retry-icon {
   font-size: 20px;
-  color: #FF4D4F;
+  color: #ff4d4f;
   margin-right: 5px;
 }
 .evaluation-content-input {
@@ -2288,6 +2684,33 @@ export default {
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s;
+  position: relative; /* 添加相对定位 */
+}
+
+/* 添加提示文字样式 */
+.demo-start-area::after {
+  content: "不知道怎么回答？让AI做个示范";
+  position: absolute;
+  bottom: -30px; /* 调整位置在按钮下方 */
+  font-size: 14px;
+  color: #909399;
+  width: 100%;
+  text-align: center;
+}
+
+.demo-button {
+  padding: 10px 24px;
+  background-color: #7b2cf5;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.demo-button:hover {
+  background-color: #6521d4;
 }
 
 .demo-start-area:hover {
@@ -2296,24 +2719,16 @@ export default {
 
 .demo-start-area:hover .demo-text,
 .demo-start-area:hover .demo-hint {
-  color: #409EFF;
+  color: #409eff;
 }
 
 .demo-start-area:active {
   background: rgba(0, 0, 0, 0.05);
 }
 
-.logo {
-  width: 96px;
-  height: 96px;
-  margin-bottom: 16px;
-  transition: all 0.3s;
-}
-
 .demo-text {
-  font-size: 20px;
+  font-size: 16px;
   color: #909399;
-  margin-bottom: 8px;
   transition: all 0.3s;
 }
 
@@ -2331,7 +2746,7 @@ export default {
 
 .dotted-line {
   width: 100%;
-  border-bottom: 2px dotted #DCDFE6;
+  border-bottom: 2px dotted #dcdfe6;
 }
 
 .dotted-line.recording {
@@ -2354,7 +2769,6 @@ export default {
 }
 
 .drawer-trigger {
-
   height: calc(100% - 60px);
   z-index: 100;
 }
@@ -2398,7 +2812,7 @@ export default {
 
 .question-item {
   padding: 10px;
-  border-bottom: 1px solid #EBEEF5;
+  border-bottom: 1px solid #ebeef5;
   cursor: pointer;
 }
 
@@ -2425,7 +2839,7 @@ export default {
     left: 50% !important;
     transform: translate(-50%, -50%) !important;
     margin: 0 !important;
-    background: #FFFFFF !important;
+    background: #ffffff !important;
     border-radius: 8px !important;
     padding: 0 !important;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1) !important;
@@ -2471,7 +2885,7 @@ export default {
   }
 
   .el-button--primary {
-    border-color: #FFF;
+    border-color: #fff;
     font-family: "PingFang SC", sans-serif;
     font-size: 16px;
   }
@@ -2496,11 +2910,11 @@ export default {
   }
 
   .el-input__inner:focus {
-    border-color: #7B2CF5 !important;
+    border-color: #7b2cf5 !important;
   }
 
   .el-input.is-active .el-input__inner {
-    border-color: #7B2CF5 !important;
+    border-color: #7b2cf5 !important;
   }
 
   .code-input-group {
@@ -2519,7 +2933,7 @@ export default {
   .send-code-btn {
     width: 120px !important;
     height: 40px !important;
-    background: #7B2CF5 !important;
+    background: #7b2cf5 !important;
     color: white !important;
     border-radius: 4px !important;
     padding: 0;
@@ -2560,7 +2974,7 @@ export default {
   .el-icon-refresh {
     margin-left: 5px;
     cursor: pointer;
-    color: #7B2CF5;
+    color: #7b2cf5;
     font-size: 16px;
   }
 
@@ -2575,14 +2989,14 @@ export default {
   }
 
   .register-login-btn {
-    background: #7B2CF5 !important;
+    background: #7b2cf5 !important;
     color: white !important;
   }
 
   .cancel-btn {
     background: transparent !important;
     color: #606266 !important;
-    border: 1px solid #DCDCDC !important;
+    border: 1px solid #dcdcdc !important;
   }
 
   :deep(.el-form-item__error) {
@@ -2592,7 +3006,7 @@ export default {
     padding: 0;
     margin: 2px 0 0;
     line-height: normal;
-    color: #F56C6C;
+    color: #f56c6c;
     font-size: 12px;
     font-family: "PingFang SC", sans-serif;
   }
@@ -2620,7 +3034,7 @@ export default {
     right: 15px;
     top: 50%;
     transform: translateY(-50%);
-    color: #7B2CF5;
+    color: #7b2cf5;
     font-size: 16px;
     font-family: "PingFang SC", sans-serif;
     cursor: pointer;
@@ -2643,7 +3057,7 @@ export default {
 }
 
 .answer-text {
-  background: #F5F5F5;
+  background: #f5f5f5;
   padding: 16px;
   border-radius: 8px;
   font-size: 14px;
@@ -2652,7 +3066,7 @@ export default {
 }
 
 .evaluation-box {
-  background: #F5F5F5;
+  background: #f5f5f5;
   padding: 16px;
   border-radius: 8px;
   display: flex;
@@ -2672,7 +3086,7 @@ export default {
 }
 
 .audio-player {
-  background: #F5F5F5;
+  background: #f5f5f5;
   padding: 12px;
   border-radius: 8px;
   display: flex;
@@ -2684,7 +3098,7 @@ export default {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: #DCDFE6;
+  background: #dcdfe6;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2694,28 +3108,30 @@ export default {
 .audio-line {
   flex: 1;
   height: 2px;
-  background: #DCDFE6;
+  background: #dcdfe6;
   position: relative;
 }
 
 .audio-line::before {
-  content: '';
+  content: "";
   position: absolute;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
-  background: repeating-linear-gradient(90deg,
-      #DCDFE6,
-      #DCDFE6 4px,
-      transparent 4px,
-      transparent 8px);
+  background: repeating-linear-gradient(
+    90deg,
+    #dcdfe6,
+    #dcdfe6 4px,
+    transparent 4px,
+    transparent 8px
+  );
 }
 
 .recorded-content {
   width: 100%;
   height: 100%;
-  
+
   display: flex;
   flex-direction: row;
   gap: 20px;
@@ -2745,7 +3161,7 @@ export default {
 
 /* 滚动条滑块 */
 .recorded-content::-webkit-scrollbar-thumb {
-  background: #C0C4CC;
+  background: #c0c4cc;
   /* 颜色可以根据需要调整 */
   border-radius: 3px;
   /* 圆角效果 */
@@ -2754,7 +3170,7 @@ export default {
 .evaluation-box {
   width: 100%;
   height: 80px;
-  background: #FFFFFF;
+  background: #ffffff;
   border-radius: 8px;
   display: flex;
   flex-direction: column;
@@ -2767,7 +3183,7 @@ export default {
 }
 
 .evaluation-box:hover {
-  background: #F5F7FA;
+  background: #f5f7fa;
 }
 
 .eval-logo {
@@ -2775,7 +3191,6 @@ export default {
   height: 32px;
   margin-bottom: 8px;
 }
-
 
 .source-hint {
   position: absolute;
@@ -2795,16 +3210,53 @@ export default {
 }
 
 .regenerate-btn:hover {
-  color: #409EFF;
+  color: #409eff;
 }
 
 .demo-content {
-  position: absolute;
-  top: 40px;
+  position: relative;
   width: 100%;
-  height: 85%;
-  padding: 48px 24px 24px;
+  height: calc(100% - 60px);
   overflow-y: auto;
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+/* 添加磨砂玻璃效果的容器 */
+.demo-content.blurred {
+  position: relative;
+}
+
+/* 磨砂玻璃遮罩层 */
+.demo-content.blurred::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.3); /* 降低白色背景的不透明度 */
+  backdrop-filter: blur(4px); /* 从8px降低到4px */
+  -webkit-backdrop-filter: blur(4px); /* 从8px降低到4px */
+  z-index: 10;
+  border-radius: 4px;
+}
+
+/* 添加提示文字 */
+.demo-content.blurred::after {
+  content: "内容暂不可见，如需查看请显示";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #606266;
+  font-size: 16px;
+  font-weight: 500;
+  z-index: 11;
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 10px 20px;
+  border-radius: 4px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 
 .content-text {
@@ -2813,6 +3265,11 @@ export default {
   line-height: 1.8;
   color: #333333;
   letter-spacing: 0.5px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  padding: 24px;
+  max-height: 600px; /* 设置最大高度 */
+  overflow-y: auto; /* 添加垂直滚动 */
 }
 
 .paragraph {
@@ -2836,13 +3293,40 @@ export default {
   color: #404040;
 }
 
+.source-hint-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  background-color: #fff;
+  border-bottom: 1px solid #ebeef5;
+}
+
+.source-hint-title {
+  font-size: 18px;
+  font-weight: 500;
+  color: #303133;
+}
+
+.source-hint-actions {
+  display: flex;
+  align-items: center;
+}
+
+.thinking-header {
+  background-color: #ffffff;
+  margin-bottom: 0;
+  width: 456px;
+  height: 38px;
+}
+
 /* 优化滚动条样式 */
 .demo-content::-webkit-scrollbar {
   width: 6px;
 }
 
 .demo-content::-webkit-scrollbar-thumb {
-  background: #C0C4CC;
+  background: #c0c4cc;
   border-radius: 3px;
 }
 
@@ -2858,7 +3342,7 @@ export default {
 .logout-text {
   cursor: pointer;
   font-size: 14px;
-  color: #F56C6C;
+  color: #f56c6c;
 }
 
 .logout-text:hover {
@@ -2884,7 +3368,7 @@ export default {
 /* 恢复value的灰色背景样式 */
 .value {
   padding: 4px 12px;
-  background: #E4E7ED;
+  background: #e4e7ed;
   border-radius: 4px;
   font-size: 14px;
   color: #606266;
@@ -2939,7 +3423,7 @@ export default {
   justify-content: flex-start;
   align-items: center;
   padding: 16px 24px;
-  border-bottom: 1px solid #EBEEF5;
+  border-bottom: 1px solid #ebeef5;
   gap: 24px;
 }
 
@@ -2990,7 +3474,7 @@ export default {
 
 .recharge-option {
   background-color: #fff;
-  border: 1px solid #EBEEF5;
+  border: 1px solid #ebeef5;
   border-radius: 4px;
   padding: 16px 8px;
   text-align: center;
@@ -3007,7 +3491,7 @@ export default {
 }
 
 .recharge-option.selected {
-  border-color: #409EFF;
+  border-color: #409eff;
   background-color: #f5f5f5;
 }
 
@@ -3095,7 +3579,7 @@ export default {
 }
 
 .payment-option.selected {
-  border-color: #409EFF;
+  border-color: #409eff;
   background-color: #fff;
 }
 
@@ -3131,17 +3615,17 @@ export default {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background-color: #409EFF;
+  background-color: #409eff;
   opacity: 0;
   transition: opacity 0.2s;
 }
 
-.radio-label input[type="radio"]:checked+.radio-custom::after {
+.radio-label input[type="radio"]:checked + .radio-custom::after {
   opacity: 1;
 }
 
 .payment-option.selected .radio-custom {
-  border-color: #409EFF;
+  border-color: #409eff;
 }
 
 .payment-option img {
@@ -3172,7 +3656,7 @@ export default {
 }
 
 .agreement {
-  color: #409EFF;
+  color: #409eff;
   cursor: pointer;
   text-decoration: underline;
 }
@@ -3190,7 +3674,7 @@ export default {
   z-index: 2000;
 }
 
-.welcome-dialog>>>.el-dialog {
+.welcome-dialog >>> .el-dialog {
   width: 1600px !important;
   height: 800px !important;
   margin: 0 !important;
@@ -3201,12 +3685,12 @@ export default {
   padding: 0;
 }
 
-.welcome-dialog>>>.el-dialog__header,
-.welcome-dialog>>>.el-dialog__footer {
+.welcome-dialog >>> .el-dialog__header,
+.welcome-dialog >>> .el-dialog__footer {
   display: none;
 }
 
-.welcome-dialog>>>.el-dialog__body {
+.welcome-dialog >>> .el-dialog__body {
   padding: 0;
   margin: 0;
   width: 100%;
@@ -3264,7 +3748,7 @@ export default {
 }
 
 .link {
-  color: #409EFF;
+  color: #409eff;
   text-decoration: none;
 }
 
@@ -3315,7 +3799,7 @@ export default {
   z-index: 2000;
 }
 
-.feedback-dialog>>>.el-dialog {
+.feedback-dialog >>> .el-dialog {
   width: 580px !important;
   height: 720px !important;
   margin: 0 !important;
@@ -3330,12 +3814,12 @@ export default {
   transform: translate(-50%, -50%);
 }
 
-.feedback-dialog>>>.el-dialog__header,
-.feedback-dialog>>>.el-dialog__footer {
+.feedback-dialog >>> .el-dialog__header,
+.feedback-dialog >>> .el-dialog__footer {
   display: none;
 }
 
-.feedback-dialog>>>.el-dialog__body {
+.feedback-dialog >>> .el-dialog__body {
   padding: 0;
   margin: 0;
   width: 100%;
@@ -3381,12 +3865,12 @@ export default {
 
 .star-rating i {
   font-size: 30px;
-  color: #DCDFE6;
+  color: #dcdfe6;
   cursor: pointer;
 }
 
 .star-rating i.el-icon-star-on {
-  color: #F7BA2A;
+  color: #f7ba2a;
 }
 
 .auto-show-option {
@@ -3421,8 +3905,8 @@ export default {
   font-size: 14px;
   padding: 8px 20px;
   border-radius: 4px;
-  background-color: #7B2CF5;
-  border-color: #7B2CF5;
+  background-color: #7b2cf5;
+  border-color: #7b2cf5;
 }
 
 .login-button:hover {
@@ -3444,7 +3928,7 @@ export default {
 
 .icon-img:hover {
   opacity: 0.8;
-  color: #409EFF;
+  color: #409eff;
 }
 
 .qr-tooltip-container {
@@ -3503,7 +3987,7 @@ export default {
 }
 
 .qr-tooltip:before {
-  content: '';
+  content: "";
   position: absolute;
   top: -8px;
   left: 50%;
@@ -3564,7 +4048,7 @@ export default {
   bottom: 60px;
   width: 60px;
   height: 60px;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -3648,7 +4132,7 @@ export default {
 }
 
 .back-btn:hover span:first-of-type {
-  color: #7B2CF5;
+  color: #7b2cf5;
 }
 
 .page-region {
@@ -3690,7 +4174,7 @@ export default {
   z-index: 2000;
 }
 
-.message-dialog>>>.el-dialog {
+.message-dialog >>> .el-dialog {
   width: 1600px !important;
   height: 800px !important;
   margin: 0 !important;
@@ -3701,12 +4185,12 @@ export default {
   padding: 0;
 }
 
-.message-dialog>>>.el-dialog__header,
-.message-dialog>>>.el-dialog__footer {
+.message-dialog >>> .el-dialog__header,
+.message-dialog >>> .el-dialog__footer {
   display: none;
 }
 
-.message-dialog>>>.el-dialog__body {
+.message-dialog >>> .el-dialog__body {
   padding: 0;
   margin: 0;
   width: 100%;
@@ -3727,7 +4211,7 @@ export default {
   z-index: 2000;
 }
 
-.welcome-dialog>>>.el-dialog {
+.welcome-dialog >>> .el-dialog {
   width: 1600px !important;
   height: 800px !important;
   margin: 0 !important;
@@ -3738,67 +4222,17 @@ export default {
   padding: 0;
 }
 
-.welcome-dialog>>>.el-dialog__header,
-.welcome-dialog>>>.el-dialog__footer {
+.welcome-dialog >>> .el-dialog__header,
+.welcome-dialog >>> .el-dialog__footer {
   display: none;
 }
 
-.welcome-dialog>>>.el-dialog__body {
+.welcome-dialog >>> .el-dialog__body {
   padding: 0;
   margin: 0;
   width: 100%;
   height: 100%;
   overflow: hidden;
-}
-
-.demo-trigger {
-  position: fixed;
-  top: 50%;
-  right: 0;
-  transform: translateY(-50%);
-  width: 36px;
-  height: 140px;
-  background-color: #FFFFFF;
-  border: 1px solid #1E9FFF;
-  border-radius: 4px 0 0 4px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  z-index: 9999;
-  transition: all 0.3s;
-  padding: 0;
-  overflow: hidden;
-}
-
-.demo-trigger:hover {
-  background-color: #F0F9FF;
-}
-
-.demo-trigger-area {
-  width: 100%;
-  height: 100%;
-  display: -webkit-box;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: #7B2CF5;
-  transition: all 0.3s;
-  writing-mode: vertical-lr;
-  font-size: 16px;
-  letter-spacing: 2px;
-}
-
-.demo-trigger-area span {
-  writing-mode: vertical-lr;
-  transform: rotate(180deg);
-  font-weight: 500;
-}
-
-.demo-trigger-area i {
-  display: none;
 }
 
 .demo-drawer {
@@ -3832,10 +4266,10 @@ export default {
 }
 
 .demo-drawer-content {
-  padding: 40px 20px;
   height: calc(100% - 60px) !important;
   background-color: #f5f7fa;
-  overflow: auto;
+  overflow: hidden; /* 修改为 hidden */
+  position: relative; /* 添加相对定位 */
 }
 
 .demo-drawer-content .demo-start-area {
@@ -3855,7 +4289,7 @@ export default {
 
 .demo-drawer-content .demo-start-area:hover .demo-text,
 .demo-drawer-content .demo-start-area:hover .demo-hint {
-  color: #409EFF;
+  color: #409eff;
 }
 
 .demo-drawer-content .demo-start-area:active {
@@ -3899,7 +4333,7 @@ export default {
 }
 
 .demo-drawer-content .regenerate-btn:hover {
-  color: #409EFF;
+  color: #409eff;
 }
 
 .demo-drawer-content .content-text {
@@ -3937,7 +4371,7 @@ export default {
 }
 
 .demo-drawer-content::-webkit-scrollbar-thumb {
-  background: #C0C4CC;
+  background: #c0c4cc;
   border-radius: 3px;
 }
 
@@ -3953,7 +4387,7 @@ export default {
 .demo-drawer-content .logout-text {
   cursor: pointer;
   font-size: 14px;
-  color: #F56C6C;
+  color: #f56c6c;
 }
 
 .demo-drawer-content .logout-text:hover {
@@ -3979,7 +4413,7 @@ export default {
 /* 恢复value的灰色背景样式 */
 .demo-drawer-content .value {
   padding: 4px 12px;
-  background: #E4E7ED;
+  background: #e4e7ed;
   border-radius: 4px;
   font-size: 14px;
   color: #606266;
@@ -4033,7 +4467,7 @@ export default {
   justify-content: flex-start;
   align-items: center;
   padding: 16px 24px;
-  border-bottom: 1px solid #EBEEF5;
+  border-bottom: 1px solid #ebeef5;
   gap: 24px;
 }
 
@@ -4084,7 +4518,7 @@ export default {
 
 .demo-drawer-content .recharge-option {
   background-color: #fff;
-  border: 1px solid #EBEEF5;
+  border: 1px solid #ebeef5;
   border-radius: 4px;
   padding: 16px 8px;
   text-align: center;
@@ -4101,7 +4535,7 @@ export default {
 }
 
 .demo-drawer-content .recharge-option.selected {
-  border-color: #409EFF;
+  border-color: #409eff;
   background-color: #f5f5f5;
 }
 
@@ -4189,7 +4623,7 @@ export default {
 }
 
 .demo-drawer-content .payment-option.selected {
-  border-color: #409EFF;
+  border-color: #409eff;
   background-color: #fff;
 }
 
@@ -4225,17 +4659,20 @@ export default {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background-color: #409EFF;
+  background-color: #409eff;
   opacity: 0;
   transition: opacity 0.2s;
 }
 
-.demo-drawer-content .radio-label input[type="radio"]:checked+.radio-custom::after {
+.demo-drawer-content
+  .radio-label
+  input[type="radio"]:checked
+  + .radio-custom::after {
   opacity: 1;
 }
 
 .demo-drawer-content .payment-option.selected .radio-custom {
-  border-color: #409EFF;
+  border-color: #409eff;
 }
 
 .demo-drawer-content .payment-option img {
@@ -4266,7 +4703,7 @@ export default {
 }
 
 .demo-drawer-content .agreement {
-  color: #409EFF;
+  color: #409eff;
   cursor: pointer;
   text-decoration: underline;
 }
@@ -4283,7 +4720,7 @@ export default {
   z-index: 2000;
 }
 
-.demo-drawer-content .welcome-dialog>>>.el-dialog {
+.demo-drawer-content .welcome-dialog >>> .el-dialog {
   width: 1600px !important;
   height: 800px !important;
   margin: 0 !important;
@@ -4294,12 +4731,12 @@ export default {
   padding: 0;
 }
 
-.demo-drawer-content .welcome-dialog>>>.el-dialog__header,
-.demo-drawer-content .welcome-dialog>>>.el-dialog__footer {
+.demo-drawer-content .welcome-dialog >>> .el-dialog__header,
+.demo-drawer-content .welcome-dialog >>> .el-dialog__footer {
   display: none;
 }
 
-.demo-drawer-content .welcome-dialog>>>.el-dialog__body {
+.demo-drawer-content .welcome-dialog >>> .el-dialog__body {
   padding: 0;
   margin: 0;
   width: 100%;
@@ -4357,7 +4794,7 @@ export default {
 }
 
 .demo-drawer-content .link {
-  color: #409EFF;
+  color: #409eff;
   text-decoration: none;
 }
 
@@ -4407,7 +4844,7 @@ export default {
   z-index: 2000;
 }
 
-.demo-drawer-content .feedback-dialog>>>.el-dialog {
+.demo-drawer-content .feedback-dialog >>> .el-dialog {
   width: 580px !important;
   height: 720px !important;
   margin: 0 !important;
@@ -4422,12 +4859,12 @@ export default {
   transform: translate(-50%, -50%);
 }
 
-.demo-drawer-content .feedback-dialog>>>.el-dialog__header,
-.demo-drawer-content .feedback-dialog>>>.el-dialog__footer {
+.demo-drawer-content .feedback-dialog >>> .el-dialog__header,
+.demo-drawer-content .feedback-dialog >>> .el-dialog__footer {
   display: none;
 }
 
-.demo-drawer-content .feedback-dialog>>>.el-dialog__body {
+.demo-drawer-content .feedback-dialog >>> .el-dialog__body {
   padding: 0;
   margin: 0;
   width: 100%;
@@ -4473,12 +4910,12 @@ export default {
 
 .demo-drawer-content .star-rating i {
   font-size: 30px;
-  color: #DCDFE6;
+  color: #dcdfe6;
   cursor: pointer;
 }
 
 .demo-drawer-content .star-rating i.el-icon-star-on {
-  color: #F7BA2A;
+  color: #f7ba2a;
 }
 
 .demo-drawer-content .auto-show-option {
@@ -4513,8 +4950,8 @@ export default {
   font-size: 14px;
   padding: 8px 20px;
   border-radius: 4px;
-  background-color: #7B2CF5;
-  border-color: #7B2CF5;
+  background-color: #7b2cf5;
+  border-color: #7b2cf5;
 }
 
 .demo-drawer-content .login-button:hover {
@@ -4536,7 +4973,7 @@ export default {
 
 .demo-drawer-content .icon-img:hover {
   opacity: 0.8;
-  color: #409EFF;
+  color: #409eff;
 }
 
 .demo-drawer-content .qr-tooltip-container {
@@ -4595,7 +5032,7 @@ export default {
 }
 
 .demo-drawer-content .qr-tooltip:before {
-  content: '';
+  content: "";
   position: absolute;
   top: -8px;
   left: 50%;
@@ -4656,7 +5093,7 @@ export default {
   bottom: 60px;
   width: 60px;
   height: 60px;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -4740,7 +5177,7 @@ export default {
 }
 
 .demo-drawer-content .back-btn:hover span:first-of-type {
-  color: #7B2CF5;
+  color: #7b2cf5;
 }
 
 .demo-drawer-content .page-region {
@@ -4782,7 +5219,7 @@ export default {
   z-index: 2000;
 }
 
-.demo-drawer-content .message-dialog>>>.el-dialog {
+.demo-drawer-content .message-dialog >>> .el-dialog {
   width: 1600px !important;
   height: 800px !important;
   margin: 0 !important;
@@ -4793,12 +5230,12 @@ export default {
   padding: 0;
 }
 
-.demo-drawer-content .message-dialog>>>.el-dialog__header,
-.demo-drawer-content .message-dialog>>>.el-dialog__footer {
+.demo-drawer-content .message-dialog >>> .el-dialog__header,
+.demo-drawer-content .message-dialog >>> .el-dialog__footer {
   display: none;
 }
 
-.demo-drawer-content .message-dialog>>>.el-dialog__body {
+.demo-drawer-content .message-dialog >>> .el-dialog__body {
   padding: 0;
   margin: 0;
   width: 100%;
@@ -4819,7 +5256,7 @@ export default {
   z-index: 2000;
 }
 
-.demo-drawer-content .welcome-dialog>>>.el-dialog {
+.demo-drawer-content .welcome-dialog >>> .el-dialog {
   width: 1600px !important;
   height: 800px !important;
   margin: 0 !important;
@@ -4830,12 +5267,12 @@ export default {
   padding: 0;
 }
 
-.demo-drawer-content .welcome-dialog>>>.el-dialog__header,
-.demo-drawer-content .welcome-dialog>>>.el-dialog__footer {
+.demo-drawer-content .welcome-dialog >>> .el-dialog__header,
+.demo-drawer-content .welcome-dialog >>> .el-dialog__footer {
   display: none;
 }
 
-.demo-drawer-content .welcome-dialog>>>.el-dialog__body {
+.demo-drawer-content .welcome-dialog >>> .el-dialog__body {
   padding: 0;
   margin: 0;
   width: 100%;
@@ -4856,12 +5293,12 @@ export default {
 }
 
 .item-status-answered {
-  background-color: #7B2CF5;
+  background-color: #7b2cf5;
   color: #fff;
 }
 
 .item-status-viewed {
-  background-color: #EEEEEE;
+  background-color: #eeeeee;
   color: #333333;
 }
 
@@ -4871,7 +5308,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 16px;
-  border-bottom: 1px solid #EBEEF5;
+  border-bottom: 1px solid #ebeef5;
 }
 
 .drawer-header .title {
@@ -4898,7 +5335,7 @@ export default {
 }
 
 .collapse-btn:hover {
-  color: #409EFF;
+  color: #409eff;
 }
 
 /* 添加自主作答标题样式 */
@@ -4944,7 +5381,7 @@ export default {
 
 /* 结束作答按钮样式 */
 .end-record-btn {
-  background-color: #7B2CF5;
+  background-color: #7b2cf5;
   color: white;
   border: none;
 }
@@ -4956,8 +5393,8 @@ export default {
 /* 重新回答按钮样式 */
 .restart-btn {
   background-color: #ffffff;
-  color: #7B2CF5;
-  border: 1px solid #7B2CF5;
+  color: #7b2cf5;
+  border: 1px solid #7b2cf5;
 }
 
 .restart-btn:hover {
@@ -4967,8 +5404,8 @@ export default {
 /* 全屏按钮样式 */
 .fullscreen-btn {
   background-color: #ffffff;
-  color: #7B2CF5;
-  border: 1px solid #7B2CF5;
+  color: #7b2cf5;
+  border: 1px solid #7b2cf5;
 }
 
 .fullscreen-btn:hover {
@@ -4977,7 +5414,7 @@ export default {
 
 /* 作答点评按钮样式 */
 .evaluation-btn {
-  background-color: #7B2CF5;
+  background-color: #7b2cf5;
   color: white;
   border: none;
 }
@@ -4997,7 +5434,7 @@ export default {
   margin-left: 10px;
   width: 60px;
   height: 16px;
-  background-color: #7B2CF5;
+  background-color: #7b2cf5;
   animation: pulse 1.5s infinite;
 }
 
@@ -5045,7 +5482,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 16px 24px;
-  border-bottom: 1px solid #EBEEF5;
+  border-bottom: 1px solid #ebeef5;
 }
 
 .fullscreen-title {
@@ -5082,7 +5519,7 @@ export default {
   flex: 1;
   display: flex;
   flex-direction: column;
-  border-right: 1px solid #EBEEF5;
+  border-right: 1px solid #ebeef5;
 }
 
 /* 右侧点评栏 */
@@ -5099,7 +5536,7 @@ export default {
   font-weight: 500;
   color: #303133;
   background-color: #f5f7fa;
-  border-bottom: 1px solid #EBEEF5;
+  border-bottom: 1px solid #ebeef5;
 }
 
 /* 栏目内容 */
@@ -5120,5 +5557,1513 @@ export default {
 .column-content .model-thinking {
   color: #606266;
   font-style: italic;
+}
+
+.demo-hint-text {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #909399;
+  text-align: center;
+}
+
+.source-hint-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background-color: #f5f7fa;
+  border-bottom: 1px solid #ebeef5;
+}
+
+.source-hint-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: #303133;
+}
+
+.source-hint-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.thinking-header {
+  background-color: #ffffff;
+  margin-bottom: 0;
+}
+
+/* 优化滚动条样式 */
+.demo-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.demo-content::-webkit-scrollbar-thumb {
+  background: #c0c4cc;
+  border-radius: 3px;
+}
+
+.demo-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.user-phone {
+  font-size: 14px;
+  color: #909399;
+}
+
+.logout-text {
+  cursor: pointer;
+  font-size: 14px;
+  color: #f56c6c;
+}
+
+.logout-text:hover {
+  color: #f78989;
+}
+
+/* 修改select的宽度样式 */
+.label-group .el-select {
+  width: 80px;
+  /* 减小时间选择框的宽度 */
+}
+
+/* 地区select单独设置宽度 */
+.label-group:nth-child(2) .el-select {
+  width: 100px;
+}
+
+/* select单独设置宽度 */
+.label-group:nth-child(3) .el-select {
+  width: 100px;
+}
+
+/* 恢复value的灰色背景样式 */
+.value {
+  padding: 4px 12px;
+  background: #e4e7ed;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #606266;
+  height: 28px;
+  line-height: 20px;
+  display: inline-block;
+}
+
+.model-thinking {
+  color: #909399;
+  /* 使用浅灰色 */
+}
+
+.demo-drawer-content .recharge-dialog {
+  :deep(.el-dialog) {
+    border-radius: 8px;
+    overflow: hidden;
+    padding: 0;
+    max-width: 560px;
+    margin-top: 15vh !important;
+  }
+
+  :deep(.el-dialog__body) {
+    padding: 0;
+  }
+
+  :deep(.el-dialog__header) {
+    display: none !important;
+    padding: 0 !important;
+    padding-bottom: 0 !important;
+    margin: 0 !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    line-height: 0 !important;
+    border: none !important;
+    overflow: hidden !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    position: absolute !important;
+    z-index: -1 !important;
+  }
+}
+
+.demo-drawer-content .recharge-container {
+  position: relative;
+  background-color: #fff;
+}
+
+.demo-drawer-content .recharge-header {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 16px 24px;
+  border-bottom: 1px solid #ebeef5;
+  gap: 24px;
+}
+
+.demo-drawer-content .user-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #606266;
+}
+
+.demo-drawer-content .user-info .el-icon-user {
+  font-size: 16px;
+}
+
+.demo-drawer-content .wallet-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #606266;
+}
+
+.demo-drawer-content .wallet-info img {
+  width: 16px;
+  height: 16px;
+}
+
+.demo-drawer-content .close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  cursor: pointer;
+  font-size: 24px;
+  color: #909399;
+}
+
+.demo-drawer-content .close-btn:hover {
+  color: #606266;
+}
+
+.demo-drawer-content .recharge-options {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  padding: 24px;
+}
+
+.demo-drawer-content .recharge-option {
+  background-color: #fff;
+  border: 1px solid #ebeef5;
+  border-radius: 4px;
+  padding: 16px 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.demo-drawer-content .recharge-option:first-child {
+  background-color: #fff;
+}
+
+.demo-drawer-content .recharge-option.selected {
+  border-color: #409eff;
+  background-color: #f5f5f5;
+}
+
+.demo-drawer-content .original-price {
+  color: #909399;
+  text-decoration: line-through;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.demo-drawer-content .discount-price {
+  color: #303133;
+  font-size: 20px;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.demo-drawer-content .points {
+  color: #606266;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.demo-drawer-content .points .el-icon-info {
+  font-size: 12px;
+  color: #909399;
+}
+
+.demo-drawer-content .payment-section {
+  display: flex;
+  padding: 0;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 0 24px 20px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.05);
+}
+
+.demo-drawer-content .qr-code {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f5f5f5;
+  padding: 20px;
+  height: 240px;
+  border-right: 1px dashed #ccc;
+}
+
+.demo-drawer-content .qr-code img {
+  width: 140px;
+  height: 140px;
+  object-fit: contain;
+}
+
+.demo-drawer-content .payment-right-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: #f5f5f5;
+  padding: 20px;
+  justify-content: space-between;
+}
+
+.demo-drawer-content .payment-options {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 0 20px;
+  gap: 15px;
+}
+
+.demo-drawer-content .payment-option {
+  margin-bottom: 0;
+  border-radius: 30px;
+  overflow: hidden;
+  border: 1px solid #dcdfe6;
+  background-color: #fff;
+  transition: all 0.3s;
+  height: 44px;
+}
+
+.demo-drawer-content .payment-option.selected {
+  border-color: #409eff;
+  background-color: #fff;
+}
+
+.demo-drawer-content .radio-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 0 20px;
+  width: 100%;
+  height: 100%;
+}
+
+.demo-drawer-content .radio-label input[type="radio"] {
+  display: none;
+}
+
+.demo-drawer-content .radio-custom {
+  width: 18px;
+  height: 18px;
+  border: 1px solid #dcdfe6;
+  border-radius: 50%;
+  margin-right: 10px;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.demo-drawer-content .radio-custom::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #409eff;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.demo-drawer-content
+  .radio-label
+  input[type="radio"]:checked
+  + .radio-custom::after {
+  opacity: 1;
+}
+
+.demo-drawer-content .payment-option.selected .radio-custom {
+  border-color: #409eff;
+}
+
+.demo-drawer-content .payment-option img {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.demo-drawer-content .payment-option span {
+  font-size: 14px;
+  color: #606266;
+}
+
+.demo-drawer-content .payment-notes {
+  padding: 0;
+  color: #909399;
+  font-size: 12px;
+  line-height: 1.6;
+  background-color: #f5f5f5;
+}
+
+.demo-drawer-content .payment-notes p {
+  margin: 4px 0;
+  display: flex;
+  align-items: flex-start;
+  line-height: 1.8;
+}
+
+.demo-drawer-content .agreement {
+  color: #409eff;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.demo-drawer-content .welcome-dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.demo-drawer-content .welcome-dialog >>> .el-dialog {
+  width: 1600px !important;
+  height: 800px !important;
+  margin: 0 !important;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  padding: 0;
+}
+
+.demo-drawer-content .welcome-dialog >>> .el-dialog__header,
+.demo-drawer-content .welcome-dialog >>> .el-dialog__footer {
+  display: none;
+}
+
+.demo-drawer-content .welcome-dialog >>> .el-dialog__body {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.demo-drawer-content .welcome-content {
+  width: 100%;
+  height: 100%;
+  padding: 40px 100px;
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.demo-drawer-content .welcome-title {
+  font-size: 32px;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 40px;
+}
+
+.demo-drawer-content .user-greeting {
+  font-size: 18px;
+  margin-left: 40px;
+  margin-bottom: 30px;
+  font-weight: normal;
+}
+
+.demo-drawer-content .intro-text,
+.demo-drawer-content .feature-text {
+  font-size: 16px;
+  line-height: 1.8;
+  margin-bottom: 20px;
+  text-indent: 2em;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.demo-drawer-content .dots {
+  font-size: 22px;
+  text-align: center;
+  letter-spacing: 10px;
+  margin: 20px 0;
+}
+
+.demo-drawer-content .more-info {
+  font-size: 16px;
+  margin-bottom: 20px;
+  margin-top: 20px;
+  text-indent: 2em;
+}
+
+.demo-drawer-content .link {
+  color: #409eff;
+  text-decoration: none;
+}
+
+.demo-drawer-content .signature {
+  text-align: right;
+  margin-top: 40px;
+  line-height: 1.6;
+  margin-right: 0;
+}
+
+.demo-drawer-content .signature p {
+  margin: 5px 0;
+}
+
+.demo-drawer-content .btn-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: auto;
+  margin-bottom: 40px;
+}
+
+.demo-drawer-content .confirm-btn {
+  width: 300px;
+  height: 46px;
+  background-color: #3384ff;
+  color: white;
+  border: none;
+  border-radius: 23px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.demo-drawer-content .confirm-btn:hover {
+  opacity: 0.9;
+}
+
+.demo-drawer-content .feedback-dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.demo-drawer-content .feedback-dialog >>> .el-dialog {
+  width: 580px !important;
+  height: 720px !important;
+  margin: 0 !important;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  padding: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.demo-drawer-content .feedback-dialog >>> .el-dialog__header,
+.demo-drawer-content .feedback-dialog >>> .el-dialog__footer {
+  display: none;
+}
+
+.demo-drawer-content .feedback-dialog >>> .el-dialog__body {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.demo-drawer-content .feedback-content {
+  width: 100%;
+  height: 100%;
+  padding: 15px 30px 25px;
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: center;
+}
+
+.demo-drawer-content .feedback-content .close-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  cursor: pointer;
+  font-size: 24px;
+  color: #909399;
+}
+
+.demo-drawer-content .feedback-content h2 {
+  font-size: 17px;
+  font-weight: 500;
+  color: #303133;
+  margin-bottom: 5px;
+  text-align: center;
+}
+
+.demo-drawer-content .star-rating {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  margin-bottom: 8px;
+}
+
+.demo-drawer-content .star-rating i {
+  font-size: 30px;
+  color: #dcdfe6;
+  cursor: pointer;
+}
+
+.demo-drawer-content .star-rating i.el-icon-star-on {
+  color: #f7ba2a;
+}
+
+.demo-drawer-content .auto-show-option {
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+
+.demo-drawer-content .feedback-btns {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 15px;
+}
+
+.demo-drawer-content .feedback-btns .cancel-btn,
+.demo-drawer-content .feedback-btns .submit-btn {
+  width: 140px;
+  height: 42px;
+  border-radius: 21px;
+  font-size: 16px;
+}
+
+.demo-drawer-content .feedback-btns .submit-btn {
+  background: #3384ff;
+}
+
+.demo-drawer-content .feedback-btns .submit-btn:hover {
+  opacity: 0.9;
+}
+
+.demo-drawer-content .login-button {
+  font-size: 14px;
+  padding: 8px 20px;
+  border-radius: 4px;
+  background-color: #7b2cf5;
+  border-color: #7b2cf5;
+}
+
+.demo-drawer-content .login-button:hover {
+  background-color: #6521d4;
+  border-color: #6521d4;
+}
+
+.demo-drawer-content .icon-img {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  color: #909399;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  vertical-align: middle;
+}
+
+.demo-drawer-content .icon-img:hover {
+  opacity: 0.8;
+  color: #409eff;
+}
+
+.demo-drawer-content .qr-tooltip-container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+}
+
+.demo-drawer-content .qr-tooltip {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 10px;
+  width: 200px;
+  height: 200px;
+  background-color: #fff;
+  border-radius: 4px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  display: none;
+  z-index: 1000;
+  padding: 15px;
+  box-sizing: border-box;
+}
+
+.demo-drawer-content .qr-tooltip-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.demo-drawer-content .qr-code-img {
+  width: 140px;
+  height: 140px;
+  object-fit: contain;
+  margin-bottom: 5px;
+}
+
+.demo-drawer-content .qr-tooltip-text {
+  font-size: 12px;
+  color: #333;
+  font-family: "PingFang SC", sans-serif;
+  text-align: center;
+  margin-top: 5px;
+  width: 60px;
+  height: 17px;
+  line-height: 17px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.demo-drawer-content .qr-tooltip:before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid #fff;
+}
+
+.demo-drawer-content .qr-tooltip-container:hover .qr-tooltip {
+  display: block;
+}
+
+.demo-drawer-content .nav-icons-wrapper {
+  display: flex;
+  align-items: center;
+  height: 24px;
+  gap: 20px;
+}
+
+.demo-drawer-content .qr-tooltip-container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+}
+
+.demo-drawer-content .icon-img {
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  cursor: pointer;
+  color: #909399;
+  vertical-align: middle;
+  display: flex;
+}
+
+.demo-drawer-content .wallet-icon {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+
+.demo-drawer-content .logout-icon {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  display: block;
+}
+
+/* 悬浮按钮样式 */
+.demo-drawer-content .float-button {
+  position: fixed;
+  right: 30px;
+  bottom: 60px;
+  width: 60px;
+  height: 60px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 9999;
+  transition: all 0.3s;
+  padding: 0;
+  overflow: hidden;
+}
+
+.demo-drawer-content .float-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.demo-drawer-content .float-button:active {
+  transform: scale(0.95);
+}
+
+.demo-drawer-content .qa-icon {
+  width: 28px;
+  height: 28px;
+  display: block;
+  margin: 0;
+  padding: 0;
+  object-fit: contain;
+  object-position: center;
+}
+
+/* 翻页正方形按钮样式 */
+.demo-drawer-content .page-region .square-nav-btn {
+  width: 24px !important;
+  height: 24px !important;
+  padding: 0 !important;
+  border-radius: 4px;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 12px !important;
+  min-height: 24px !important;
+  background-color: rgba(123, 44, 245, 0.1) !important;
+  border-color: rgba(123, 44, 245, 0.1) !important;
+}
+
+/* 箭头图标样式 */
+.demo-drawer-content .arrow-icon {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+/* 返回按钮样式 */
+.demo-drawer-content .back-btn {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: #909399;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.demo-drawer-content .back-btn i {
+  margin-right: 4px;
+}
+
+.demo-drawer-content .back-btn span {
+  color: #606266;
+}
+
+.demo-drawer-content .back-btn .exam-title {
+  margin-left: 8px;
+  font-size: 18px;
+  font-weight: 500;
+  color: #303133;
+  width: 90px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+}
+
+.demo-drawer-content .back-btn:hover span:first-of-type {
+  color: #7b2cf5;
+}
+
+.demo-drawer-content .page-region {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.demo-drawer-content .light-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-left: 6px;
+}
+
+.demo-drawer-content .light-icon {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+
+.demo-drawer-content .light-btn:hover {
+  opacity: 0.8;
+}
+
+/* 添加消息对话框样式 */
+.demo-drawer-content .message-dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.demo-drawer-content .message-dialog >>> .el-dialog {
+  width: 1600px !important;
+  height: 800px !important;
+  margin: 0 !important;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  padding: 0;
+}
+
+.demo-drawer-content .message-dialog >>> .el-dialog__header,
+.demo-drawer-content .message-dialog >>> .el-dialog__footer {
+  display: none;
+}
+
+.demo-drawer-content .message-dialog >>> .el-dialog__body {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* 新增welcome-dialog样式（与图片中保持一致） */
+.demo-drawer-content .welcome-dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.demo-drawer-content .welcome-dialog >>> .el-dialog {
+  width: 1600px !important;
+  height: 800px !important;
+  margin: 0 !important;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  padding: 0;
+}
+
+.demo-drawer-content .welcome-dialog >>> .el-dialog__header,
+.demo-drawer-content .welcome-dialog >>> .el-dialog__footer {
+  display: none;
+}
+
+.demo-drawer-content .welcome-dialog >>> .el-dialog__body {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* 添加答题表中的状态标签样式 */
+.question-item-status {
+  display: inline-block;
+  width: 50px;
+  height: 20px;
+  border-radius: 10px;
+  font-size: 12px;
+  text-align: center;
+  line-height: 20px;
+  margin-right: 5px;
+}
+
+.item-status-answered {
+  background-color: #7b2cf5;
+  color: #fff;
+}
+
+.item-status-viewed {
+  background-color: #eeeeee;
+  color: #333333;
+}
+
+/* 修改抽屉头部样式 */
+.drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border-bottom: 1px solid #ebeef5;
+}
+
+.drawer-header .title {
+  font-size: 18px;
+  font-weight: 500;
+  color: #303133;
+}
+
+.drawer-header .logo {
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  cursor: pointer;
+}
+
+/* 添加折叠按钮样式 */
+.collapse-btn {
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.collapse-btn:hover {
+  color: #409eff;
+}
+
+/* 添加自主作答标题样式 */
+.record-header {
+  position: absolute;
+  top: 15px;
+  left: 20px;
+  right: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 10;
+}
+
+/* 自主作答标题样式 */
+.record-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  display: flex;
+  align-items: center;
+}
+
+/* 头部操作按钮容器 */
+.header-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+/* 通用按钮样式 */
+.action-btn {
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+/* 结束作答按钮样式 */
+.end-record-btn {
+  background-color: #7b2cf5;
+  color: white;
+  border: none;
+}
+
+.end-record-btn:hover {
+  background-color: #6521d4;
+}
+
+/* 重新回答按钮样式 */
+.restart-btn {
+  background-color: #ffffff;
+  color: #7b2cf5;
+  border: 1px solid #7b2cf5;
+}
+
+.restart-btn:hover {
+  background-color: #f0e6ff;
+}
+
+/* 全屏按钮样式 */
+.fullscreen-btn {
+  background-color: #ffffff;
+  color: #7b2cf5;
+  border: 1px solid #7b2cf5;
+}
+
+.fullscreen-btn:hover {
+  background-color: #f0e6ff;
+}
+
+/* 作答点评按钮样式 */
+.evaluation-btn {
+  background-color: #7b2cf5;
+  color: white;
+  border: none;
+}
+
+.evaluation-btn:hover {
+  background-color: #6521d4;
+}
+
+/* 图标样式 */
+.action-btn i {
+  font-size: 14px;
+}
+
+/* 录音波形图样式 要改的所以先放在这一下*/
+.recording-wave {
+  display: inline-block;
+  margin-left: 10px;
+  width: 60px;
+  height: 16px;
+  background-color: #7b2cf5;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0.6;
+  }
+}
+
+/* 全屏模态框样式 */
+.fullscreen-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.fullscreen-content {
+  width: 90%;
+  height: 85%;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.fullscreen-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  border-bottom: 1px solid #ebeef5;
+}
+
+.fullscreen-title {
+  font-size: 18px;
+  font-weight: 500;
+  color: #303133;
+}
+
+.close-fullscreen-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #909399;
+}
+
+.close-fullscreen-btn:hover {
+  color: #606266;
+}
+
+.fullscreen-body {
+  flex: 1;
+  overflow: hidden;
+}
+
+/* 左右两栏布局 */
+.fullscreen-columns {
+  display: flex;
+  height: 100%;
+}
+
+/* 左侧作答栏 */
+.fullscreen-answer-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #ebeef5;
+}
+
+/* 右侧点评栏 */
+.fullscreen-evaluation-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 栏目标题 */
+.column-title {
+  padding: 12px 16px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #303133;
+  background-color: #f5f7fa;
+  border-bottom: 1px solid #ebeef5;
+}
+
+/* 栏目内容 */
+.column-content {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  font-size: 16px;
+  line-height: 1.8;
+  white-space: pre-wrap;
+}
+
+/* 点评内容样式 */
+.column-content .paragraph {
+  margin-bottom: 16px;
+}
+
+.column-content .model-thinking {
+  color: #606266;
+  font-style: italic;
+}
+
+.demo-hint-text {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #909399;
+  text-align: center;
+}
+
+.source-hint-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background-color: #f5f7fa;
+  border-bottom: 1px solid #ebeef5;
+}
+
+.source-hint-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: #303133;
+}
+
+.source-hint-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.thinking-header {
+  background-color: #ffffff;
+  margin-bottom: 0;
+}
+
+/* 优化滚动条样式 */
+.demo-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.demo-content::-webkit-scrollbar-thumb {
+  background: #c0c4cc;
+  border-radius: 3px;
+}
+
+.demo-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.user-phone {
+  font-size: 14px;
+  color: #909399;
+}
+
+.logout-text {
+  cursor: pointer;
+  font-size: 14px;
+  color: #f56c6c;
+}
+
+.logout-text:hover {
+  color: #f78989;
+}
+
+/* 修改select的宽度样式 */
+.label-group .el-select {
+  width: 80px;
+  /* 减小时间选择框的宽度 */
+}
+
+/* 地区select单独设置宽度 */
+.label-group:nth-child(2) .el-select {
+  width: 100px;
+}
+
+/* select单独设置宽度 */
+.label-group:nth-child(3) .el-select {
+  width: 100px;
+}
+
+/* 恢复value的灰色背景样式 */
+.value {
+  padding: 4px 12px;
+  background: #e4e7ed;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #606266;
+  height: 28px;
+  line-height: 20px;
+  display: inline-block;
+}
+
+.model-thinking {
+  color: #909399;
+  /* 使用浅灰色 */
+}
+
+/* 全屏示范作答列样式 */
+.fullscreen-demo-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 重新定义全屏模式下的样式 */
+.fullscreen-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.fullscreen-content {
+  width: 90%;
+  height: 85%;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.fullscreen-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  border-bottom: 1px solid #ebeef5;
+}
+
+.fullscreen-title {
+  font-size: 18px;
+  font-weight: 500;
+  color: #303133;
+}
+
+.close-fullscreen-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #909399;
+}
+
+.close-fullscreen-btn:hover {
+  color: #606266;
+}
+
+.fullscreen-body {
+  flex: 1;
+  overflow: hidden;
+}
+
+/* 新的按钮样式 - 图片样式 */
+.source-hint-actions {
+  display: flex;
+  align-items: center;
+}
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: #7b2cf5;
+  font-size: 14px;
+  padding: 0;
+  margin-left: 20px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-weight: normal;
+  line-height: 1;
+}
+
+.icon-btn i {
+  margin-right: 4px;
+  font-size: 18px;
+}
+
+.icon-btn .eye-icon {
+  width: 18px;
+  height: 18px;
+  margin-right: 4px;
+  vertical-align: middle;
+}
+
+.icon-btn:hover {
+  opacity: 0.8;
+}
+
+/* 修改标题样式和布局 */
+.source-hint-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  background-color: #fff;
+  border-bottom: 1px solid #ebeef5;
+}
+
+.source-hint-title {
+  font-size: 18px;
+  font-weight: 500;
+  color: #303133;
+}
+
+/* 全屏模式下的磨砂玻璃效果 */
+.column-content.blurred {
+  position: relative;
+}
+
+.column-content.blurred::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.3); /* 降低白色背景的不透明度 */
+  backdrop-filter: blur(4px); /* 从8px降低到4px */
+  -webkit-backdrop-filter: blur(4px); /* 从8px降低到4px */
+  z-index: 10;
+  border-radius: 4px;
+}
+
+.column-content.blurred::after {
+  content: "点击" 显示 "按钮查看示范作答";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #606266;
+  font-size: 16px;
+  font-weight: 500;
+  z-index: 11;
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 10px 20px;
+  border-radius: 4px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* 添加提示文字 */
+.demo-content.blurred::after {
+  content: "内容暂不可见，如需查看请显示";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #606266;
+  font-size: 16px;
+  font-weight: 500;
+  z-index: 11;
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 10px 20px;
+  border-radius: 4px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* 全屏模式下的提示文字 */
+.column-content.blurred::after {
+  content: "内容暂不可见，如需查看请显示";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #606266;
+  font-size: 16px;
+  font-weight: 500;
+  z-index: 11;
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 10px 20px;
+  border-radius: 4px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 </style>

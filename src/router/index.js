@@ -59,6 +59,7 @@ export const constantRoutes = [
   {
     path: '/interview-practice-test',
     component: () => import('@/views/InterviewPracticetest'),
+    name: 'InterviewPracticeTest',
     hidden: true
   },
   {
