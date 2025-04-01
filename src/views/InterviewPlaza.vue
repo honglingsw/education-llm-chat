@@ -220,6 +220,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
   name: 'InterviewPlaza',
   data() {
@@ -377,6 +378,10 @@ export default {
     }
   },
 
+  mounted() {
+    this.getCaptcha()
+  },
+
   // 在组件销毁前清除定时器
   beforeDestroy() {
     if (this.timer) {
@@ -386,6 +391,23 @@ export default {
   },
 
   methods: {
+    getCaptcha() {
+      var config = {
+        method: 'get',
+        url: 'https://test.aigcpmer.com/api/auth/captcha',
+        headers: {}
+      };
+
+      axios(config)
+        .then((response) => {
+          // console.log(response.data);
+          this.captcha.captchaId = response.data.data.captchaId
+          this.captcha.captchaImg = response.data.data.captchaImage
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
     goToInterview(interview) {
       this.$router.push({name: 'InterviewPracticeTest',params: { code: interview.code }})
       // 导航到面试练习页面
@@ -403,6 +425,14 @@ export default {
       this.$nextTick(() => {
         this.$refs.loginForm.resetFields()
       })
+    },
+    showRechargeDialog() {
+      if (this.isLoggedIn) {
+        this.rechargeDialogVisible = true
+      } else {
+        this.showLoginDialog()
+        this.$message.warning('请先登录后再进行充值操作')
+      }
     },
 
     handleCloseDialog() {
@@ -972,26 +1002,28 @@ export default {
   padding-right: 5px;
 }
 
-/* 登录弹窗样式 */
 .dialog-container {
   .el-dialog__header {
     padding: 0;
-    padding-bottom: 0;
+    display: none;
+    /* 完全隐藏header */
   }
 
   .el-dialog {
-    width: 560px !important;
-    height: 480px !important;
+    width: 400px !important;
+    height: 416px !important;
     position: fixed !important;
     top: 50% !important;
     left: 50% !important;
     transform: translate(-50%, -50%) !important;
     margin: 0 !important;
-    background: #F5F5F5 !important;
+    background: #FFFFFF !important;
     border-radius: 8px !important;
     padding: 0 !important;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1) !important;
     overflow: hidden !important;
+    font-family: "PingFang SC", sans-serif;
+    font-size: 16px;
   }
 
   .el-dialog__body {
@@ -999,92 +1031,162 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    padding: 16px 32px;
-    gap: 24px !important;
+    justify-content: flex-start;
+    padding: 0 20px 20px 20px;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: "PingFang SC", sans-serif;
+    font-size: 16px;
   }
 
   .login-container {
-    .el-button--primary {
-      border-color: #FFF;
-    }
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: "PingFang SC", sans-serif;
+    font-size: 16px;
+  }
 
-    .el-form {
-      width: 480px !important;
+  .login-logo {
+    width: 400px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
-      .el-input__inner {
-        width: 100% !important;
-        height: 44px !important;
-        padding: 0 15px !important;
-        line-height: 44px !important;
-        box-sizing: border-box !important;
-        font-size: 16px;
-        border-radius: 16px !important;
-      }
+  .logo-image {
+    width: 37px;
+    height: 40px;
+    object-fit: contain;
+  }
 
-      .code-input-group {
-        display: flex;
-        gap: 16px;
+  .el-button--primary {
+    border-color: #FFF;
+    font-family: "PingFang SC", sans-serif;
+    font-size: 16px;
+  }
 
-        .el-input {
-          flex: 1;
+  .el-form {
+    width: 320px !important;
+    height: 284px !important;
+    box-sizing: border-box;
+    font-family: "PingFang SC", sans-serif;
+    font-size: 16px;
+  }
 
-          .el-input__inner {
-            width: 100% !important;
-            border-radius: 16px !important;
-          }
-        }
+  .el-input__inner {
+    width: 100% !important;
+    height: 40px !important;
+    padding: 0 15px !important;
+    line-height: 40px !important;
+    box-sizing: border-box !important;
+    font-size: 16px;
+    border-radius: 4px !important;
+    font-family: "PingFang SC", sans-serif;
+  }
 
-        .send-code-btn {
-          width: 144px !important;
-          height: 44px !important;
-          background: black !important;
-          color: white !important;
-          border-radius: 16px !important;
-        }
-      }
+  .el-input__inner:focus {
+    border-color: #7B2CF5 !important;
+  }
 
-      /* 修改表单项间距 */
-      .form-item {
-        margin-bottom: 24px !important;
-        /* 普通表单项的底部间距 */
-      }
+  .el-input.is-active .el-input__inner {
+    border-color: #7B2CF5 !important;
+  }
 
-      /* 特别调整验证码输入框（第二个表单项）的间距 */
-      .form-item:nth-child(2) {
-        margin-bottom: 32px !important;
-        /* 增加或减少这个值来调整验证码输入框的位置 */
-      }
+  .code-input-group {
+    display: none;
+  }
 
-      /* 调整登录按钮（第三个表单项）的间距 */
-      .form-item:nth-child(3) {
-        margin-bottom: 16px !important;
-      }
-    }
+  .code-input-group .el-input {
+    flex: 1;
+  }
 
-    /* 登录和取消按钮 */
-    .register-login-btn,
-    .cancel-btn {
-      width: 100% !important;
-      height: 44px !important;
-      border-radius: 16px;
-    }
+  .code-input-group .el-input__inner {
+    width: 100% !important;
+    border-radius: 4px !important;
+  }
 
-    .register-login-btn {
-      background: black !important;
-      color: white !important;
-      font-size: 16px;
-    }
+  .send-code-btn {
+    width: 120px !important;
+    height: 40px !important;
+    background: #7B2CF5 !important;
+    color: white !important;
+    border-radius: 4px !important;
+    padding: 0;
+    margin: 0;
+    font-family: "PingFang SC", sans-serif;
+    font-size: 16px;
+  }
 
-    .register-login-btn:hover {
-      background: #303133 !important;
-    }
+  /* 修改表单项间距 */
+  .form-item {
+    margin-bottom: 20px !important;
+    font-family: "PingFang SC", sans-serif;
+    font-size: 16px;
+  }
 
-    .cancel-btn {
-      background: transparent !important;
-      color: #606266 !important;
-      border: 1px solid #DCDCDC !important;
-    }
+  /* 特别调整验证码输入框的间距 */
+  .captcha-verify {
+    margin-bottom: 20px !important;
+    display: flex;
+    align-items: center;
+    font-family: "PingFang SC", sans-serif;
+    font-size: 16px;
+  }
+
+  .captcha-input {
+    flex: 0 0 134px;
+    width: 134px !important;
+    font-family: "PingFang SC", sans-serif;
+    font-size: 16px;
+  }
+
+  .captcha-image {
+    width: 148px;
+    height: 40px;
+    margin-left: 10px;
+  }
+
+  .el-icon-refresh {
+    margin-left: 5px;
+    cursor: pointer;
+    color: #7B2CF5;
+    font-size: 16px;
+  }
+
+  /* 登录和取消按钮 */
+  .register-login-btn,
+  .cancel-btn {
+    width: 100% !important;
+    height: 40px !important;
+    border-radius: 4px;
+    font-size: 16px;
+    font-family: "PingFang SC", sans-serif;
+  }
+
+  .register-login-btn {
+    background: #7B2CF5 !important;
+    color: white !important;
+  }
+
+  .cancel-btn {
+    background: transparent !important;
+    color: #606266 !important;
+    border: 1px solid #DCDCDC !important;
+  }
+
+  :deep(.el-form-item__error) {
+    position: absolute;
+    left: 0;
+    top: 100%;
+    padding: 0;
+    margin: 2px 0 0;
+    line-height: normal;
+    color: #F56C6C;
+    font-size: 12px;
+    font-family: "PingFang SC", sans-serif;
   }
 
   .login-logo {
@@ -1129,6 +1231,40 @@ export default {
     padding-right: 100px !important;
     /* 为错误提示预留空间 */
   }
+}
+
+.verify-input-wrapper {
+  position: relative;
+  width: 320px;
+  height: 40px;
+  font-family: "PingFang SC", sans-serif;
+}
+
+.verify-input {
+  width: 320px !important;
+  font-family: "PingFang SC", sans-serif;
+  font-size: 16px;
+}
+
+.verify-input .el-input__inner {
+  padding-right: 120px !important;
+}
+
+.send-code-text {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #7B2CF5;
+  font-size: 16px;
+  font-family: "PingFang SC", sans-serif;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.send-code-text.disabled {
+  color: #909399;
+  cursor: not-allowed;
 }
 
 /* 充值弹窗样式 */
