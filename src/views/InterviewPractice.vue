@@ -1986,7 +1986,6 @@ export default {
     font-size: 36px;
     font-weight: bold;
     color: #606266;
-    margin-bottom: 48px !important;
   }
 
   :deep(.el-form) {

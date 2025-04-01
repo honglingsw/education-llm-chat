@@ -438,7 +438,11 @@
             <span>示范作答</span>
           </template>
           <template v-else>
-            <img src="@/assets/rightarrow.png" class="arrow-icon" alt="右箭头" />
+            <img
+              src="@/assets/rightarrow.png"
+              class="arrow-icon"
+              alt="右箭头"
+            />
           </template>
         </div>
       </div>
@@ -1102,7 +1106,7 @@ export default {
       var data = {
         page: page || 1,
         size: size || 10,
-        serviceTypeEnum: this.$route.params.code,
+        serviceTypeEnum: this.examCode,
       };
 
       var config = {
@@ -1373,12 +1377,14 @@ export default {
               examTime: this.selectedYear || "",
               region: this.selectedRegion || "",
               questionType: this.selectedQuestionType || "",
+              serviceTypeEnum: this.examCode,
+
               pageNum: 1,
               pageSize: 1,
             },
             keyword: "",
           }
-        : {};
+        : { serviceTypeEnum: this.examCode };
       const token = localStorage.getItem("token");
 
       axios({
@@ -1637,7 +1643,7 @@ export default {
     },
     getToken() {
       const token = localStorage.getItem("token");
-      
+
       var config = {
         method: "get",
         url: "https://test.aigcpmer.com/api/user/detail",
