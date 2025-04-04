@@ -645,7 +645,7 @@ export default {
       if (!this.canSendCode) {
         return; // 如果正在倒计时，直接返回不做任何操作
       }
-
+      this.canSendCode = false;
       // 先验证手机号
       this.$refs.loginForm.validateField("phone", async (errorMessage) => {
         if (errorMessage) {
@@ -701,6 +701,8 @@ export default {
 
           this.$message.success("验证码发送成功");
         } catch (error) {
+          this.canSendCode = true;
+
           console.log("发送短信验证码出错:", error);
           this.$message.error("验证码发送失败，请重试");
         }

@@ -270,7 +270,18 @@
                 <div class="record-header">
                   <div class="record-title">
                     自主作答
-                    <span class="recording-wave" v-if="isRecording"></span>
+                    <div class="recording-wave" v-if="isRecording">
+                      <span></span>
+                      <span></span>
+                      <span></span>
+                      <span></span>
+                      <span></span>
+                      <span></span>
+                      <span></span>
+                      <span></span>
+                      <span></span>
+                      <span></span>
+                    </div>
                   </div>
 
                   <!-- 录音中显示结束作答按钮 -->
@@ -414,7 +425,13 @@
                   >
                     <!-- 添加第二个source-hint标题栏 -->
                     <div class="source-hint-header thinking-header">
-                      <div class="source-hint-title">以下内容来自DeepSeek</div>
+                      <div class="source-hint-title">
+                        <span class="deepseek-text">以下内容来自DeepSeek-RI-YanYi-36B-ST</span>
+                        <span class="info-icon-wrapper">
+                          <i class="el-icon-question info-icon"></i>
+                          <div class="info-tooltip">DeepSeek-RI-YanYi-36B-ST 是基于 DeepSeek-R1 大规模语言模型微调而成的专用模型，专注于高效解答结构化面试题。该模型通过海量知名机构的标准面试题目及高质量答案进行精细化训练，具备卓越的逻辑推理、问题拆解和答案生成能力。</div>
+                        </span>
+                      </div>
                     </div>
                     <div class="content-text">
                       <p
@@ -1142,13 +1159,15 @@ export default {
             // this.selectedQuestionType = data.questionType;
             this.modelResult = data.modelResult;
             this.hasRecordedContent = true;
+
             this.asrResult = data.userContent;
             this.aiResponseReasonContent = data.reasonContent;
             this.aiResponseResult = data.modelResult;
             this.currentIndex = data.currentIndex;
             // 重置相关状态
             this.isDemoStarted = false;
-            this.showEvaluationContent = true;
+                        this.showEvaluationContentIn = true;
+
           }
         })
         .catch(function (error) {
@@ -1686,6 +1705,9 @@ export default {
           return;
         }
 
+        // 立即禁用按钮，防止多次点击
+        this.canSendCode = false;
+        
         try {
           // 直接发送短信验证码，接口内部会验证图形验证码
           var data = JSON.stringify({
@@ -1711,11 +1733,12 @@ export default {
           if (response.data.code !== 200) {
             // 处理各种错误情况
             this.$message.error(response.data.message || "发送失败，请重试");
+            // 如果发送失败，重新启用按钮
+            this.canSendCode = true;
             return;
           }
 
           // 短信验证码发送成功，开始倒计时
-          this.canSendCode = false;
           this.countdown = 60;
           this.timer = setInterval(() => {
             if (this.countdown > 0) {
@@ -1731,6 +1754,8 @@ export default {
         } catch (error) {
           console.log("发送短信验证码出错:", error);
           this.$message.error("验证码发送失败，请重试");
+          // 如果发送出错，重新启用按钮
+          this.canSendCode = true;
         }
       });
     },
@@ -2202,11 +2227,10 @@ export default {
 }
 
 .header-container {
-  margin: 0 100px;
+  margin: 16px 24px  16px 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 56px;
 }
 
 .header-left {
@@ -2215,8 +2239,8 @@ export default {
 }
 
 .nav-logo {
-  height: 40px;
-  width: auto;
+  height: 24px;
+  width: 24px;
 }
 
 .header-right {
@@ -3310,22 +3334,7 @@ export default {
   border-radius: 4px;
 }
 
-/* 添加提示文字 */
-.demo-content.blurred::after {
-  content: "内容暂不可见，如需查看请显示";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: #606266;
-  font-size: 16px;
-  font-weight: 500;
-  z-index: 11;
-  background-color: rgba(255, 255, 255, 0.8);
-  padding: 10px 20px;
-  border-radius: 4px;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-}
+
 
 .content-text {
   text-align: left;
@@ -5422,7 +5431,7 @@ export default {
 .record-title {
   font-size: 16px;
   font-weight: 500;
-  color: #333;
+  color: #000000;
   display: flex;
   align-items: center;
 }
@@ -5498,1252 +5507,47 @@ export default {
 
 /* 录音波形图样式 要改的所以先放在这一下*/
 .recording-wave {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   margin-left: 10px;
-  width: 60px;
   height: 16px;
-  background-color: #7b2cf5;
-  animation: pulse 1.5s infinite;
+  width: 60px;
 }
 
-@keyframes pulse {
-  0% {
-    opacity: 0.6;
-  }
-
-  50% {
-    opacity: 1;
-  }
-
-  100% {
-    opacity: 0.6;
-  }
-}
-
-/* 全屏模态框样式 */
-.fullscreen-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-}
-
-.fullscreen-content {
-  width: 90%;
-  height: 85%;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.fullscreen-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 24px;
-  border-bottom: 1px solid #ebeef5;
-}
-
-.fullscreen-title {
-  font-size: 18px;
-  font-weight: 500;
-  color: #303133;
-}
-
-.close-fullscreen-btn {
-  background: none;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-  color: #909399;
-}
-
-.close-fullscreen-btn:hover {
-  color: #606266;
-}
-
-.fullscreen-body {
-  flex: 1;
-  overflow: hidden;
-}
-
-/* 左右两栏布局 */
-.fullscreen-columns {
-  display: flex;
-  height: 100%;
-}
-
-/* 左侧作答栏 */
-.fullscreen-answer-column {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  border-right: 1px solid #ebeef5;
-}
-
-/* 右侧点评栏 */
-.fullscreen-evaluation-column {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-/* 栏目标题 */
-.column-title {
-  padding: 12px 16px;
-  font-size: 16px;
-  font-weight: 500;
-  color: #303133;
-  background-color: #f5f7fa;
-  border-bottom: 1px solid #ebeef5;
-}
-
-/* 栏目内容 */
-.column-content {
-  flex: 1;
-  padding: 16px;
-  overflow-y: auto;
-  font-size: 16px;
-  line-height: 1.8;
-  white-space: pre-wrap;
-}
-
-/* 点评内容样式 */
-.column-content .paragraph {
-  margin-bottom: 16px;
-}
-
-.column-content .model-thinking {
-  color: #606266;
-  font-style: italic;
-}
-
-.demo-hint-text {
-  margin-top: 15px;
-  font-size: 14px;
-  color: #909399;
-  text-align: center;
-}
-
-.source-hint-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 16px;
-  background-color: #f5f7fa;
-  border-bottom: 1px solid #ebeef5;
-}
-
-.source-hint-title {
-  font-size: 16px;
-  font-weight: 500;
-  color: #303133;
-}
-
-.source-hint-actions {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-.thinking-header {
-  background-color: #ffffff;
-  margin-bottom: 0;
-}
-
-/* 优化滚动条样式 */
-.demo-content::-webkit-scrollbar {
-  width: 6px;
-}
-
-.demo-content::-webkit-scrollbar-thumb {
-  background: #c0c4cc;
-  border-radius: 3px;
-}
-
-.demo-content::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.user-phone {
-  font-size: 14px;
-  color: #909399;
-}
-
-.logout-text {
-  cursor: pointer;
-  font-size: 14px;
-  color: #f56c6c;
-}
-
-.logout-text:hover {
-  color: #f78989;
-}
-
-/* 修改select的宽度样式 */
-.label-group .el-select {
-  width: 80px;
-  /* 减小时间选择框的宽度 */
-}
-
-/* 地区select单独设置宽度 */
-.label-group:nth-child(2) .el-select {
-  width: 100px;
-}
-
-/* select单独设置宽度 */
-.label-group:nth-child(3) .el-select {
-  width: 100px;
-}
-
-/* 恢复value的灰色背景样式 */
-.value {
-  padding: 4px 12px;
-  background: #e4e7ed;
-  border-radius: 4px;
-  font-size: 14px;
-  color: #606266;
-  height: 28px;
-  line-height: 20px;
+.recording-wave::before {
+  content: "";
   display: inline-block;
-}
-
-.model-thinking {
-  color: #909399;
-  /* 使用浅灰色 */
-}
-
-.demo-drawer-content .recharge-dialog {
-  :deep(.el-dialog) {
-    border-radius: 8px;
-    overflow: hidden;
-    padding: 0;
-    max-width: 560px;
-    margin-top: 15vh !important;
-  }
-
-  :deep(.el-dialog__body) {
-    padding: 0;
-  }
-
-  :deep(.el-dialog__header) {
-    display: none !important;
-    padding: 0 !important;
-    padding-bottom: 0 !important;
-    margin: 0 !important;
-    height: 0 !important;
-    min-height: 0 !important;
-    line-height: 0 !important;
-    border: none !important;
-    overflow: hidden !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-    position: absolute !important;
-    z-index: -1 !important;
-  }
-}
-
-.demo-drawer-content .recharge-container {
-  position: relative;
-  background-color: #fff;
-}
-
-.demo-drawer-content .recharge-header {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  padding: 16px 24px;
-  border-bottom: 1px solid #ebeef5;
-  gap: 24px;
-}
-
-.demo-drawer-content .user-info {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  color: #606266;
-}
-
-.demo-drawer-content .user-info .el-icon-user {
-  font-size: 16px;
-}
-
-.demo-drawer-content .wallet-info {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  color: #606266;
-}
-
-.demo-drawer-content .wallet-info img {
-  width: 16px;
-  height: 16px;
-}
-
-.demo-drawer-content .close-btn {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  cursor: pointer;
-  font-size: 24px;
-  color: #909399;
-}
-
-.demo-drawer-content .close-btn:hover {
-  color: #606266;
-}
-
-.demo-drawer-content .recharge-options {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-  padding: 24px;
-}
-
-.demo-drawer-content .recharge-option {
-  background-color: #fff;
-  border: 1px solid #ebeef5;
-  border-radius: 4px;
-  padding: 16px 8px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.3s;
-  height: 120px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.demo-drawer-content .recharge-option:first-child {
-  background-color: #fff;
-}
-
-.demo-drawer-content .recharge-option.selected {
-  border-color: #409eff;
-  background-color: #f5f5f5;
-}
-
-.demo-drawer-content .original-price {
-  color: #909399;
-  text-decoration: line-through;
-  font-size: 14px;
-  margin-bottom: 8px;
-}
-
-.demo-drawer-content .discount-price {
-  color: #303133;
-  font-size: 20px;
-  font-weight: 500;
-  margin-bottom: 8px;
-}
-
-.demo-drawer-content .points {
-  color: #606266;
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-}
-
-.demo-drawer-content .points .el-icon-info {
-  font-size: 12px;
-  color: #909399;
-}
-
-.demo-drawer-content .payment-section {
-  display: flex;
-  padding: 0;
-  background-color: #f5f5f5;
-  border-radius: 4px;
-  overflow: hidden;
-  margin: 0 24px 20px;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.05);
-}
-
-.demo-drawer-content .qr-code {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #f5f5f5;
-  padding: 20px;
-  height: 240px;
-  border-right: 1px dashed #ccc;
-}
-
-.demo-drawer-content .qr-code img {
-  width: 140px;
-  height: 140px;
-  object-fit: contain;
-}
-
-.demo-drawer-content .payment-right-section {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  background-color: #f5f5f5;
-  padding: 20px;
-  justify-content: space-between;
-}
-
-.demo-drawer-content .payment-options {
-  flex: 0 0 auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 0 0 20px;
-  gap: 15px;
-}
-
-.demo-drawer-content .payment-option {
-  margin-bottom: 0;
-  border-radius: 30px;
-  overflow: hidden;
-  border: 1px solid #dcdfe6;
-  background-color: #fff;
-  transition: all 0.3s;
-  height: 44px;
-}
-
-.demo-drawer-content .payment-option.selected {
-  border-color: #409eff;
-  background-color: #fff;
-}
-
-.demo-drawer-content .radio-label {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  padding: 0 20px;
-  width: 100%;
-  height: 100%;
-}
-
-.demo-drawer-content .radio-label input[type="radio"] {
-  display: none;
-}
-
-.demo-drawer-content .radio-custom {
-  width: 18px;
-  height: 18px;
-  border: 1px solid #dcdfe6;
-  border-radius: 50%;
-  margin-right: 10px;
-  position: relative;
-  flex-shrink: 0;
-}
-
-.demo-drawer-content .radio-custom::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: #409eff;
-  opacity: 0;
-  transition: opacity 0.2s;
-}
-
-.demo-drawer-content
-  .radio-label
-  input[type="radio"]:checked
-  + .radio-custom::after {
-  opacity: 1;
-}
-
-.demo-drawer-content .payment-option.selected .radio-custom {
-  border-color: #409eff;
-}
-
-.demo-drawer-content .payment-option img {
-  width: 20px;
-  height: 20px;
-  margin-right: 8px;
-  flex-shrink: 0;
-}
-
-.demo-drawer-content .payment-option span {
-  font-size: 14px;
-  color: #606266;
-}
-
-.demo-drawer-content .payment-notes {
-  padding: 0;
-  color: #909399;
-  font-size: 12px;
-  line-height: 1.6;
-  background-color: #f5f5f5;
-}
-
-.demo-drawer-content .payment-notes p {
-  margin: 4px 0;
-  display: flex;
-  align-items: flex-start;
-  line-height: 1.8;
-}
-
-.demo-drawer-content .agreement {
-  color: #409eff;
-  cursor: pointer;
-  text-decoration: underline;
-}
-
-.demo-drawer-content .welcome-dialog {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2000;
-}
-
-.demo-drawer-content .welcome-dialog >>> .el-dialog {
-  width: 1600px !important;
-  height: 800px !important;
-  margin: 0 !important;
-  background-color: #fff;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  padding: 0;
-}
-
-.demo-drawer-content .welcome-dialog >>> .el-dialog__header,
-.demo-drawer-content .welcome-dialog >>> .el-dialog__footer {
-  display: none;
-}
-
-.demo-drawer-content .welcome-dialog >>> .el-dialog__body {
-  padding: 0;
-  margin: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
-
-.demo-drawer-content .welcome-content {
-  width: 100%;
-  height: 100%;
-  padding: 40px 100px;
-  box-sizing: border-box;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-}
-
-.demo-drawer-content .welcome-title {
-  font-size: 32px;
-  font-weight: bold;
-  text-align: center;
-  margin-top: 10px;
-  margin-bottom: 40px;
-}
-
-.demo-drawer-content .user-greeting {
-  font-size: 18px;
-  margin-left: 40px;
-  margin-bottom: 30px;
-  font-weight: normal;
-}
-
-.demo-drawer-content .intro-text,
-.demo-drawer-content .feature-text {
-  font-size: 16px;
-  line-height: 1.8;
-  margin-bottom: 20px;
-  text-indent: 2em;
-  margin-left: 0;
-  margin-right: 0;
-}
-
-.demo-drawer-content .dots {
-  font-size: 22px;
-  text-align: center;
-  letter-spacing: 10px;
-  margin: 20px 0;
-}
-
-.demo-drawer-content .more-info {
-  font-size: 16px;
-  margin-bottom: 20px;
-  margin-top: 20px;
-  text-indent: 2em;
-}
-
-.demo-drawer-content .link {
-  color: #409eff;
-  text-decoration: none;
-}
-
-.demo-drawer-content .signature {
-  text-align: right;
-  margin-top: 40px;
-  line-height: 1.6;
-  margin-right: 0;
-}
-
-.demo-drawer-content .signature p {
-  margin: 5px 0;
-}
-
-.demo-drawer-content .btn-container {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  margin-top: auto;
-  margin-bottom: 40px;
-}
-
-.demo-drawer-content .confirm-btn {
-  width: 300px;
-  height: 46px;
-  background-color: #3384ff;
-  color: white;
-  border: none;
-  border-radius: 23px;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.demo-drawer-content .confirm-btn:hover {
-  opacity: 0.9;
-}
-
-.demo-drawer-content .feedback-dialog {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2000;
-}
-
-.demo-drawer-content .feedback-dialog >>> .el-dialog {
-  width: 580px !important;
-  height: 720px !important;
-  margin: 0 !important;
-  background-color: #fff;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  padding: 0;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.demo-drawer-content .feedback-dialog >>> .el-dialog__header,
-.demo-drawer-content .feedback-dialog >>> .el-dialog__footer {
-  display: none;
-}
-
-.demo-drawer-content .feedback-dialog >>> .el-dialog__body {
-  padding: 0;
-  margin: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
-
-.demo-drawer-content .feedback-content {
-  width: 100%;
-  height: 100%;
-  padding: 15px 30px 25px;
-  box-sizing: border-box;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  justify-content: center;
-}
-
-.demo-drawer-content .feedback-content .close-btn {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  cursor: pointer;
-  font-size: 24px;
-  color: #909399;
-}
-
-.demo-drawer-content .feedback-content h2 {
-  font-size: 17px;
-  font-weight: 500;
-  color: #303133;
-  margin-bottom: 5px;
-  text-align: center;
-}
-
-.demo-drawer-content .star-rating {
-  display: flex;
-  justify-content: center;
-  gap: 25px;
-  margin-bottom: 8px;
-}
-
-.demo-drawer-content .star-rating i {
-  font-size: 30px;
-  color: #dcdfe6;
-  cursor: pointer;
-}
-
-.demo-drawer-content .star-rating i.el-icon-star-on {
-  color: #f7ba2a;
-}
-
-.demo-drawer-content .auto-show-option {
-  margin-top: 10px;
-  margin-bottom: 5px;
-}
-
-.demo-drawer-content .feedback-btns {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  margin-top: 15px;
-}
-
-.demo-drawer-content .feedback-btns .cancel-btn,
-.demo-drawer-content .feedback-btns .submit-btn {
-  width: 140px;
-  height: 42px;
-  border-radius: 21px;
-  font-size: 16px;
-}
-
-.demo-drawer-content .feedback-btns .submit-btn {
-  background: #3384ff;
-}
-
-.demo-drawer-content .feedback-btns .submit-btn:hover {
-  opacity: 0.9;
-}
-
-.demo-drawer-content .login-button {
-  font-size: 14px;
-  padding: 8px 20px;
-  border-radius: 4px;
-  background-color: #7b2cf5;
-  border-color: #7b2cf5;
-}
-
-.demo-drawer-content .login-button:hover {
-  background-color: #6521d4;
-  border-color: #6521d4;
-}
-
-.demo-drawer-content .icon-img {
-  width: 24px;
-  height: 24px;
-  cursor: pointer;
-  color: #909399;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0;
-  vertical-align: middle;
-}
-
-.demo-drawer-content .icon-img:hover {
-  opacity: 0.8;
-  color: #409eff;
-}
-
-.demo-drawer-content .qr-tooltip-container {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  vertical-align: middle;
-}
-
-.demo-drawer-content .qr-tooltip {
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  margin-top: 10px;
-  width: 200px;
-  height: 200px;
-  background-color: #fff;
-  border-radius: 4px;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-  display: none;
-  z-index: 1000;
-  padding: 15px;
-  box-sizing: border-box;
-}
-
-.demo-drawer-content .qr-tooltip-content {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.demo-drawer-content .qr-code-img {
-  width: 140px;
-  height: 140px;
-  object-fit: contain;
-  margin-bottom: 5px;
-}
-
-.demo-drawer-content .qr-tooltip-text {
-  font-size: 12px;
-  color: #333;
-  font-family: "PingFang SC", sans-serif;
-  text-align: center;
-  margin-top: 5px;
-  width: 60px;
-  height: 17px;
-  line-height: 17px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.demo-drawer-content .qr-tooltip:before {
-  content: "";
-  position: absolute;
-  top: -8px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 0;
-  height: 0;
-  border-left: 8px solid transparent;
-  border-right: 8px solid transparent;
-  border-bottom: 8px solid #fff;
-}
-
-.demo-drawer-content .qr-tooltip-container:hover .qr-tooltip {
-  display: block;
-}
-
-.demo-drawer-content .nav-icons-wrapper {
-  display: flex;
-  align-items: center;
-  height: 24px;
-  gap: 20px;
-}
-
-.demo-drawer-content .qr-tooltip-container {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  vertical-align: middle;
-}
-
-.demo-drawer-content .icon-img {
-  width: 24px;
-  height: 24px;
-  margin: 0;
-  cursor: pointer;
-  color: #909399;
-  vertical-align: middle;
-  display: flex;
-}
-
-.demo-drawer-content .wallet-icon {
-  width: 24px;
-  height: 24px;
-  display: block;
-}
-
-.demo-drawer-content .logout-icon {
-  width: 24px;
-  height: 24px;
-  cursor: pointer;
-  display: block;
-}
-
-/* 悬浮按钮样式 */
-.demo-drawer-content .float-button {
-  position: fixed;
-  right: 30px;
-  bottom: 60px;
-  width: 60px;
-  height: 60px;
-  background-color: #ffffff;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  z-index: 9999;
-  transition: all 0.3s;
-  padding: 0;
-  overflow: hidden;
-}
-
-.demo-drawer-content .float-button:hover {
-  transform: scale(1.1);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
-}
-
-.demo-drawer-content .float-button:active {
-  transform: scale(0.95);
-}
-
-.demo-drawer-content .qa-icon {
-  width: 28px;
-  height: 28px;
-  display: block;
-  margin: 0;
-  padding: 0;
-  object-fit: contain;
-  object-position: center;
-}
-
-/* 翻页正方形按钮样式 */
-.demo-drawer-content .page-region .square-nav-btn {
-  width: 24px !important;
-  height: 24px !important;
-  padding: 0 !important;
-  border-radius: 4px;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  font-size: 12px !important;
-  min-height: 24px !important;
-  background-color: rgba(123, 44, 245, 0.1) !important;
-  border-color: rgba(123, 44, 245, 0.1) !important;
-}
-
-/* 箭头图标样式 */
-.demo-drawer-content .arrow-icon {
-  width: 16px;
-  height: 16px;
-  display: block;
-}
-
-/* 返回按钮样式 */
-.demo-drawer-content .back-btn {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  color: #909399;
-  font-size: 14px;
-  margin-bottom: 10px;
-}
-
-.demo-drawer-content .back-btn i {
-  margin-right: 4px;
-}
-
-.demo-drawer-content .back-btn span {
-  color: #606266;
-}
-
-.demo-drawer-content .back-btn .exam-title {
-  margin-left: 8px;
-  font-size: 18px;
-  font-weight: 500;
-  color: #303133;
-  width: 90px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-}
-
-.demo-drawer-content .back-btn:hover span:first-of-type {
   color: #7b2cf5;
-}
-
-.demo-drawer-content .page-region {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 12px;
-}
-
-.demo-drawer-content .light-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  margin-left: 6px;
-}
-
-.demo-drawer-content .light-icon {
-  width: 24px;
-  height: 24px;
-  display: block;
-}
-
-.demo-drawer-content .light-btn:hover {
-  opacity: 0.8;
-}
-
-/* 添加消息对话框样式 */
-.demo-drawer-content .message-dialog {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2000;
-}
-
-.demo-drawer-content .message-dialog >>> .el-dialog {
-  width: 1600px !important;
-  height: 800px !important;
-  margin: 0 !important;
-  background-color: #fff;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  padding: 0;
-}
-
-.demo-drawer-content .message-dialog >>> .el-dialog__header,
-.demo-drawer-content .message-dialog >>> .el-dialog__footer {
-  display: none;
-}
-
-.demo-drawer-content .message-dialog >>> .el-dialog__body {
-  padding: 0;
-  margin: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
-
-/* 新增welcome-dialog样式（与图片中保持一致） */
-.demo-drawer-content .welcome-dialog {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2000;
-}
-
-.demo-drawer-content .welcome-dialog >>> .el-dialog {
-  width: 1600px !important;
-  height: 800px !important;
-  margin: 0 !important;
-  background-color: #fff;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  padding: 0;
-}
-
-.demo-drawer-content .welcome-dialog >>> .el-dialog__header,
-.demo-drawer-content .welcome-dialog >>> .el-dialog__footer {
-  display: none;
-}
-
-.demo-drawer-content .welcome-dialog >>> .el-dialog__body {
-  padding: 0;
-  margin: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
-
-/* 添加答题表中的状态标签样式 */
-.question-item-status {
-  display: inline-block;
-  width: 50px;
-  height: 20px;
-  border-radius: 10px;
-  font-size: 12px;
-  text-align: center;
-  line-height: 20px;
   margin-right: 5px;
 }
 
-.item-status-answered {
-  background-color: #7b2cf5;
-  color: #fff;
-}
-
-.item-status-viewed {
-  background-color: #eeeeee;
-  color: #333333;
-}
-
-/* 修改抽屉头部样式 */
-.drawer-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px;
-  border-bottom: 1px solid #ebeef5;
-}
-
-.drawer-header .title {
-  font-size: 18px;
-  font-weight: 500;
-  color: #303133;
-}
-
-.drawer-header .logo {
-  width: 24px;
-  height: 24px;
-  margin: 0;
-  cursor: pointer;
-}
-
-/* 添加折叠按钮样式 */
-.collapse-btn {
-  cursor: pointer;
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.collapse-btn:hover {
-  color: #409eff;
-}
-
-/* 添加自主作答标题样式 */
-.record-header {
-  position: absolute;
-  top: 15px;
-  left: 20px;
-  right: 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  z-index: 10;
-}
-
-/* 自主作答标题样式 */
-.record-title {
-  font-size: 16px;
-  font-weight: 500;
-  color: #333;
-  display: flex;
-  align-items: center;
-}
-
-/* 头部操作按钮容器 */
-.header-actions {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-/* 通用按钮样式 */
-.action-btn {
-  height: 32px;
-  padding: 0 12px;
-  border-radius: 4px;
-  font-size: 14px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-}
-
-/* 结束作答按钮样式 */
-.end-record-btn {
-  background-color: #7b2cf5;
-  color: white;
-  border: none;
-}
-
-.end-record-btn:hover {
-  background-color: #6521d4;
-}
-
-/* 重新回答按钮样式 */
-.restart-btn {
-  background-color: #ffffff;
-  color: #7b2cf5;
-  border: 1px solid #7b2cf5;
-}
-
-.restart-btn:hover {
-  background-color: #f0e6ff;
-}
-
-/* 全屏按钮样式 */
-.fullscreen-btn {
-  background-color: #ffffff;
-  color: #7b2cf5;
-  border: 1px solid #7b2cf5;
-}
-
-.fullscreen-btn:hover {
-  background-color: #f0e6ff;
-}
-
-/* 作答点评按钮样式 */
-.evaluation-btn {
-  background-color: #7b2cf5;
-  color: white;
-  border: none;
-}
-
-.evaluation-btn:hover {
-  background-color: #6521d4;
-}
-
-/* 图标样式 */
-.action-btn i {
-  font-size: 14px;
-}
-
-/* 录音波形图样式 要改的所以先放在这一下*/
-.recording-wave {
+.recording-wave span {
   display: inline-block;
-  margin-left: 10px;
-  width: 60px;
-  height: 16px;
+  width: 3px;
+  height: 100%;
   background-color: #7b2cf5;
-  animation: pulse 1.5s infinite;
+  margin: 0 1px;
+  border-radius: 1px;
+  animation: waveform-animation 1s infinite;
 }
 
-@keyframes pulse {
-  0% {
-    opacity: 0.6;
-  }
+.recording-wave span:nth-child(1) { animation-delay: 0.1s; height: 30%; }
+.recording-wave span:nth-child(2) { animation-delay: 0.2s; height: 60%; }
+.recording-wave span:nth-child(3) { animation-delay: 0.3s; height: 40%; }
+.recording-wave span:nth-child(4) { animation-delay: 0.4s; height: 80%; }
+.recording-wave span:nth-child(5) { animation-delay: 0.5s; height: 100%; }
+.recording-wave span:nth-child(6) { animation-delay: 0.6s; height: 50%; }
+.recording-wave span:nth-child(7) { animation-delay: 0.7s; height: 70%; }
+.recording-wave span:nth-child(8) { animation-delay: 0.8s; height: 45%; }
+.recording-wave span:nth-child(9) { animation-delay: 0.9s; height: 65%; }
+.recording-wave span:nth-child(10) { animation-delay: 1.0s; height: 35%; }
 
+@keyframes waveform-animation {
+  0%, 100% {
+    transform: scaleY(1);
+  }
   50% {
-    opacity: 1;
-  }
-
-  100% {
-    opacity: 0.6;
+    transform: scaleY(0.6);
   }
 }
 
@@ -7108,14 +5912,15 @@ export default {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  width: max-content;
+  line-height: 22px;
   color: #606266;
-  font-size: 16px;
-  font-weight: 500;
+  font-size: 14px;
+  font-weight: 400;
   z-index: 11;
-  background-color: rgba(255, 255, 255, 0.8);
-  padding: 10px 20px;
+  background-color: transparent;
   border-radius: 4px;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: none;
 }
 
 /* 全屏模式下的提示文字 */
@@ -7133,5 +5938,63 @@ export default {
   padding: 10px 20px;
   border-radius: 4px;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* DeepSeek 信息图标样式 */
+.info-icon-wrapper {
+  display: inline-block;
+  position: relative;
+  margin-left: 5px;
+  vertical-align: middle;
+}
+
+.info-icon {
+  font-size: 16px;
+  color: #909399;
+  cursor: pointer;
+  background-color: #f0f0f0;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.info-tooltip {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 5px;
+  background-color: #fff;
+  border-radius: 4px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  width: 250px;
+  font-size: 12px;
+  color: #606266;
+  z-index: 1000;
+  display: none;
+}
+
+.info-icon-wrapper:hover .info-tooltip {
+  display: block;
+}
+
+.info-tooltip:before {
+  content: "";
+  position: absolute;
+  top: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 0 5px 5px;
+  border-style: solid;
+  border-color: transparent transparent #fff;
+}
+
+.deepseek-text {
+  font-size: 16px;
+  color: #666666;
 }
 </style>
