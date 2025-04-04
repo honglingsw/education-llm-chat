@@ -455,38 +455,7 @@
       class="welcome-dialog"
     >
       <div class="welcome-content">
-        <h1 class="welcome-title">欢迎使用结构化面试陪练助手！</h1>
-
-        <p class="user-greeting">亲爱的考生:</p>
-
-        <p class="intro-text">
-          感谢您对我们产品的信任！
-          在这里，我们将为您简单介绍一下本系统的功能和使用方法。
-        </p>
-
-        <p class="feature-text">
-          结构化面试是当前公务员/事业编考试中，最常见的面试形式。结构化面试常见的评分维度存在......等评分维度。根据过往经验，我们将结构化面试分为了5个维度：分析能力、应变能力、计划组织能力、人际交往意识与技巧、言语表达能力。
-        </p>
-
-        <p class="dots">......</p>
-
-        <p class="feature-text">
-          在结构化面试陪练助手中，基于国内顶尖的人工智能大模型，我们为您提供了专业、智能的面试练习体验。
-        </p>
-
-        <p class="dots">......</p>
-
-        <p class="more-info">
-          访问xx网站以获取更多信息：<a href="http://www.example.com"
-            >http://www.example.com</a
-          >
-        </p>
-
-        <div class="signature">
-          <p>您的职业伙伴</p>
-          <p>aigcpm</p>
-          <p>2025年4月19日</p>
-        </div>
+        <div v-html="Tipsontent"></div>
 
         <div class="btn-container">
           <button class="confirm-btn" @click="messageDialogVisible = false">
@@ -876,6 +845,7 @@ export default {
       errorLock: false,
       years: [],
       regions: [],
+      Tipsontent: "",
       questionTypes: [],
 
       questionContent: {
@@ -1923,6 +1893,83 @@ export default {
       this.$router.push("/interview-square");
     },
     showTips() {
+      var config = {
+        method: "get",
+        url: "https://test.aigcpmer.com/api/dictInfo/getByType",
+        params: {
+          type: "notice", // 传递查询参数
+        },
+      };
+      axios(config)
+        .then((response) => {
+          console.log(response.data);
+          this.Tipsontent = response.data.data.content;
+          this.Tipsontent = `<style>
+  .welcome-title {
+    font-size: 32px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 40px;
+  }
+  .user-greeting {
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
+  .intro-text,
+  .feature-text {
+    font-size: 16px;
+    line-height: 1.8;
+    margin-bottom: 20px;
+  }
+  ol, ul {
+    margin-left: 20px;
+    margin-bottom: 20px;
+  }
+  .signature {
+    text-align: right;
+    margin-top: 40px;
+    line-height: 1.6;
+  }
+</style>
+<h1 class="welcome-title">欢迎使用结构化面试陪练助手！</h1>
+<p class="user-greeting">亲爱的考生：</p>
+<p class="intro-text">
+  感谢您对我们产品的信任！在这里，我们将为您简单介绍当前工具的使用场景及特色功能：
+</p>
+<p class="intro-text">
+  结构化面试是当前公务员/事业编考试中，最常见的面试手段，它具备标准化的特点，考试形式是问答式，存在评分维度；根据过往经验，我们将结构化面试分为了5个维度，分别是：
+</p>
+<ol>
+  <li>综合分析能力：考察考生对问题的理解和分析能力。</li>
+  <li>言语表达能力：考察考生的语言组织和表达能力。</li>
+  <li>应变能力：考察考生在面对突发情况时的应对能力。</li>
+  <li>计划组织协调能力：考察考生的计划、组织和协调能力。</li>
+  <li>人际交往意识与技巧：考察考生的人际交往能力和技巧。</li>
+</ol>
+<p class="intro-text">
+  在结构化面试陪练助手中，基于国内顶尖的人工智能基础设施，我们为您准备了以下的特色功能：
+</p>
+<ul>
+  <li>智能模拟面试：提供真实的面试环境，帮助考生适应面试氛围。</li>
+  <li>个性化反馈：根据考生的表现提供针对性的改进建议。</li>
+  <li>海量题库：包含各类面试题目，覆盖不同领域和难度。</li>
+  <li>实时评分：模拟真实面试评分标准，给出即时反馈。</li>
+  <li>多轮练习：支持多次练习，逐步提升面试技巧。</li>
+</ul>
+<div class="signature">
+  <p>您的职业伙伴</p>
+  <p>aigcpm</p>
+  <p>2025年4月19日</p>
+</div>
+<p class="intro-text">
+  希望这些信息能帮助您更好地理解和使用这款结构化面试陪练助手。
+</p>`;
+
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
       // 显示消息对话框
       this.messageDialogVisible = true;
     },
@@ -2691,6 +2738,25 @@ export default {
   cursor: pointer;
   transition: all 0.3s;
   position: relative; /* 添加相对定位 */
+  box-shadow: none; /* 移除阴影 */
+}
+
+.demo-start-area:hover {
+  background: rgba(0, 0, 0, 0.02);
+  box-shadow: none; /* 确保悬停状态也没有阴影 */
+}
+
+.demo-start-area:active {
+  background: rgba(0, 0, 0, 0.05);
+  box-shadow: none; /* 确保激活状态也没有阴影 */
+}
+
+/* 提示文字样式 */
+.demo-hint-text {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #909399;
+  text-align: center;
 }
 
 /* 添加提示文字样式 */
@@ -2717,10 +2783,6 @@ export default {
 
 .demo-button:hover {
   background-color: #6521d4;
-}
-
-.demo-start-area:hover {
-  background: rgba(0, 0, 0, 0.02);
 }
 
 .demo-start-area:hover .demo-text,

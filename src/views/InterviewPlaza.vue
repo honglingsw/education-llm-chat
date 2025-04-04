@@ -570,6 +570,8 @@ export default {
       this.loginDialogVisible = false;
       // 重置表单数据和验证状态
       this.$refs.loginForm.resetFields();
+      this.captcha.captchaCode = "";
+
     },
     showRechargeDialog() {},
     getUserInfo() {
