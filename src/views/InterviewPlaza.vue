@@ -98,9 +98,6 @@
         </div>
       </div>
     </header>
-    <div class="message">
-      <i class="el-icon-document"></i>
-    </div>
 
     <!-- 主体内容 -->
     <div style="margin: 10px 100px; background-color: #ffffff">
@@ -327,6 +324,90 @@
         </div>
       </div>
     </el-dialog>
+
+    <!-- 添加反馈对话框 -->
+    <el-dialog
+      :visible.sync="feedbackDialogVisible"
+      :show-close="false"
+      class="feedback-dialog"
+      center
+    >
+      <div class="feedback-content">
+        <div class="close-btn" @click="feedbackDialogVisible = false">
+          <i class="el-icon-close"></i>
+        </div>
+
+        <h2>言e面试对您的面试有帮助吗?</h2>
+        <div class="star-rating">
+          <i
+            class="el-icon-star-off"
+            v-for="i in 5"
+            :key="'help' + i"
+            @click="setHelpRating(i)"
+            :class="{ 'el-icon-star-on': helpRating >= i }"
+          ></i>
+        </div>
+
+        <h2>言e面试的使用体验好吗?</h2>
+        <div class="star-rating">
+          <i
+            class="el-icon-star-off"
+            v-for="i in 5"
+            :key="'use' + i"
+            @click="setUseRating(i)"
+            :class="{ 'el-icon-star-on': useRating >= i }"
+          ></i>
+        </div>
+
+        <h2>言e面试的解答是否专业?</h2>
+        <div class="star-rating">
+          <i
+            class="el-icon-star-off"
+            v-for="i in 5"
+            :key="'professional' + i"
+            @click="setProfessionalRating(i)"
+            :class="{ 'el-icon-star-on': professionalRating >= i }"
+          ></i>
+        </div>
+
+        <h2>言e面试的定价是否合理?</h2>
+        <div class="star-rating">
+          <i
+            class="el-icon-star-off"
+            v-for="i in 5"
+            :key="'price' + i"
+            @click="setPriceRating(i)"
+            :class="{ 'el-icon-star-on': priceRating >= i }"
+          ></i>
+        </div>
+
+        <h2>如果您还有更多想说的，请告诉我:</h2>
+        <el-input
+          type="textarea"
+          :rows="3"
+          v-model="feedbackComment"
+          placeholder="请输入您的反馈意见..."
+        ></el-input>
+
+        <div class="auto-show-option">
+          <el-checkbox v-model="notAutoShow">不再自动弹出</el-checkbox>
+        </div>
+
+        <div class="feedback-btns">
+          <el-button class="cancel-btn" @click="feedbackDialogVisible = false"
+            >不了，谢谢</el-button
+          >
+          <el-button type="primary" class="submit-btn" @click="submitFeedback"
+            >提交反馈</el-button
+          >
+        </div>
+      </div>
+    </el-dialog>
+
+    <!-- 添加悬浮按钮 -->
+    <div class="float-button" @click="feedbackDialogVisible = true">
+      <img src="@/assets/QA.png" alt="QA" class="qa-icon" />
+    </div>
   </div>
 </template>
 
@@ -480,6 +561,15 @@ export default {
         { originalPrice: "129.9", discountPrice: "99.99", points: "2000" },
         { originalPrice: "129.9", discountPrice: "99.99", points: "2000" },
       ],
+      feedbackDialogVisible: false,
+      helpRating: 0,
+      useRating: 0,
+      professionalRating: 0,
+      priceRating: 0,
+      errorLock: false,
+
+      feedbackComment: "",
+      notAutoShow: false,
     };
   },
 
@@ -505,9 +595,8 @@ export default {
 
     this.getToken();
 
-     // 添加全局点击监听器
+    // 添加全局点击监听器
     document.addEventListener("click", this.handlePageClick);
-
   },
 
   // 在组件销毁前清除定时器
@@ -528,9 +617,19 @@ export default {
 
       axios(config)
         .then((response) => {
-          // console.log(response.data);
-          this.captcha.captchaId = response.data.data.captchaId;
-          this.captcha.captchaImg = response.data.data.captchaImage;
+          if (response.data.code === 200) {
+            // console.log(response.data);
+            this.captcha.captchaId = response.data.data.captchaId;
+            this.captcha.captchaImg = response.data.data.captchaImage;
+          } else {
+            if (!this.errorLock) {
+              this.errorLock = true;
+              this.$message.error(response.data.message);
+              setTimeout(() => {
+                this.errorLock = false;
+              }, 2000);
+            }
+          }
         })
         .catch(function (error) {
           console.log(error);
@@ -571,7 +670,6 @@ export default {
       // 重置表单数据和验证状态
       this.$refs.loginForm.resetFields();
       this.captcha.captchaCode = "";
-
     },
     showRechargeDialog() {},
     getUserInfo() {
@@ -593,11 +691,42 @@ export default {
 
       axios(config)
         .then((response) => {
-          // console.log(response.data);
-          this.coinBalance = response.data.data.coinBalance;
+          debugger;
+          if (response.data.code === 200) {
+            // console.log(response.data);
+            this.coinBalance = response.data.data.coinBalance;
+          } else {
+            // 处理错误情况
+            if (!this.errorLock) {
+              this.errorLock = true;
+              this.$message.error(response.data.message);
+              setTimeout(() => {
+                this.errorLock = false;
+              }, 2000);
+            }
+          }
         })
-        .catch(function (error) {
-          console.log(error);
+        .catch((error) => {
+          console.log("error", error);
+          let errorMsg = false;
+          if (
+            error.response &&
+            error.response.data &&
+            error.response.data.message
+          ) {
+            errorMsg = error.response.data.message;
+          }
+          if (!errorMsg) {
+            return;
+          }
+          if (!this.errorLock) {
+            this.errorLock = true;
+
+            this.$message.error(errorMsg);
+            setTimeout(() => {
+              this.errorLock = false;
+            }, 2000);
+          }
         });
     },
     handleLogin() {
@@ -627,14 +756,38 @@ export default {
                 this.$message.success("登录成功");
                 this.getToken();
               } else {
-                this.loading = false;
-                this.$message.error("手机号或验证码错误");
+                // 处理错误情况
+                if (!this.errorLock) {
+                  this.errorLock = true;
+                  this.$message.error(response.data.message);
+                  setTimeout(() => {
+                    this.errorLock = false;
+                  }, 2000);
+                }
               }
             })
             .catch((error) => {
               this.loading = false;
               this.$message.error("登录失败，请重试");
-              console.log(error);
+              console.log("error", error);
+              let errorMsg = false;
+              if (
+                error.response &&
+                error.response.data &&
+                error.response.data.message
+              ) {
+                errorMsg = error.response.data.message;
+              }
+              if (!errorMsg) {
+                return;
+              }
+              if (!this.errorLock) {
+                this.errorLock = true;
+                this.$message.error(errorMsg);
+                setTimeout(() => {
+                  this.errorLock = false;
+                }, 2000);
+              }
             });
         }
       });
@@ -649,11 +802,15 @@ export default {
       // 先验证手机号
       this.$refs.loginForm.validateField("phone", async (errorMessage) => {
         if (errorMessage) {
+          this.canSendCode = true;
+
           return; // 如果手机号验证不通过，直接返回
         }
 
         // 验证验证码不为空
         if (!this.captcha.captchaCode) {
+          this.canSendCode = true;
+
           this.$message.warning("请输入图片验证码");
           return;
         }
@@ -681,8 +838,14 @@ export default {
 
           // 检查响应状态
           if (response.data.code !== 200) {
-            // 处理各种错误情况
-            this.$message.error(response.data.message || "发送失败，请重试");
+            // 处理错误情况
+            if (!this.errorLock) {
+              this.errorLock = true;
+              this.$message.error(response.data.message);
+              setTimeout(() => {
+                this.errorLock = false;
+              }, 2000);
+            }
             return;
           }
 
@@ -730,6 +893,86 @@ export default {
       this.userPhone = "";
       this.$message.success("已退出登录");
     },
+
+    // 显示反馈对话框
+    showFeedbackDialog() {
+      this.feedbackDialogVisible = true;
+    },
+
+    // 设置帮助评分
+    setHelpRating(rating) {
+      this.helpRating = rating;
+    },
+
+    // 设置使用体验评分
+    setUseRating(rating) {
+      this.useRating = rating;
+    },
+
+    // 设置专业性评分
+    setProfessionalRating(rating) {
+      this.professionalRating = rating;
+    },
+
+    // 设置价格合理性评分
+    setPriceRating(rating) {
+      this.priceRating = rating;
+    },
+
+    // 提交反馈
+    submitFeedback() {
+      const token = localStorage.getItem("token");
+
+      // 准备要提交的数据
+      const feedbackData = {
+        helpfulnessRating: this.helpRating,
+        convenienceRating: this.useRating,
+        professionalRating: this.professionalRating,
+        priceRating: this.priceRating,
+        additionalComments: this.feedbackComment,
+        noPopup: this.notAutoShow,
+      };
+
+      var config = {
+        method: "post",
+        url: "https://test.aigcpmer.com/api/userFeedback/create",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        data: feedbackData,
+      };
+
+      axios(config)
+        .then((response) => {
+          if (response.data.code === 200) {
+            // 这里可以添加API请求来提交数据
+            console.log("提交的反馈数据:", feedbackData);
+
+            this.$message.success("感谢您的参与，祝您生活愉快！");
+            this.feedbackDialogVisible = false;
+            // 重置表单数据
+            this.helpRating = 0;
+            this.useRating = 0;
+            this.feedbackComment = "";
+            this.professionalRating = 0;
+            this.priceRating = 0;
+          } else {
+            // 处理错误情况
+            if (!this.errorLock) {
+              this.errorLock = true;
+              this.$message.error(response.data.message);
+              setTimeout(() => {
+                this.errorLock = false;
+              }, 2000);
+            }
+          }
+        })
+        .catch((error) => {
+          this.feedbackDialogVisible = false;
+          this.$message.success("网络故障，请重新提交");
+        });
+    },
   },
 };
 </script>
@@ -737,32 +980,28 @@ export default {
 <style scoped>
 .interview-plaza {
   min-height: 100vh;
+  max-height: 100vh;
+  /* 限制最大高度为视口高度 */
   background-color: #fff;
-}
-
-/* .header {
-  padding: 16px 0;
-  background: #fff;
-  border-bottom: 1px solid #eaeaea;
-}
-
-.header-content {
+  position: relative;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-} */
+  flex-direction: column;
+  overflow: hidden;
+  /* 防止整体页面滚动 */
+}
+
 .header {
   padding: 0px 0;
   background: #fff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: none;
+  border-bottom: 1px solid #f0f0f0; /* 可选：添加一个非常淡的底部边框 */
 }
 
 .header-container {
-  margin: 0 100px;
+  margin: 16px 24px 16px 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 56px;
 }
 
 .header-left {
@@ -771,8 +1010,8 @@ export default {
 }
 
 .nav-logo {
-  height: 40px;
-  width: auto;
+  height: 24px;
+  width: 24px;
 }
 
 .header-right {
@@ -1020,7 +1259,7 @@ export default {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  gap: 16px;
+  gap: 24px;
   color: #606266;
 }
 
@@ -1031,8 +1270,8 @@ export default {
 }
 
 .wallet-icon {
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
 }
 
 .balance {
@@ -1759,5 +1998,159 @@ export default {
   color: #409eff;
   cursor: pointer;
   text-decoration: underline;
+}
+
+/* 添加反馈对话框样式 */
+.feedback-dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.feedback-dialog >>> .el-dialog {
+  width: 580px !important;
+  height: 720px !important;
+  margin: 0 !important;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  padding: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.feedback-dialog >>> .el-dialog__header,
+.feedback-dialog >>> .el-dialog__footer {
+  display: none;
+}
+
+.feedback-dialog >>> .el-dialog__body {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.feedback-content {
+  width: 100%;
+  height: 100%;
+  padding: 15px 30px 25px;
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: center;
+}
+
+.feedback-content .close-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  cursor: pointer;
+  font-size: 24px;
+  color: #909399;
+}
+
+.feedback-content h2 {
+  font-size: 17px;
+  font-weight: 500;
+  color: #303133;
+  margin-bottom: 5px;
+  text-align: center;
+}
+
+.star-rating {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  margin-bottom: 8px;
+}
+
+.star-rating i {
+  font-size: 30px;
+  color: #dcdfe6;
+  cursor: pointer;
+}
+
+.star-rating i.el-icon-star-on {
+  color: #f7ba2a;
+}
+
+.auto-show-option {
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+
+.feedback-btns {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 15px;
+}
+
+.feedback-btns .cancel-btn,
+.feedback-btns .submit-btn {
+  width: 140px;
+  height: 42px;
+  border-radius: 21px;
+  font-size: 16px;
+}
+
+.feedback-btns .submit-btn {
+  background: #3384ff;
+}
+
+.feedback-btns .submit-btn:hover {
+  opacity: 0.9;
+}
+
+/* 悬浮按钮样式 */
+.float-button {
+  position: fixed;
+  right: 30px;
+  bottom: 60px;
+  width: 60px;
+  height: 60px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 9999;
+  transition: all 0.3s;
+  padding: 0;
+  overflow: hidden;
+}
+
+.float-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.float-button:active {
+  transform: scale(0.95);
+}
+
+.qa-icon {
+  width: 28px;
+  height: 28px;
+  display: block;
+  margin: 0;
+  padding: 0;
+  object-fit: contain;
+  object-position: center;
 }
 </style>

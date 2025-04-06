@@ -308,7 +308,7 @@
                     </button>
                     <button
                       class="action-btn fullscreen-btn"
-                      @click="toggleFullscreen"
+                      @click="toggleAnswerFullscreen"
                     >
                       <i class="el-icon-full-screen"></i>
                       全屏
@@ -350,13 +350,56 @@
                       ]"
                     >
                       <p class="paragraph">
-                        {{ asrResult }}This is a comprehensive Vue single-file
-                        component for an interview page, handling user
-                        authentication, audio recording, question navigation,
-                        feedback dialogs, and more. Could you let me know what
-                        you'd like assistance with? For example, do you need
-                        help debugging an issue, refactoring the code, or
-                        understanding how a specific part works?
+                        {{ asrResult }}
+                        This is a comprehensive Vue single-file component for an
+                        interview page, handling user authentication, audio
+                        recording, question navigation, feedback dialogs, and
+                        more. Could you let me know what you'd like assistance
+                        with? For example, do you need help debugging an issue,
+                        refactoring the code, or understanding how a specific
+                        part works?
+                        This is a comprehensive Vue single-file component for an
+                        interview page, handling user authentication, audio
+                        recording, question navigation, feedback dialogs, and
+                        more. Could you let me know what you'd like assistance
+                        with? For example, do you need help debugging an issue,
+                        refactoring the code, or understanding how a specific
+                        part works?
+                        This is a comprehensive Vue single-file component for an
+                        interview page, handling user authentication, audio
+                        recording, question navigation, feedback dialogs, and
+                        more. Could you let me know what you'd like assistance
+                        with? For example, do you need help debugging an issue,
+                        refactoring the code, or understanding how a specific
+                        part works?
+                        This is a comprehensive Vue single-file component for an
+                        interview page, handling user authentication, audio
+                        recording, question navigation, feedback dialogs, and
+                        more. Could you let me know what you'd like assistance
+                        with? For example, do you need help debugging an issue,
+                        refactoring the code, or understanding how a specific
+                        part works?
+                        This is a comprehensive Vue single-file component for an
+                        interview page, handling user authentication, audio
+                        recording, question navigation, feedback dialogs, and
+                        more. Could you let me know what you'd like assistance
+                        with? For example, do you need help debugging an issue,
+                        refactoring the code, or understanding how a specific
+                        part works?
+                        This is a comprehensive Vue single-file component for an
+                        interview page, handling user authentication, audio
+                        recording, question navigation, feedback dialogs, and
+                        more. Could you let me know what you'd like assistance
+                        with? For example, do you need help debugging an issue,
+                        refactoring the code, or understanding how a specific
+                        part works?
+                        This is a comprehensive Vue single-file component for an
+                        interview page, handling user authentication, audio
+                        recording, question navigation, feedback dialogs, and
+                        more. Could you let me know what you'd like assistance
+                        with? For example, do you need help debugging an issue,
+                        refactoring the code, or understanding how a specific
+                        part works?
                       </p>
                     </div>
                     <!-- 点评内容 -->
@@ -394,8 +437,16 @@
                   <div class="source-hint-header">
                     <div class="source-hint-title">示范作答</div>
                     <div class="source-hint-actions">
-                      <button class="icon-btn" @click.stop="readDemo">
-                        <i class="el-icon-headset"></i> 朗读
+                      <!-- 修改示范作答区域的朗读按钮 -->
+                      <button class="icon-btn" @click.stop="toggleReadDemo">
+                        <i
+                          :class="
+                            isReading
+                              ? 'el-icon-video-pause'
+                              : 'el-icon-headset'
+                          "
+                        ></i>
+                        {{ isReading ? "停止" : "朗读" }}
                       </button>
                       <button class="icon-btn" @click.stop="startDemo">
                         <i class="el-icon-refresh"></i> 重试
@@ -426,10 +477,15 @@
                     <!-- 添加第二个source-hint标题栏 -->
                     <div class="source-hint-header thinking-header">
                       <div class="source-hint-title">
-                        <span class="deepseek-text">以下内容来自DeepSeek-RI-YanYi-36B-ST</span>
+                        <span class="deepseek-text"
+                          >以下内容来自DeepSeek-RI-YanYi-36B-ST</span
+                        >
                         <span class="info-icon-wrapper">
                           <i class="el-icon-question info-icon"></i>
-                          <div class="info-tooltip">DeepSeek-RI-YanYi-36B-ST 是基于 DeepSeek-R1 大规模语言模型微调而成的专用模型，专注于高效解答结构化面试题。该模型通过海量知名机构的标准面试题目及高质量答案进行精细化训练，具备卓越的逻辑推理、问题拆解和答案生成能力。</div>
+                          <div class="info-tooltip">
+                            DeepSeek-RI-YanYi-36B-ST 是基于 DeepSeek-R1
+                            大规模语言模型微调而成的专用模型，专注于高效解答结构化面试题。该模型通过海量知名机构的标准面试题目及高质量答案进行精细化训练，具备卓越的逻辑推理、问题拆解和答案生成能力。
+                          </div>
                         </span>
                       </div>
                     </div>
@@ -764,13 +820,64 @@
           <div class="fullscreen-columns">
             <!-- 示范作答全屏内容 -->
             <div class="fullscreen-demo-column">
-              <div class="column-title">以下内容来自DeepSeek</div>
+              <div class="source-hint-header thinking-header">
+                <div class="source-hint-title">
+                  <span class="deepseek-text"
+                    >以下内容来自DeepSeek-RI-YanYi-36B-ST</span
+                  >
+                  <span class="info-icon-wrapper">
+                    <i class="el-icon-question info-icon"></i>
+                    <div class="info-tooltip">
+                      DeepSeek-RI-YanYi-36B-ST 是基于 DeepSeek-R1
+                      大规模语言模型微调而成的专用模型，专注于高效解答结构化面试题。该模型通过海量知名机构的标准面试题目及高质量答案进行精细化训练，具备卓越的逻辑推理、问题拆解和答案生成能力。
+                    </div>
+                  </span>
+                </div>
+              </div>
               <div class="column-content" :class="{ blurred: !isAnVisible }">
                 <p
                   class="paragraph model-thinking"
                   v-html="markdownReasonContent"
                 ></p>
                 <p class="paragraph" v-html="markdownModelResult"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 添加自主作答全屏模态框 -->
+    <div class="answer-fullscreen-modal" v-if="isAnswerFullscreen">
+      <div class="answer-fullscreen-content">
+        <div class="answer-fullscreen-header">
+          <div class="answer-fullscreen-title">自主作答</div>
+          <button
+            class="close-answer-fullscreen-btn"
+            @click="toggleAnswerFullscreen"
+          >
+            <i class="el-icon-close"></i>
+          </button>
+        </div>
+        <div class="answer-fullscreen-body">
+          <div class="answer-fullscreen-columns">
+            <!-- 自主作答全屏内容 -->
+            <div class="answer-fullscreen-column">
+              <div class="column-title">我的作答</div>
+              <div class="column-content">
+                <p class="paragraph" v-html="asrResult"></p>
+              </div>
+            </div>
+
+            <!-- 如果有点评内容，显示点评 -->
+            <div
+              class="answer-fullscreen-column"
+              v-if="showEvaluationContentIn"
+            >
+              <div class="column-title">作答点评</div>
+              <div class="column-content">
+                <p class="paragraph model-thinking" v-html="markdownReason"></p>
+                <p class="paragraph" v-html="markdownResult"></p>
               </div>
             </div>
           </div>
@@ -914,6 +1021,9 @@ export default {
       priceRating: 0,
       isFullscreenModalVisible: false,
       isDemoFullscreen: false,
+      isAnswerFullscreen: false, // 添加自主作答全屏状态
+      isReading: false, // 添加朗读状态标记
+      speechUtterance: null, // 存储朗读对象
     };
   },
 
@@ -950,13 +1060,40 @@ export default {
     };
     axios(config)
       .then((response) => {
-        console.log(response.data);
-        this.questionTypes = response.data.data[0].tags;
-        this.years = response.data.data[1].tags;
-        this.regions = response.data.data[2].tags;
+        debugger;
+        if (response.data.code === 200) {
+          console.log(response.data);
+          this.questionTypes = response.data.data[0].tags;
+          this.years = response.data.data[1].tags;
+          this.regions = response.data.data[2].tags;
+        } else {
+          // 处理错误情况
+          if (!this.errorLock) {
+            this.errorLock = true;
+            this.$message.error(response.data.message);
+            setTimeout(() => {
+              this.errorLock = false;
+            }, 2000);
+          }
+        }
       })
-      .catch(function (error) {
-        console.log(error);
+      .catch((error) => {
+        console.log("error", error);
+        let errorMsg = false;
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.message
+        ) {
+          errorMsg = error.response.data.message;
+        }
+        if (!this.errorLock) {
+          this.errorLock = true;
+          this.$message.error(errorMsg);
+          setTimeout(() => {
+            this.errorLock = false;
+          }, 2000);
+        }
       });
 
     this.getCaptcha();
@@ -1039,21 +1176,51 @@ export default {
 
       axios(config)
         .then((response) => {
-          // 这里可以添加API请求来提交数据
-          console.log("提交的反馈数据:", feedbackData);
+          if (response.data.code === 200) {
+            // 这里可以添加API请求来提交数据
+            console.log("提交的反馈数据:", feedbackData);
 
-          this.$message.success("感谢您的参与，祝您生活愉快！");
-          this.feedbackDialogVisible = false;
-          // 重置表单数据
-          this.helpRating = 0;
-          this.useRating = 0;
-          this.feedbackComment = "";
-          this.professionalRating = 0;
-          this.priceRating = 0;
+            this.$message.success("感谢您的参与，祝您生活愉快！");
+            this.feedbackDialogVisible = false;
+            // 重置表单数据
+            this.helpRating = 0;
+            this.useRating = 0;
+            this.feedbackComment = "";
+            this.professionalRating = 0;
+            this.priceRating = 0;
+          } else {
+            // 处理错误情况
+            if (!this.errorLock) {
+              this.errorLock = true;
+              this.$message.error(response.data.message);
+              setTimeout(() => {
+                this.errorLock = false;
+              }, 2000);
+            }
+          }
         })
         .catch((error) => {
           this.feedbackDialogVisible = false;
-          this.$message.success("网络故障，请重新提交");
+
+          console.log("error", error);
+          let errorMsg = false;
+          if (
+            error.response &&
+            error.response.data &&
+            error.response.data.message
+          ) {
+            errorMsg = error.response.data.message;
+          }
+          if (!errorMsg) {
+            return;
+          }
+          if (!this.errorLock) {
+            this.errorLock = true;
+            this.$message.error(errorMsg);
+            setTimeout(() => {
+              this.errorLock = false;
+            }, 2000);
+          }
         });
     },
 
@@ -1112,10 +1279,37 @@ export default {
             this.orderedHistory = [...this.history].sort(
               (a, b) => b.answerId - a.answerId
             );
+          } else {
+            // 处理错误情况
+            if (!this.errorLock) {
+              this.errorLock = true;
+              this.$message.error(response.data.message);
+              setTimeout(() => {
+                this.errorLock = false;
+              }, 2000);
+            }
           }
         })
-        .catch(function (error) {
-          console.log(error);
+        .catch((error) => {
+          console.log("error", error);
+          let errorMsg = false;
+          if (
+            error.response &&
+            error.response.data &&
+            error.response.data.message
+          ) {
+            errorMsg = error.response.data.message;
+          }
+          if (!errorMsg) {
+            return;
+          }
+          if (!this.errorLock) {
+            this.errorLock = true;
+            this.$message.error(errorMsg);
+            setTimeout(() => {
+              this.errorLock = false;
+            }, 2000);
+          }
         });
     },
     toggleAn() {
@@ -1166,12 +1360,35 @@ export default {
             this.currentIndex = data.currentIndex;
             // 重置相关状态
             this.isDemoStarted = false;
-                        this.showEvaluationContentIn = true;
-
+            this.showEvaluationContentIn = true;
+          } else {
+            // 处理错误情况
+            if (!this.errorLock) {
+              this.errorLock = true;
+              this.$message.error(response.data.message);
+              setTimeout(() => {
+                this.errorLock = false;
+              }, 2000);
+            }
           }
         })
-        .catch(function (error) {
-          console.log(error);
+        .catch((error) => {
+          console.log("error", error);
+          let errorMsg = false;
+          if (
+            error.response &&
+            error.response.data &&
+            error.response.data.message
+          ) {
+            errorMsg = error.response.data.message;
+          }
+          if (!this.errorLock) {
+            this.errorLock = true;
+            this.$message.error(errorMsg);
+            setTimeout(() => {
+              this.errorLock = false;
+            }, 2000);
+          }
         });
     },
     getCaptcha() {
@@ -1183,12 +1400,41 @@ export default {
 
       axios(config)
         .then((response) => {
-          // console.log(response.data);
-          this.captcha.captchaId = response.data.data.captchaId;
-          this.captcha.captchaImg = response.data.data.captchaImage;
+          if (response.data.code === 200) {
+            // console.log(response.data);
+            this.captcha.captchaId = response.data.data.captchaId;
+            this.captcha.captchaImg = response.data.data.captchaImage;
+          } else {
+            // 处理错误情况
+            if (!this.errorLock) {
+              this.errorLock = true;
+              this.$message.error(response.data.message);
+              setTimeout(() => {
+                this.errorLock = false;
+              }, 2000);
+            }
+          }
         })
-        .catch(function (error) {
-          console.log(error);
+        .catch((error) => {
+          console.log("error", error);
+          let errorMsg = false;
+          if (
+            error.response &&
+            error.response.data &&
+            error.response.data.message
+          ) {
+            errorMsg = error.response.data.message;
+          }
+          if (!errorMsg) {
+            return;
+          }
+          if (!this.errorLock) {
+            this.errorLock = true;
+            this.$message.error(errorMsg);
+            setTimeout(() => {
+              this.errorLock = false;
+            }, 2000);
+          }
         });
     },
     asrRecording() {
@@ -1235,7 +1481,25 @@ export default {
           // statusDiv.textContent = '已连接到服务器，可以开始识别';
         })
         .catch((error) => {
-          // statusDiv.textContent = `连接错误: ${error.message}`;
+          console.log("error", error);
+          let errorMsg = false;
+          if (
+            error.response &&
+            error.response.data &&
+            error.response.data.message
+          ) {
+            errorMsg = error.response.data.message;
+          }
+          if (!errorMsg) {
+            return;
+          }
+          if (!this.errorLock) {
+            this.errorLock = true;
+            this.$message.error(errorMsg);
+            setTimeout(() => {
+              this.errorLock = false;
+            }, 2000);
+          }
         });
 
       // 开始按钮
@@ -1304,6 +1568,25 @@ export default {
             console.error("ASR客户端连接失败:", error);
             this.$message.error("语音识别服务连接失败，请重试");
             this.isRecording = false;
+            console.log("error", error);
+            let errorMsg = false;
+            if (
+              error.response &&
+              error.response.data &&
+              error.response.data.message
+            ) {
+              errorMsg = error.response.data.message;
+            }
+            if (!errorMsg) {
+              return;
+            }
+            if (!this.errorLock) {
+              this.errorLock = true;
+              this.$message.error(errorMsg);
+              setTimeout(() => {
+                this.errorLock = false;
+              }, 2000);
+            }
           });
       } else {
         this.asrClient.startRecognition();
@@ -1346,10 +1629,39 @@ export default {
 
       axios(config)
         .then((response) => {
-          console.log(response.data);
+          if (response.data.code === 200) {
+            console.log(response.data);
+          } else {
+            // 处理错误情况
+            if (!this.errorLock) {
+              this.errorLock = true;
+              this.$message.error(response.data.message);
+              setTimeout(() => {
+                this.errorLock = false;
+              }, 2000);
+            }
+          }
         })
-        .catch(function (error) {
-          console.log(error);
+        .catch((error) => {
+          console.log("error", error);
+          let errorMsg = false;
+          if (
+            error.response &&
+            error.response.data &&
+            error.response.data.message
+          ) {
+            errorMsg = error.response.data.message;
+          }
+          if (!errorMsg) {
+            return;
+          }
+          if (!this.errorLock) {
+            this.errorLock = true;
+            this.$message.error(errorMsg);
+            setTimeout(() => {
+              this.errorLock = false;
+            }, 2000);
+          }
         });
     },
     changeQuestion(direction) {
@@ -1441,7 +1753,7 @@ export default {
             // 处理错误情况
             if (!this.errorLock) {
               this.errorLock = true;
-              this.$message.error(response.data.message || "切换题目失败");
+              this.$message.error(response.data.message);
               setTimeout(() => {
                 this.errorLock = false;
               }, 2000);
@@ -1451,14 +1763,21 @@ export default {
         .catch((error) => {
           console.log("接口错误：", error);
           this.isLoading = false;
+          console.log("error", error);
+          let errorMsg = false;
+          if (
+            error.response &&
+            error.response.data &&
+            error.response.data.message
+          ) {
+            errorMsg = error.response.data.message;
+          }
+          if (!errorMsg) {
+            return;
+          }
           if (!this.errorLock) {
             this.errorLock = true;
-            const msg =
-              (error.response &&
-                error.response.data &&
-                error.response.data.message) ||
-              "切换题目失败";
-            this.$message.error(msg);
+            this.$message.error(errorMsg);
             setTimeout(() => {
               this.errorLock = false;
             }, 2000);
@@ -1638,15 +1957,24 @@ export default {
         url: "https://test.aigcpmer.com/api/user/detail",
         headers: { Authorization: `Bearer ${token}` },
       };
+      debugger;
 
-      axios(config)
-        .then((response) => {
+      axios(config).then((response) => {
+        console.log("response", response);
+        if (response.data.code === 200) {
           // console.log(response.data);
           this.coinBalance = response.data.data.coinBalance;
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+        } else {
+          // 处理错误情况
+          if (!this.errorLock) {
+            this.errorLock = true;
+            this.$message.error(response.data.message);
+            setTimeout(() => {
+              this.errorLock = false;
+            }, 2000);
+          }
+        }
+      });
     },
     handleLogin() {
       this.$refs.loginForm.validate((valid) => {
@@ -1675,14 +2003,44 @@ export default {
                 this.$message.success("登录成功");
                 this.getToken();
               } else {
-                this.loading = false;
-                this.$message.error("手机号或验证码错误");
+                // 处理错误情况
+                if (!this.errorLock) {
+                  this.loading = false;
+
+                  this.errorLock = true;
+                  this.$message.error(response.data.message);
+                  setTimeout(() => {
+                    this.errorLock = false;
+                  }, 2000);
+                }
               }
             })
+
             .catch((error) => {
               this.loading = false;
-              this.$message.error("登录失败，请重试");
-              console.log(error);
+
+              console.error("ASR客户端连接失败:", error);
+              this.$message.error("语音识别服务连接失败，请重试");
+              this.isRecording = false;
+              console.log("error", error);
+              let errorMsg = false;
+              if (
+                error.response &&
+                error.response.data &&
+                error.response.data.message
+              ) {
+                errorMsg = error.response.data.message;
+              }
+              if (!errorMsg) {
+            return;
+          }
+          if (!this.errorLock) {
+                this.errorLock = true;
+                this.$message.error(errorMsg);
+                setTimeout(() => {
+                  this.errorLock = false;
+                }, 2000);
+              }
             });
         }
       });
@@ -1692,22 +2050,25 @@ export default {
       if (!this.canSendCode) {
         return; // 如果正在倒计时，直接返回不做任何操作
       }
+      this.canSendCode = false;
 
       // 先验证手机号
       this.$refs.loginForm.validateField("phone", async (errorMessage) => {
         if (errorMessage) {
+          this.canSendCode = true;
           return; // 如果手机号验证不通过，直接返回
         }
 
         // 验证验证码不为空
         if (!this.captcha.captchaCode) {
+          this.canSendCode = true;
           this.$message.warning("请输入图片验证码");
           return;
         }
 
         // 立即禁用按钮，防止多次点击
         this.canSendCode = false;
-        
+
         try {
           // 直接发送短信验证码，接口内部会验证图形验证码
           var data = JSON.stringify({
@@ -1732,7 +2093,13 @@ export default {
           // 检查响应状态
           if (response.data.code !== 200) {
             // 处理各种错误情况
-            this.$message.error(response.data.message || "发送失败，请重试");
+            if (!this.errorLock) {
+              this.errorLock = true;
+              this.$message.error(response.data.message);
+              setTimeout(() => {
+                this.errorLock = false;
+              }, 2000);
+            }
             // 如果发送失败，重新启用按钮
             this.canSendCode = true;
             return;
@@ -1753,7 +2120,16 @@ export default {
           this.$message.success("验证码发送成功");
         } catch (error) {
           console.log("发送短信验证码出错:", error);
-          this.$message.error("验证码发送失败，请重试");
+          
+          // 使用错误锁防止多次显示错误消息
+          if (!this.errorLock) {
+            this.errorLock = true;
+            this.$message.error("验证码发送失败，请重试");
+            setTimeout(() => {
+              this.errorLock = false;
+            }, 2000);
+          }
+          
           // 如果发送出错，重新启用按钮
           this.canSendCode = true;
         }
@@ -1768,6 +2144,11 @@ export default {
 
       // 移除点击监听器
       document.removeEventListener("click", this.handlePageClick);
+
+      // 确保停止朗读
+      if (this.isReading) {
+        this.stopReading();
+      }
     },
     // 添加点击页面空白处的处理方法
     handlePageClick(e) {
@@ -1927,73 +2308,42 @@ export default {
       };
       axios(config)
         .then((response) => {
-          console.log(response.data);
-          this.Tipsontent = response.data.data.content;
-          this.Tipsontent = `<style>
-  .welcome-title {
-    font-size: 32px;
-    font-weight: bold;
-    text-align: center;
-    margin-top: 10px;
-    margin-bottom: 40px;
-  }
-  .user-greeting {
-    font-size: 18px;
-    margin-bottom: 20px;
-  }
-  .intro-text,
-  .feature-text {
-    font-size: 16px;
-    line-height: 1.8;
-    margin-bottom: 20px;
-  }
-  ol, ul {
-    margin-left: 20px;
-    margin-bottom: 20px;
-  }
-  .signature {
-    text-align: right;
-    margin-top: 40px;
-    line-height: 1.6;
-  }
-</style>
-<h1 class="welcome-title">欢迎使用结构化面试陪练助手！</h1>
-<p class="user-greeting">亲爱的考生：</p>
-<p class="intro-text">
-  感谢您对我们产品的信任！在这里，我们将为您简单介绍当前工具的使用场景及特色功能：
-</p>
-<p class="intro-text">
-  结构化面试是当前公务员/事业编考试中，最常见的面试手段，它具备标准化的特点，考试形式是问答式，存在评分维度；根据过往经验，我们将结构化面试分为了5个维度，分别是：
-</p>
-<ol>
-  <li>综合分析能力：考察考生对问题的理解和分析能力。</li>
-  <li>言语表达能力：考察考生的语言组织和表达能力。</li>
-  <li>应变能力：考察考生在面对突发情况时的应对能力。</li>
-  <li>计划组织协调能力：考察考生的计划、组织和协调能力。</li>
-  <li>人际交往意识与技巧：考察考生的人际交往能力和技巧。</li>
-</ol>
-<p class="intro-text">
-  在结构化面试陪练助手中，基于国内顶尖的人工智能基础设施，我们为您准备了以下的特色功能：
-</p>
-<ul>
-  <li>智能模拟面试：提供真实的面试环境，帮助考生适应面试氛围。</li>
-  <li>个性化反馈：根据考生的表现提供针对性的改进建议。</li>
-  <li>海量题库：包含各类面试题目，覆盖不同领域和难度。</li>
-  <li>实时评分：模拟真实面试评分标准，给出即时反馈。</li>
-  <li>多轮练习：支持多次练习，逐步提升面试技巧。</li>
-</ul>
-<div class="signature">
-  <p>您的职业伙伴</p>
-  <p>aigcpm</p>
-  <p>2025年4月19日</p>
-</div>
-<p class="intro-text">
-  希望这些信息能帮助您更好地理解和使用这款结构化面试陪练助手。
-</p>`;
-
+          if (response.data.code === 200) {
+            console.log(response.data);
+            this.Tipsontent = response.data.data.content;
+          } else {
+            // 处理错误情况
+            if (!this.errorLock) {
+              this.errorLock = true;
+              this.$message.error(response.data.message);
+              setTimeout(() => {
+                this.errorLock = false;
+              }, 2000);
+            }
+          }
         })
-        .catch(function (error) {
-          console.log(error);
+
+        .catch((error) => {
+          this.isRecording = false;
+          console.log("error", error);
+          let errorMsg = false;
+          if (
+            error.response &&
+            error.response.data &&
+            error.response.data.message
+          ) {
+            errorMsg = error.response.data.message;
+          }
+          if (!errorMsg) {
+            return;
+          }
+          if (!this.errorLock) {
+            this.errorLock = true;
+            this.$message.error(errorMsg);
+            setTimeout(() => {
+              this.errorLock = false;
+            }, 2000);
+          }
         });
       // 显示消息对话框
       this.messageDialogVisible = true;
@@ -2013,8 +2363,32 @@ export default {
           .then(() => {
             console.log("ASR客户端重新连接成功");
           })
+
           .catch((error) => {
-            console.error("ASR客户端重新连接失败:", error);
+            this.loading = false;
+
+            console.error("ASR客户端连接失败:", error);
+            this.$message.error("语音识别服务连接失败，请重试");
+            this.isRecording = false;
+            console.log("error", error);
+            let errorMsg = false;
+            if (
+              error.response &&
+              error.response.data &&
+              error.response.data.message
+            ) {
+              errorMsg = error.response.data.message;
+            }
+            if (!errorMsg) {
+            return;
+          }
+          if (!this.errorLock) {
+              this.errorLock = true;
+              this.$message.error(errorMsg);
+              setTimeout(() => {
+                this.errorLock = false;
+              }, 2000);
+            }
           });
       }
     },
@@ -2033,27 +2407,68 @@ export default {
     },
     // 添加全屏切换方法
     toggleFullscreen() {
-      this.isFullscreenModalVisible = true;
+      console.log("打开自主作答全屏模式");
+      this.isAnswerFullscreen = true;
     },
     closeFullscreenModal() {
       this.isFullscreenModalVisible = false;
     },
-    readDemo() {
-      // 实现朗读功能
+    // 修改朗读方法为切换朗读/停止
+    toggleReadDemo() {
+      if (this.isReading) {
+        // 如果正在朗读，则停止
+        this.stopReading();
+      } else {
+        // 如果未朗读，则开始朗读
+        this.startReading();
+      }
+    },
+
+    // 开始朗读
+    startReading() {
       if (this.markdownModelResult) {
         // 去除HTML标签，获取纯文本
         const text = this.markdownModelResult.replace(/<[^>]*>?/gm, "");
 
         // 使用Web Speech API进行朗读
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = "zh-CN"; // 设置中文朗读
-        utterance.rate = 1.0; // 语速
-        window.speechSynthesis.speak(utterance);
+        this.speechUtterance = new SpeechSynthesisUtterance(text);
+        this.speechUtterance.lang = "zh-CN"; // 设置中文朗读
+        this.speechUtterance.rate = 1.0; // 语速
+
+        // 添加朗读结束事件监听
+        this.speechUtterance.onend = () => {
+          this.isReading = false;
+        };
+
+        // 添加朗读错误事件监听
+        this.speechUtterance.onerror = () => {
+          this.isReading = false;
+        };
+
+        // 开始朗读
+        window.speechSynthesis.speak(this.speechUtterance);
+        this.isReading = true;
       }
+    },
+
+    // 停止朗读
+    stopReading() {
+      window.speechSynthesis.cancel();
+      this.isReading = false;
+    },
+
+    // 修改原有的readDemo方法
+    readDemo() {
+      this.startReading();
     },
     toggleDemoFullscreen() {
       // 显示全屏模态框
       this.isDemoFullscreen = !this.isDemoFullscreen;
+    },
+    // 添加自主作答全屏切换方法
+    toggleAnswerFullscreen() {
+      console.log("切换自主作答全屏模式");
+      this.isAnswerFullscreen = !this.isAnswerFullscreen;
     },
   },
 };
@@ -2227,7 +2642,7 @@ export default {
 }
 
 .header-container {
-  margin: 16px 24px  16px 24px;
+  margin: 16px 24px 16px 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -3334,8 +3749,6 @@ export default {
   border-radius: 4px;
 }
 
-
-
 .content-text {
   text-align: left;
   font-size: 15px;
@@ -3738,29 +4151,6 @@ export default {
   text-decoration: underline;
 }
 
-/* 欢迎对话框样式 */
-.welcome-dialog {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2000;
-}
-
-.welcome-dialog >>> .el-dialog {
-  width: 1600px !important;
-  height: 800px !important;
-  margin: 0 !important;
-  background-color: #fff;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  padding: 0;
-}
 
 .welcome-dialog >>> .el-dialog__header,
 .welcome-dialog >>> .el-dialog__footer {
@@ -3776,8 +4166,8 @@ export default {
 }
 
 .welcome-content {
-  width: 100%;
-  height: 100%;
+      width: fit-content;
+    height: fit-content;
   padding: 40px 100px;
   box-sizing: border-box;
   position: relative;
@@ -4252,8 +4642,6 @@ export default {
 }
 
 .message-dialog >>> .el-dialog {
-  width: 1600px !important;
-  height: 800px !important;
   margin: 0 !important;
   background-color: #fff;
   border-radius: 8px;
@@ -4278,20 +4666,19 @@ export default {
 /* 新增welcome-dialog样式（与图片中保持一致） */
 .welcome-dialog {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
+  top: 10%;
+  left: 10%;
+  width: 80%;
+  border-radius: 12px;
+  height: 80%;
   align-items: center;
   justify-content: center;
   z-index: 2000;
 }
 
 .welcome-dialog >>> .el-dialog {
-  width: 1600px !important;
-  height: 800px !important;
   margin: 0 !important;
+      width: 100%;
   background-color: #fff;
   border-radius: 8px;
   overflow: hidden;
@@ -4797,16 +5184,7 @@ export default {
   z-index: 2000;
 }
 
-.demo-drawer-content .welcome-dialog >>> .el-dialog {
-  width: 1600px !important;
-  height: 800px !important;
-  margin: 0 !important;
-  background-color: #fff;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  padding: 0;
-}
+
 
 .demo-drawer-content .welcome-dialog >>> .el-dialog__header,
 .demo-drawer-content .welcome-dialog >>> .el-dialog__footer {
@@ -5334,8 +5712,6 @@ export default {
 }
 
 .demo-drawer-content .welcome-dialog >>> .el-dialog {
-  width: 1600px !important;
-  height: 800px !important;
   margin: 0 !important;
   background-color: #fff;
   border-radius: 8px;
@@ -5483,6 +5859,7 @@ export default {
   background-color: #ffffff;
   color: #7b2cf5;
   border: 1px solid #7b2cf5;
+  cursor: pointer;
 }
 
 .fullscreen-btn:hover {
@@ -5531,19 +5908,50 @@ export default {
   animation: waveform-animation 1s infinite;
 }
 
-.recording-wave span:nth-child(1) { animation-delay: 0.1s; height: 30%; }
-.recording-wave span:nth-child(2) { animation-delay: 0.2s; height: 60%; }
-.recording-wave span:nth-child(3) { animation-delay: 0.3s; height: 40%; }
-.recording-wave span:nth-child(4) { animation-delay: 0.4s; height: 80%; }
-.recording-wave span:nth-child(5) { animation-delay: 0.5s; height: 100%; }
-.recording-wave span:nth-child(6) { animation-delay: 0.6s; height: 50%; }
-.recording-wave span:nth-child(7) { animation-delay: 0.7s; height: 70%; }
-.recording-wave span:nth-child(8) { animation-delay: 0.8s; height: 45%; }
-.recording-wave span:nth-child(9) { animation-delay: 0.9s; height: 65%; }
-.recording-wave span:nth-child(10) { animation-delay: 1.0s; height: 35%; }
+.recording-wave span:nth-child(1) {
+  animation-delay: 0.1s;
+  height: 30%;
+}
+.recording-wave span:nth-child(2) {
+  animation-delay: 0.2s;
+  height: 60%;
+}
+.recording-wave span:nth-child(3) {
+  animation-delay: 0.3s;
+  height: 40%;
+}
+.recording-wave span:nth-child(4) {
+  animation-delay: 0.4s;
+  height: 80%;
+}
+.recording-wave span:nth-child(5) {
+  animation-delay: 0.5s;
+  height: 100%;
+}
+.recording-wave span:nth-child(6) {
+  animation-delay: 0.6s;
+  height: 50%;
+}
+.recording-wave span:nth-child(7) {
+  animation-delay: 0.7s;
+  height: 70%;
+}
+.recording-wave span:nth-child(8) {
+  animation-delay: 0.8s;
+  height: 45%;
+}
+.recording-wave span:nth-child(9) {
+  animation-delay: 0.9s;
+  height: 65%;
+}
+.recording-wave span:nth-child(10) {
+  animation-delay: 1s;
+  height: 35%;
+}
 
 @keyframes waveform-animation {
-  0%, 100% {
+  0%,
+  100% {
     transform: scaleY(1);
   }
   50% {
@@ -5996,5 +6404,205 @@ export default {
 .deepseek-text {
   font-size: 16px;
   color: #666666;
+}
+
+/* 自主作答全屏模态框样式 */
+.answer-fullscreen-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000; /* 确保比其他元素高 */
+}
+
+.answer-fullscreen-content {
+  width: 90%;
+  height: 85%;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.answer-fullscreen-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  border-bottom: 1px solid #ebeef5;
+}
+
+.answer-fullscreen-title {
+  font-size: 18px;
+  font-weight: 500;
+  color: #303133;
+}
+
+.close-answer-fullscreen-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #909399;
+}
+
+.close-answer-fullscreen-btn:hover {
+  color: #606266;
+}
+
+.answer-fullscreen-body {
+  flex: 1;
+  overflow: hidden;
+}
+
+/* 左右两栏布局 */
+.answer-fullscreen-columns {
+  display: flex;
+  height: 100%;
+}
+
+/* 作答栏 */
+.answer-fullscreen-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #ebeef5;
+}
+
+/* 最后一个栏目不需要右边框 */
+.answer-fullscreen-column:last-child {
+  border-right: none;
+}
+
+/* 栏目内容 */
+.answer-fullscreen-column .column-content {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  font-size: 16px;
+  line-height: 1.8;
+  white-space: pre-wrap;
+}
+
+/* 修改录音内容区域样式，防止不必要的滚动条 */
+.recorded-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  text-align: left;
+  justify-content: space-between;
+  color: #333333;
+  flex: 1;
+  padding: 10px;
+  overflow: hidden; /* 改为 hidden，防止整体出现滚动条 */
+}
+
+/* 修改评估内容输入区域，确保只在需要时显示滚动条 */
+.evaluation-content-input {
+  height: 100%;
+  overflow-y: auto; /* 保持自动滚动 */
+  padding: 10px;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+/* 点评内容区域 */
+.evaluation-content {
+  width: 50%;
+  height: 100%;
+  overflow-y: auto; /* 保持自动滚动 */
+  padding: 10px;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+/* 确保段落内容不会导致不必要的滚动 */
+.paragraph {
+  margin-bottom: 20px;
+  text-indent: 2em;
+  word-wrap: break-word; /* 确保长文本会换行 */
+  overflow-wrap: break-word; /* 确保长文本会换行 */
+}
+
+/* 自主作答全屏模式下的内容区域样式 */
+.answer-fullscreen-column .column-content {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto; /* 保持自动滚动 */
+  font-size: 16px;
+  line-height: 1.8;
+  white-space: normal; /* 改为 normal 而不是 pre-wrap，防止不必要的空白 */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* 修改朗读按钮样式 */
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: #7b2cf5;
+  font-size: 14px;
+  padding: 0;
+  margin-left: 20px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-weight: normal;
+  line-height: 1;
+}
+
+.icon-btn i {
+  margin-right: 4px;
+  font-size: 18px;
+}
+
+/* 添加暂停按钮样式 */
+.icon-btn .el-icon-video-pause {
+  position: relative;
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #7b2cf5;
+  border-radius: 50%;
+  margin-right: 4px;
+}
+
+.icon-btn .el-icon-video-pause::before {
+  content: "";
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background-color: #7b2cf5;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.icon-btn .el-icon-headset {
+  margin-right: 4px;
+  font-size: 18px;
+}
+
+.icon-btn .eye-icon {
+  width: 18px;
+  height: 18px;
+  margin-right: 4px;
+  vertical-align: middle;
+}
+
+.icon-btn:hover {
+  opacity: 0.8;
 }
 </style>
