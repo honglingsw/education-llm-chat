@@ -107,8 +107,10 @@
           style="left: 0; right: auto"
         >
           <div class="trigger-area" @click="toggleDrawer">
-            <i class="el-icon-notebook-2" />
-            <span>答题表</span>
+            <div class="trigger-content">
+              <img src="@/assets/leftopen.png" alt="答题表" class="trigger-icon" />
+              <span>答题表</span>
+            </div>
           </div>
         </div>
         <div class="main-container">
@@ -120,7 +122,7 @@
                 <span class="title">答题表</span>
                 <img
                   class="logo"
-                  src="@/assets/logoOrderedHistory.png"
+                  src="@/assets/leftend.png"
                   alt="折叠"
                   @click="toggleDrawer"
                 />
@@ -137,7 +139,6 @@
                     ]"
                   >
                     <span>
-                      {{ i + 1 }}.
                       <span
                         v-if="
                           item.state === 'ANSWERED' || item.state === 'VIEWED'
@@ -152,6 +153,7 @@
                       >
                         {{ item.state === "ANSWERED" ? "已作答" : "已阅读" }}
                       </span>
+                      {{ (i + 1) < 10 ? '0' + (i + 1) : (i + 1) }}.
                       {{ item.questionContent }} （{{ item.examTime }}
                       {{ item.questionType }}）
                     </span>
@@ -210,7 +212,7 @@
               </div>
               <div class="page-region">
                 <div class="question-number">
-                  <span>{{ currentIndex }}</span>
+                  <span>{{ currentIndex < 10 ? '0' + currentIndex : currentIndex }}</span>
                   <div
                     class="question-status-tag"
                     v-if="
@@ -239,7 +241,7 @@
                       class="arrow-icon"
                     />
                   </el-button>
-                  <span>{{ currentIndex }}/{{ totalCount }}</span>
+                  <span>{{ currentIndex < 10 ? '0' + currentIndex : currentIndex }}/{{ totalCount < 10 ? '0' + totalCount : totalCount }}</span>
                   <el-button class="square-nav-btn" @click="nextQuestion">
                     <img
                       src="@/assets/right.png"
@@ -314,12 +316,11 @@
                       全屏
                     </button>
                     <button
-                      class="action-btn evaluation-btn"
+                      class="evaluation-btn action-btn"
                       @click="showEvaluation"
                       v-if="!showEvaluationContent"
                     >
-                      <i class="el-icon-s-comment"></i>
-                      作答点评
+                      <img src="@/assets/logo2.png" alt="点评" class="evaluation-icon" /> 作答点评
                     </button>
                   </div>
                 </div>
@@ -351,55 +352,7 @@
                     >
                       <p class="paragraph">
                         {{ asrResult }}
-                        This is a comprehensive Vue single-file component for an
-                        interview page, handling user authentication, audio
-                        recording, question navigation, feedback dialogs, and
-                        more. Could you let me know what you'd like assistance
-                        with? For example, do you need help debugging an issue,
-                        refactoring the code, or understanding how a specific
-                        part works?
-                        This is a comprehensive Vue single-file component for an
-                        interview page, handling user authentication, audio
-                        recording, question navigation, feedback dialogs, and
-                        more. Could you let me know what you'd like assistance
-                        with? For example, do you need help debugging an issue,
-                        refactoring the code, or understanding how a specific
-                        part works?
-                        This is a comprehensive Vue single-file component for an
-                        interview page, handling user authentication, audio
-                        recording, question navigation, feedback dialogs, and
-                        more. Could you let me know what you'd like assistance
-                        with? For example, do you need help debugging an issue,
-                        refactoring the code, or understanding how a specific
-                        part works?
-                        This is a comprehensive Vue single-file component for an
-                        interview page, handling user authentication, audio
-                        recording, question navigation, feedback dialogs, and
-                        more. Could you let me know what you'd like assistance
-                        with? For example, do you need help debugging an issue,
-                        refactoring the code, or understanding how a specific
-                        part works?
-                        This is a comprehensive Vue single-file component for an
-                        interview page, handling user authentication, audio
-                        recording, question navigation, feedback dialogs, and
-                        more. Could you let me know what you'd like assistance
-                        with? For example, do you need help debugging an issue,
-                        refactoring the code, or understanding how a specific
-                        part works?
-                        This is a comprehensive Vue single-file component for an
-                        interview page, handling user authentication, audio
-                        recording, question navigation, feedback dialogs, and
-                        more. Could you let me know what you'd like assistance
-                        with? For example, do you need help debugging an issue,
-                        refactoring the code, or understanding how a specific
-                        part works?
-                        This is a comprehensive Vue single-file component for an
-                        interview page, handling user authentication, audio
-                        recording, question navigation, feedback dialogs, and
-                        more. Could you let me know what you'd like assistance
-                        with? For example, do you need help debugging an issue,
-                        refactoring the code, or understanding how a specific
-                        part works?
+                        
                       </p>
                     </div>
                     <!-- 点评内容 -->
@@ -468,14 +421,8 @@
                       </button>
                     </div>
                   </div>
-                  <div
-                    class="demo-content"
-                    :class="{ blurred: !isAnVisible }"
-                    v-if="true"
-                    ref="sourceHint"
-                  >
-                    <!-- 添加第二个source-hint标题栏 -->
-                    <div class="source-hint-header thinking-header">
+                  <!-- 添加第二个source-hint标题栏 -->
+                  <div class="source-hint-header thinking-header">
                       <div class="source-hint-title">
                         <span class="deepseek-text"
                           >以下内容来自DeepSeek-RI-YanYi-36B-ST</span
@@ -489,6 +436,13 @@
                         </span>
                       </div>
                     </div>
+                  <div
+                    class="demo-content"
+                    :class="{ blurred: !isAnVisible }"
+                    v-if="true"
+                    ref="sourceHint"
+                  >
+                    
                     <div class="content-text">
                       <p
                         class="paragraph model-thinking"
@@ -525,6 +479,7 @@
     <el-dialog
       :visible.sync="messageDialogVisible"
       :show-close="false"
+       :close-on-click-modal="false"
       class="welcome-dialog"
     >
       <div class="welcome-content">
@@ -532,7 +487,7 @@
 
         <div class="btn-container">
           <button class="confirm-btn" @click="messageDialogVisible = false">
-            确定
+            我知道了
           </button>
         </div>
       </div>
@@ -788,12 +743,12 @@
         ></el-input>
 
         <div class="auto-show-option">
-          <el-checkbox v-model="notAutoShow">不再自动弹出</el-checkbox>
+          <el-checkbox v-model="notAutoShow">不再展示</el-checkbox>
         </div>
 
         <div class="feedback-btns">
           <el-button class="cancel-btn" @click="feedbackDialogVisible = false"
-            >不了，谢谢</el-button
+            >取消</el-button
           >
           <el-button type="primary" class="submit-btn" @click="submitFeedback"
             >提交反馈</el-button
@@ -810,11 +765,21 @@
     <!-- 添加示范作答全屏模态框 -->
     <div class="fullscreen-modal" v-if="isDemoFullscreen">
       <div class="fullscreen-content">
+        <!-- 修改示范作答全屏模态框的头部 -->
         <div class="fullscreen-header">
           <div class="fullscreen-title">示范作答</div>
-          <button class="close-fullscreen-btn" @click="toggleDemoFullscreen">
-            <i class="el-icon-close"></i>
-          </button>
+          <div class="fullscreen-actions">
+            <button class="demo-fullscreen-btn" @click.stop="toggleReadDemo">
+              <i :class="isReading ? 'el-icon-video-pause' : 'el-icon-headset'"></i>
+              {{ isReading ? '暂停' : '朗读' }}
+            </button>
+            <button class="demo-fullscreen-btn" @click.stop="startDemo">
+              <i class="el-icon-refresh"></i> 重试
+            </button>
+            <button class="demo-fullscreen-btn" @click="toggleDemoFullscreen">
+              <img src="@/assets/small.png" alt="缩小" class="small-icon" /> 缩小
+            </button>
+          </div>
         </div>
         <div class="fullscreen-body">
           <div class="fullscreen-columns">
@@ -852,12 +817,14 @@
       <div class="answer-fullscreen-content">
         <div class="answer-fullscreen-header">
           <div class="answer-fullscreen-title">自主作答</div>
-          <button
-            class="close-answer-fullscreen-btn"
-            @click="toggleAnswerFullscreen"
-          >
-            <i class="el-icon-close"></i>
-          </button>
+          <div class="answer-fullscreen-actions">
+            <button class="answer-fullscreen-btn" @click.stop="startRecording">
+              <i class="el-icon-microphone"></i> 重新回答
+            </button>
+            <button class="answer-fullscreen-btn" @click="toggleAnswerFullscreen">
+              <img src="@/assets/small.png" alt="缩小" class="small-icon" /> 缩小
+            </button>
+          </div>
         </div>
         <div class="answer-fullscreen-body">
           <div class="answer-fullscreen-columns">
@@ -2542,7 +2509,7 @@ export default {
   justify-content: center;
   cursor: pointer;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  z-index: 9999;
+  z-index: 9;
   transition: right 0.3s ease; /* 添加过渡效果 */
   padding: 0;
   overflow: hidden;
@@ -2810,8 +2777,8 @@ export default {
 
 /* 题号样式 */
 .question-number {
-  width: 29px;
-  height: 24px;
+  width: 40px;
+  height: 40px;
   background-color: white;
   display: flex;
   align-items: center;
@@ -2826,6 +2793,7 @@ export default {
 .question-number span {
   color: #7b2cf5 !important;
   font-size: 24px !important;
+  line-height: 24px;
 }
 
 /* 添加状态标签样式 */
@@ -2833,14 +2801,17 @@ export default {
   position: absolute;
   right: -55px;
   /* 放在题号右侧 */
-  top: 0;
+  top: 50%;
+  transform: translateY(-50%);
   width: 50px;
   height: 20px;
-  border-radius: 10px;
+  border-radius: 2px;
   font-size: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0 4px;
+  box-sizing: border-box;
 }
 
 .status-answered {
@@ -2930,9 +2901,9 @@ export default {
   flex: 1;
   background: #fff;
   padding: 20px;
-  border-radius: 8px;
+  /* border-radius: 8px; */
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-  height: calc(100vh - 270px);
+  height: calc(100vh - 212px);
   display: flex;
   flex-direction: column;
   position: relative;
@@ -3043,7 +3014,7 @@ export default {
   justify-content: center;
   gap: 8px;
   background-color: #7b2cf5;
-  color: #ffffff;
+  color: white;
   border: none;
   border-radius: 4px;
   padding: 10px 20px;
@@ -3287,22 +3258,44 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding-bottom: 120px;
+  justify-content: flex-start; /* 从顶部开始 */
+  padding-top: 0; /* 移除顶部内边距 */
+  padding-bottom: 0; /* 移除底部内边距 */
   cursor: pointer;
   color: #606266;
   box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
 }
 
-.trigger-area i {
-  font-size: 24px;
-  margin-bottom: 8px;
+/* 添加一个容器来包裹图标和文字，并设置与抽屉头部相同的内边距 */
+.trigger-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 16px; /* 与抽屉头部相同的内边距 */
+  width: 100%;
+}
+
+.trigger-icon {
+  width: 24px;
+  height: 24px;
+  margin-bottom: 16px;
 }
 
 .trigger-area span {
   writing-mode: vertical-lr;
   letter-spacing: 4px;
-  margin-bottom: 120px;
+  margin-bottom: 0;
+  line-height: 24px;
+  font-size: 16px;
+}
+
+/* 确保抽屉头部的内边距与触发区域一致 */
+.drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px; /* 确保与触发区域的内边距一致 */
+  border-bottom: 1px solid #ebeef5;
 }
 
 .drawer-content {
@@ -3321,6 +3314,7 @@ export default {
   padding: 10px;
   border-bottom: 1px solid #ebeef5;
   cursor: pointer;
+  font-size: 14px;
 }
 
 .question-item:hover {
@@ -3758,7 +3752,7 @@ export default {
   word-wrap: break-word;
   overflow-wrap: break-word;
   padding: 24px;
-  max-height: 600px; /* 设置最大高度 */
+  max-height: 100%; /* 设置最大高度 */
   overflow-y: auto; /* 添加垂直滚动 */
 }
 
@@ -3788,14 +3782,14 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 12px 20px;
-  background-color: #fff;
-  border-bottom: 1px solid #ebeef5;
+  background-color: rgba(85, 1, 151, 0.5); /* #550197 with 50% opacity */
+  border-bottom: none; /* 移除底部边框 */
 }
 
 .source-hint-title {
   font-size: 18px;
   font-weight: 500;
-  color: #303133;
+  color: #ffffff; /* 白色文本，提高在紫色背景上的可读性 */
 }
 
 .source-hint-actions {
@@ -3804,7 +3798,7 @@ export default {
 }
 
 .thinking-header {
-  background-color: #ffffff;
+  background-color: rgba(85, 1, 151, 0.5); /* #550197 with 50% opacity */
   margin-bottom: 0;
   width: 456px;
   height: 38px;
@@ -4163,6 +4157,9 @@ export default {
   width: 100%;
   height: 100%;
   overflow: hidden;
+  display: flex;
+  justify-content: center; /* 水平居中 */
+  align-items: center; /* 垂直居中 */
 }
 
 .welcome-content {
@@ -4173,6 +4170,77 @@ export default {
   position: relative;
   display: flex;
   flex-direction: column;
+  margin: 0 auto; /* 添加水平居中对齐 */
+  max-width: 100%; /* 确保内容不会超出对话框宽度 */
+}
+
+/* 添加welcome-content内部文本的样式 */
+.welcome-content div {
+  font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.8;
+  color: #333;
+}
+
+/* 直接选择v-html内容中的标题 */
+.welcome-content h1, 
+.welcome-content h2, 
+.welcome-content h3, 
+.welcome-content h4, 
+.welcome-content h5, 
+.welcome-content h6,
+.welcome-content div h1, 
+.welcome-content div h2, 
+.welcome-content div h3, 
+.welcome-content div h4, 
+.welcome-content div h5, 
+.welcome-content div h6 {
+  color: #7b2cf5 !important;
+  margin-bottom: 15px;
+  font-weight: bold;
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif !important;
+  font-size: 20px !important;
+}
+
+.welcome-content p,
+.welcome-content div p {
+  margin-bottom: 12px;
+  text-indent: 2em;
+  color: #333;
+  font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+}
+
+.welcome-content strong,
+.welcome-content div strong,
+.welcome-content b,
+.welcome-content div b {
+  color: #7b2cf5 !important;
+  font-weight: 600;
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif !important;
+  font-size: 14px;
+}
+
+.welcome-content a,
+.welcome-content div a {
+  color: #3384ff !important;
+  text-decoration: underline;
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif !important;
+  font-size: 14px;
+}
+
+/* 覆盖Element-UI对话框中可能的默认样式 */
+.welcome-dialog >>> h1,
+.welcome-dialog >>> h2,
+.welcome-dialog >>> h3,
+.welcome-dialog >>> h4,
+.welcome-dialog >>> h5,
+.welcome-dialog >>> h6 {
+  color: #7b2cf5 !important;
+  margin-bottom: 15px;
+  font-weight: bold;
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif !important;
+  font-size: 20px !important;
 }
 
 .welcome-title {
@@ -4239,18 +4307,26 @@ export default {
 }
 
 .confirm-btn {
-  width: 300px;
+  width: 150px;
   height: 46px;
-  background-color: #3384ff;
+  background-color: #7b2cf5;
   color: white;
   border: none;
   border-radius: 23px;
   font-size: 16px;
   cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .confirm-btn:hover {
-  opacity: 0.9;
+  background-color: #6521d4;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(123, 44, 245, 0.2);
+}
+
+.confirm-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(123, 44, 245, 0.2);
 }
 
 /* 反馈对话框样式 */
@@ -4297,7 +4373,7 @@ export default {
 .feedback-content {
   width: 100%;
   height: 100%;
-  padding: 15px 30px 25px;
+  padding: 15px 60px 25px;
   box-sizing: border-box;
   position: relative;
   display: flex;
@@ -4318,16 +4394,19 @@ export default {
 .feedback-content h2 {
   font-size: 17px;
   font-weight: 500;
-  color: #303133;
+  color: #111111;
   margin-bottom: 5px;
-  text-align: center;
+  text-align: left !important; /* 让问题标题靠左对齐 */
+  margin-left: 0; /* 移除可能的左边距 */
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif !important; /* 设置字体为 PingFang SC */
 }
 
 .star-rating {
-  display: flex;
-  justify-content: center;
-  gap: 25px;
+  display: flex; 
+  justify-content: flex-start !important; /* 让星星从左开始排 */
+  gap: 25px; /* 保持原有的间距 */
   margin-bottom: 8px;
+  margin-left: 0; /* 确保没有左边距 */
 }
 
 .star-rating i {
@@ -4345,27 +4424,40 @@ export default {
   margin-bottom: 5px;
 }
 
+/* 调整反馈按钮的顺序 */
 .feedback-btns {
   display: flex;
   justify-content: center;
-  gap: 20px;
+  gap: 64px; /* 使用 gap 控制按钮间距 */
   margin-top: 15px;
+  flex-direction: row-reverse; /* 反转按钮顺序 */
 }
 
 .feedback-btns .cancel-btn,
 .feedback-btns .submit-btn {
-  width: 140px;
+  width: 198px;
   height: 42px;
-  border-radius: 21px;
+  border-radius: 4px;
   font-size: 16px;
 }
 
 .feedback-btns .submit-btn {
-  background: #3384ff;
+  background: #7B2CF5;
+  border-color: #7B2CF5 !important; /* 确保边框颜色与背景一致 */
+  border: none !important; /* 完全移除边框 */
+  margin-left: 0 !important; /* 移除左侧边距 */
 }
 
+.feedback-btns .submit-btn:focus,
 .feedback-btns .submit-btn:hover {
-  opacity: 0.9;
+  border-color: #7B2CF5 !important;
+  border: none !important;
+  outline: none !important;
+}
+
+/* 或者如果您想保留元素但不显示 */
+.feedback-content .close-btn .el-icon-close:before {
+  content: none !important; /* 移除反馈的×图标内容 */
 }
 
 .login-button {
@@ -4395,7 +4487,7 @@ export default {
 
 .icon-img:hover {
   opacity: 0.8;
-  color: #409eff;
+  color: #7B2CF5;
 }
 
 .qr-tooltip-container {
@@ -4622,6 +4714,11 @@ export default {
   width: 24px;
   height: 24px;
   display: block;
+  transition: all 0.3s ease;
+}
+
+.light-btn:hover .light-icon {
+  content: url('../assets/lightpurple.png');
 }
 
 .light-btn:hover {
@@ -4667,18 +4764,19 @@ export default {
 .welcome-dialog {
   position: fixed;
   top: 10%;
-  left: 10%;
-  width: 80%;
+  left: 15%;
+  width: 70%;
   border-radius: 12px;
   height: 80%;
   align-items: center;
   justify-content: center;
   z-index: 2000;
+  overflow-y: auto;
 }
 
 .welcome-dialog >>> .el-dialog {
   margin: 0 !important;
-      width: 100%;
+  width: auto !important; /* 自适应内容宽度 */
   background-color: #fff;
   border-radius: 8px;
   overflow: hidden;
@@ -4730,7 +4828,7 @@ export default {
 }
 
 .demo-drawer-content {
-  height: calc(100% - 60px) !important;
+  height: calc(100vh - 60px) !important;
   background-color: #f5f7fa;
   overflow: hidden; /* 修改为 hidden */
   position: relative; /* 添加相对定位 */
@@ -5738,11 +5836,13 @@ export default {
   display: inline-block;
   width: 50px;
   height: 20px;
-  border-radius: 10px;
+  border-radius: 2px;
   font-size: 12px;
   text-align: center;
   line-height: 20px;
-  margin-right: 5px;
+  padding: 0 4px;
+  margin-right: 4px;
+  box-sizing: border-box;
 }
 
 .item-status-answered {
@@ -5761,13 +5861,12 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 16px;
-  border-bottom: 1px solid #ebeef5;
 }
 
 .drawer-header .title {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 500;
-  color: #303133;
+  color: #111111;
 }
 
 .drawer-header .logo {
@@ -5844,33 +5943,42 @@ export default {
 }
 
 /* 重新回答按钮样式 */
-.restart-btn {
-  background-color: #ffffff;
-  color: #7b2cf5;
-  border: 1px solid #7b2cf5;
-}
-
-.restart-btn:hover {
-  background-color: #f0e6ff;
-}
-
-/* 全屏按钮样式 */
+.restart-btn,
 .fullscreen-btn {
-  background-color: #ffffff;
-  color: #7b2cf5;
-  border: 1px solid #7b2cf5;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: #7B2CF5;
+  font-size: 16px;
+  padding: 0;
   cursor: pointer;
+  transition: all 0.3s;
+  font-weight: normal;
+  line-height: 1;
+  margin-left: 20px;
 }
 
+.restart-btn:hover,
 .fullscreen-btn:hover {
-  background-color: #f0e6ff;
+  opacity: 0.8;
 }
+
 
 /* 作答点评按钮样式 */
 .evaluation-btn {
   background-color: #7b2cf5;
   color: white;
   border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-left: 20px;
 }
 
 .evaluation-btn:hover {
@@ -5879,7 +5987,15 @@ export default {
 
 /* 图标样式 */
 .action-btn i {
-  font-size: 14px;
+  font-size: 20px;
+}
+
+/* 作答点评按钮图标样式 */
+.evaluation-btn .evaluation-icon {
+  width: 15px;
+  height: 16px;
+  margin-right: 4px;
+  vertical-align: middle;
 }
 
 /* 录音波形图样式 要改的所以先放在这一下*/
@@ -5989,25 +6105,25 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 16px 24px;
-  border-bottom: 1px solid #ebeef5;
+  background-color: #ffffff; /* 改为白色背景 */
+  border-bottom: 1px solid #ebeef5; /* 添加底部边框以区分内容区域 */
 }
 
 .fullscreen-title {
   font-size: 18px;
   font-weight: 500;
-  color: #303133;
+  color: #303133; /* 改为深色文本，适合白色背景 */
 }
 
+.fullscreen-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* 移除原来的关闭按钮样式 */
 .close-fullscreen-btn {
-  background: none;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-  color: #909399;
-}
-
-.close-fullscreen-btn:hover {
-  color: #606266;
+  display: none;
 }
 
 .fullscreen-body {
@@ -6166,57 +6282,6 @@ export default {
   flex: 1;
   display: flex;
   flex-direction: column;
-}
-
-/* 重新定义全屏模式下的样式 */
-.fullscreen-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-}
-
-.fullscreen-content {
-  width: 90%;
-  height: 85%;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.fullscreen-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 24px;
-  border-bottom: 1px solid #ebeef5;
-}
-
-.fullscreen-title {
-  font-size: 18px;
-  font-weight: 500;
-  color: #303133;
-}
-
-.close-fullscreen-btn {
-  background: none;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-  color: #909399;
-}
-
-.close-fullscreen-btn:hover {
-  color: #606266;
 }
 
 .fullscreen-body {
@@ -6379,7 +6444,7 @@ export default {
   border-radius: 4px;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
   padding: 10px;
-  width: 250px;
+  width: 200px;
   font-size: 12px;
   color: #606266;
   z-index: 1000;
@@ -6605,4 +6670,208 @@ export default {
 .icon-btn:hover {
   opacity: 0.8;
 }
+/* 整体滚动条宽度 */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+/* 滚动条轨道 */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 6px;
+}
+
+/* 滚动条滑块 */
+::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 6px;
+  border: 3px solid #f1f1f1;
+  transform: translateX(-3px);
+}
+
+/* 鼠标悬停时 */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+/* welcome-dialog内容样式 */
+.welcome-dialog >>> p, 
+.welcome-dialog >>> div, 
+.welcome-dialog >>> span,
+.welcome-dialog >>> li {
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif !important;
+  font-size: 14px !important;
+  line-height: 1.8;
+  color: #333;
+}
+
+/* 确保所有文本元素都应用样式 */
+.welcome-dialog >>> * {
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+/* 添加对对话框内容区域的样式调整 */
+.welcome-dialog >>> .el-dialog__body {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  overflow: auto;
+  display: flex;
+  justify-content: center; /* 水平居中 */
+  align-items: center; /* 垂直居中 */
+}
+
+.welcome-dialog >>> .el-dialog {
+  margin: 0 !important;
+  width: auto !important; /* 自适应内容宽度 */
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  padding: 0;
+}
+
+.welcome-content {
+  width: fit-content;
+  height: fit-content;
+  margin: 30px; /* 修改为统一的30px内边距 */
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  max-width: 100%; /* 确保内容不会超出对话框宽度 */
+}
+
+/* 确保 thinking-header 在全屏模式下也使用白色背景 */
+.fullscreen-demo-column .thinking-header {
+  background-color: #ffffff;
+  border-bottom: 1px solid #ebeef5;
+}
+
+.fullscreen-demo-column .source-hint-title {
+  color: #303133; /* 改为深色文本 */
+}
+
+/* 示范作答全屏按钮样式 */
+.demo-fullscreen-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: #7b2cf5;
+  font-size: 16px;
+  padding: 0;
+  margin-left: 20px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-weight: normal;
+  line-height: 1;
+}
+
+.demo-fullscreen-btn i {
+  margin-right: 4px;
+  font-size: 20px; /* 调整图标大小为20px */
+  width: 20px; /* 设置宽度 */
+  height: 20px; /* 设置高度 */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.demo-fullscreen-btn .small-icon {
+  width: 18px;
+  height: 18px;
+  margin-right: 4px;
+}
+
+.demo-fullscreen-btn:hover {
+  opacity: 0.8;
+}
+
+/* 自主作答全屏按钮样式 */
+.answer-fullscreen-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.answer-fullscreen-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: #7b2cf5;
+  font-size: 16px;
+  padding: 0;
+  margin-left: 20px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-weight: normal;
+  line-height: 1;
+}
+
+.answer-fullscreen-btn i {
+  margin-right: 4px;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.answer-fullscreen-btn .small-icon {
+  width: 18px;
+  height: 18px;
+  margin-right: 4px;
+}
+
+.answer-fullscreen-btn:hover {
+  opacity: 0.8;
+}
+
+/* 隐藏原来的关闭按钮 */
+.close-answer-fullscreen-btn {
+  display: none;
+}
+
+
+/* 移除通用的渐变色样式 */
+.paragraph:not(.model-thinking) {
+  /* 移除这个通用样式 */
+  background: none;
+  -webkit-background-clip: initial;
+  background-clip: initial;
+  -webkit-text-fill-color: initial;
+  color: #333333; /* 恢复默认颜色 */
+}
+
+/* 只为点评内容添加渐变色 */
+.evaluation-content .paragraph:not(.model-thinking),
+.answer-fullscreen-column:nth-child(2) .column-content .paragraph:not(.model-thinking) {
+  background: linear-gradient(to right, #7B2CF5, #3948F2);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: #7B2CF5; /* 兼容不支持渐变的浏览器 */
+}
+/* 保持思考部分的颜色不变 */
+.model-thinking {
+  color: #909399 !important;
+  -webkit-text-fill-color: #909399 !important;
+  background: none !important;
+}
+
+/* 修复 recorded-content 被按钮挡住的问题 */
+.recorded-content {
+  margin-top: 30px; /* 增加顶部外边距，避开按钮区域 */
+}
+
+/* 确保全屏模式下内容也不被按钮挡住 */
+.answer-fullscreen-column .column-content {
+  margin-top: 20px; /* 为全屏模式下的内容添加顶部外边距 */
+}
+
 </style>

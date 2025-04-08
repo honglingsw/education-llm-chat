@@ -333,7 +333,7 @@
       center
     >
       <div class="feedback-content">
-        <div class="close-btn" @click="feedbackDialogVisible = false">
+        <div class="close-btn" @click="closeFeedbackDialog">
           <i class="el-icon-close"></i>
         </div>
 
@@ -390,12 +390,12 @@
         ></el-input>
 
         <div class="auto-show-option">
-          <el-checkbox v-model="notAutoShow">不再自动弹出</el-checkbox>
+          <el-checkbox v-model="notAutoShow">不再展示</el-checkbox>
         </div>
 
         <div class="feedback-btns">
-          <el-button class="cancel-btn" @click="feedbackDialogVisible = false"
-            >不了，谢谢</el-button
+          <el-button class="cancel-btn" @click="closeFeedbackDialog"
+            >取消</el-button
           >
           <el-button type="primary" class="submit-btn" @click="submitFeedback"
             >提交反馈</el-button
@@ -952,11 +952,7 @@ export default {
             this.$message.success("感谢您的参与，祝您生活愉快！");
             this.feedbackDialogVisible = false;
             // 重置表单数据
-            this.helpRating = 0;
-            this.useRating = 0;
-            this.feedbackComment = "";
-            this.professionalRating = 0;
-            this.priceRating = 0;
+            this.resetRatings();
           } else {
             // 处理错误情况
             if (!this.errorLock) {
@@ -972,6 +968,22 @@ export default {
           this.feedbackDialogVisible = false;
           this.$message.success("网络故障，请重新提交");
         });
+    },
+
+    // 修改关闭反馈对话框的方法
+    closeFeedbackDialog() {
+      this.feedbackDialogVisible = false;
+      // 重置所有评分
+      this.resetRatings();
+    },
+
+    // 添加重置所有评分的方法
+    resetRatings() {
+      this.helpRating = 0;
+      this.useRating = 0;
+      this.professionalRating = 0;
+      this.priceRating = 0;
+      this.feedbackComment = '';
     },
   },
 };
@@ -2044,7 +2056,7 @@ export default {
 .feedback-content {
   width: 100%;
   height: 100%;
-  padding: 15px 30px 25px;
+  padding: 15px 60px 25px;
   box-sizing: border-box;
   position: relative;
   display: flex;
@@ -2065,16 +2077,19 @@ export default {
 .feedback-content h2 {
   font-size: 17px;
   font-weight: 500;
-  color: #303133;
+  color: #111111;
   margin-bottom: 5px;
-  text-align: center;
+  text-align: left !important; /* 让问题标题靠左对齐 */
+  margin-left: 0; /* 移除可能的左边距 */
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif !important; /* 设置字体为 PingFang SC */
 }
 
 .star-rating {
-  display: flex;
-  justify-content: center;
-  gap: 25px;
+  display: flex; 
+  justify-content: flex-start !important; /* 让星星从左开始排 */
+  gap: 25px; /* 保持原有的间距 */
   margin-bottom: 8px;
+  margin-left: 0; /* 确保没有左边距 */
 }
 
 .star-rating i {
@@ -2092,29 +2107,61 @@ export default {
   margin-bottom: 5px;
 }
 
+/* 调整反馈按钮的顺序 */
 .feedback-btns {
   display: flex;
   justify-content: center;
-  gap: 20px;
+  gap: 64px; /* 使用 gap 控制按钮间距 */
   margin-top: 15px;
+  flex-direction: row-reverse; /* 反转按钮顺序 */
 }
 
 .feedback-btns .cancel-btn,
 .feedback-btns .submit-btn {
-  width: 140px;
+  width: 198px;
   height: 42px;
-  border-radius: 21px;
+  border-radius: 4px;
   font-size: 16px;
 }
 
 .feedback-btns .submit-btn {
-  background: #3384ff;
+  background: #7B2CF5;
+  border-color: #7B2CF5 !important; /* 确保边框颜色与背景一致 */
+  border: none !important; /* 完全移除边框 */
+  margin-left: 0 !important; /* 移除左侧边距 */
 }
 
+.feedback-btns .submit-btn:focus,
 .feedback-btns .submit-btn:hover {
-  opacity: 0.9;
+  border-color: #7B2CF5 !important;
+  border: none !important;
+  outline: none !important;
 }
 
+/* 移除反馈的×图标内容 */
+.feedback-content .close-btn .el-icon-close:before {
+  content: none !important;
+}
+
+/* 禁用文本域拖动调整大小功能 */
+.el-textarea__inner {
+  resize: none !important; /* 禁止调整大小 */
+}
+
+/* 修改取消按钮的悬停样式 */
+.feedback-btns .cancel-btn:hover,
+.feedback-btns .cancel-btn:focus {
+  background-color: #f5f7fa !important; /* 浅灰色背景 */
+  color: #606266 !important; /* 保持原有文字颜色 */
+  border-color: #dcdfe6 !important; /* 保持原有边框颜色 */
+}
+
+/* 确保取消按钮的边框样式一致 */
+.feedback-btns .cancel-btn {
+  background-color: #ffffff;
+  color: #606266;
+  border: 1px solid #dcdfe6 !important;
+}
 /* 悬浮按钮样式 */
 .float-button {
   position: fixed;
