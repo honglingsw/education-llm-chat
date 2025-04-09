@@ -16,30 +16,18 @@
                   <img class="icon-img" src="@/assets/all.png" alt="all" />
                   <div class="qr-tooltip">
                     <div class="qr-tooltip-content">
-                      <img
-                        src="@/assets/qr_code.jpg"
-                        alt="QR Code"
-                        class="qr-code-img"
-                      />
+                      <img src="@/assets/qr_code.jpg" alt="QR Code" class="qr-code-img" />
                       <div class="qr-tooltip-text">进群送次数</div>
                     </div>
                   </div>
                 </div>
                 <div class="wallet nav-icon" @click="showRechargeDialog">
-                  <img
-                    class="wallet-icon"
-                    src="@/assets/wallet.png"
-                    alt="wallet"
-                  />
-                  <span
-                    class="balance"
-                    style="
+                  <img class="wallet-icon" src="@/assets/wallet.png" alt="wallet" />
+                  <span class="balance" style="
                       font-size: 14px;
                       color: #111111;
                       font-family: 'Alibaba Sans', sans-serif;
-                    "
-                    >{{ coinBalance }}</span
-                  >
+                    ">{{ coinBalance }}</span>
                 </div>
               </div>
             </template>
@@ -49,50 +37,27 @@
                   <img class="icon-img" src="@/assets/all.png" alt="all" />
                   <div class="qr-tooltip">
                     <div class="qr-tooltip-content">
-                      <img
-                        src="@/assets/qr_code.jpg"
-                        alt="QR Code"
-                        class="qr-code-img"
-                      />
+                      <img src="@/assets/qr_code.jpg" alt="QR Code" class="qr-code-img" />
                       <div class="qr-tooltip-text">进群送次数</div>
                     </div>
                   </div>
                 </div>
-                <img
-                  class="icon-img"
-                  src="@/assets/wallet.png"
-                  alt="wallet"
-                  @click="showRechargeDialog"
-                />
+                <img class="icon-img" src="@/assets/wallet.png" alt="wallet" @click="showRechargeDialog" />
               </div>
             </template>
           </div>
           <div class="user-actions">
             <template v-if="isLoggedIn">
               <img src="@/assets/user.png" class="user-icon" alt="user" />
-              <span
-                class="user-phone"
-                style="
+              <span class="user-phone" style="
                   color: #111111;
                   font-family: 'Alibaba Sans', sans-serif;
                   font-size: 14px;
-                "
-                >{{ maskPhoneNumber }}</span
-              >
-              <img
-                src="@/assets/out.png"
-                class="logout-icon"
-                alt="logout"
-                @click="handleLogout"
-              />
+                ">{{ maskPhoneNumber }}</span>
+              <img src="@/assets/out.png" class="logout-icon" alt="logout" @click="handleLogout" />
             </template>
             <template v-else>
-              <el-button
-                class="login-button"
-                type="primary"
-                @click="showLoginDialog"
-                >登录</el-button
-              >
+              <el-button class="login-button" type="primary" @click="showLoginDialog">登录</el-button>
             </template>
           </div>
         </div>
@@ -101,11 +66,7 @@
     <div>
       <!-- 主体内容 -->
       <main class="main-content-row">
-        <div
-          v-show="!drawerVisible"
-          class="drawer-trigger"
-          style="left: 0; right: auto"
-        >
+        <div v-show="!drawerVisible" class="drawer-trigger" style="left: 0; right: auto">
           <div class="trigger-area" @click="toggleDrawer">
             <div class="trigger-content">
               <img src="@/assets/leftopen.png" alt="答题表" class="trigger-icon" />
@@ -120,43 +81,29 @@
               <!-- 抽屉顶部区域：标题和折叠图标 -->
               <div class="drawer-header">
                 <span class="title">答题表</span>
-                <img
-                  class="logo"
-                  src="@/assets/leftend.png"
-                  alt="折叠"
-                  @click="toggleDrawer"
-                />
+                <img class="logo" src="@/assets/leftend.png" alt="折叠" @click="toggleDrawer" />
               </div>
               <div class="drawer-content">
                 <div class="question-list">
-                  <div
-                    v-for="(item, i) in orderedHistory"
-                    :key="item.answerId"
-                    @click="get_exam_detail(item.questionId, i)"
-                    :class="[
+                  <div v-for="(item, i) in orderedHistory" :key="item.answerId"
+                    @click="get_exam_detail(item.questionId, i)" :class="[
                       'question-item',
                       { active: currentQuestionIndex === i },
-                    ]"
-                  >
+                    ]">
                     <span>
-                      <span
-                        v-if="
-                          item.state === 'ANSWERED' || item.state === 'VIEWED'
-                        "
-                        :class="[
+                      <span v-if="
+                        item.state === 'ANSWERED' || item.state === 'VIEWED'
+                      " :class="[
                           'question-item-status',
                           {
                             'item-status-answered': item.state === 'ANSWERED',
                             'item-status-viewed': item.state === 'VIEWED',
                           },
-                        ]"
-                      >
+                        ]">
                         {{ item.state === "ANSWERED" ? "已作答" : "已阅读" }}
                       </span>
-                      {{ (i + 1) < 10 ? '0' + (i + 1) : (i + 1) }}.
-                      {{ item.questionContent }} （{{ item.examTime }}
-                      {{ item.questionType }}）
-                    </span>
+                      {{ (i + 1) < 10 ? '0' + (i + 1) : (i + 1) }}. {{ item.questionContent }} （{{ item.examTime }} {{
+                        item.questionType }}） </span>
                   </div>
                 </div>
               </div>
@@ -213,52 +160,38 @@
               <div class="page-region">
                 <div class="question-number">
                   <span>{{ currentIndex < 10 ? '0' + currentIndex : currentIndex }}</span>
-                  <div
-                    class="question-status-tag"
-                    v-if="
-                      questionContent.questionStateEnum === 'ANSWERED' ||
-                      questionContent.questionStateEnum === 'VIEWED'
-                    "
-                    :class="{
+                      <div class="question-status-tag" v-if="
+                        questionContent.questionStateEnum === 'ANSWERED' ||
+                        questionContent.questionStateEnum === 'VIEWED'
+                      " :class="{
                       'status-answered':
                         questionContent.questionStateEnum === 'ANSWERED',
                       'status-viewed':
                         questionContent.questionStateEnum === 'VIEWED',
-                    }"
-                  >
-                    {{
-                      questionContent.questionStateEnum === "ANSWERED"
-                        ? "已作答"
-                        : "已阅读"
-                    }}
-                  </div>
+                    }">
+                        {{
+                          questionContent.questionStateEnum === "ANSWERED"
+                            ? "已作答"
+                            : "已阅读"
+                        }}
+                      </div>
                 </div>
                 <div class="nav-buttons">
                   <el-button class="square-nav-btn" @click="prevQuestion">
-                    <img
-                      src="@/assets/left.png"
-                      alt="上一题"
-                      class="arrow-icon"
-                    />
+                    <img src="@/assets/left.png" alt="上一题" class="arrow-icon" />
                   </el-button>
-                  <span>{{ currentIndex < 10 ? '0' + currentIndex : currentIndex }}/{{ totalCount < 10 ? '0' + totalCount : totalCount }}</span>
-                  <el-button class="square-nav-btn" @click="nextQuestion">
-                    <img
-                      src="@/assets/right.png"
-                      alt="下一题"
-                      class="arrow-icon"
-                    />
-                  </el-button>
+                  <span>{{ currentIndex < 10 ? '0' + currentIndex : currentIndex }}/{{ totalCount < 10 ? '0' +
+                      totalCount : totalCount }}</span>
+                      <el-button class="square-nav-btn" @click="nextQuestion">
+                        <img src="@/assets/right.png" alt="下一题" class="arrow-icon" />
+                      </el-button>
                 </div>
               </div>
               <h1 class="question-title">
                 {{ questionContent.content }}
-                <span
-                  v-if="
-                    questionContent.examTime || questionContent.questionType
-                  "
-                  class="question-subtitle"
-                >
+                <span v-if="
+                  questionContent.examTime || questionContent.questionType
+                " class="question-subtitle">
                   （{{ questionContent.examTime }}
                   {{ questionContent.questionType }}）
                 </span>
@@ -288,48 +221,29 @@
 
                   <!-- 录音中显示结束作答按钮 -->
                   <div class="header-actions" v-if="isRecording">
-                    <button
-                      class="action-btn end-record-btn"
-                      @click="endRecording"
-                    >
+                    <button class="action-btn end-record-btn" @click="endRecording">
                       结束作答
                     </button>
                   </div>
 
                   <!-- 录音结束后显示三个操作按钮 -->
-                  <div
-                    class="header-actions"
-                    v-if="!isRecording && hasRecordedContent"
-                  >
-                    <button
-                      class="action-btn restart-btn"
-                      @click="restartRecording"
-                    >
+                  <div class="header-actions" v-if="!isRecording && hasRecordedContent">
+                    <button class="action-btn restart-btn" @click="restartRecording">
                       <i class="el-icon-microphone"></i>
                       重新回答
                     </button>
-                    <button
-                      class="action-btn fullscreen-btn"
-                      @click="toggleAnswerFullscreen"
-                    >
+                    <button class="action-btn fullscreen-btn" @click="toggleAnswerFullscreen">
                       <i class="el-icon-full-screen"></i>
                       全屏
                     </button>
-                    <button
-                      class="evaluation-btn action-btn"
-                      @click="showEvaluation"
-                      v-if="!showEvaluationContent"
-                    >
+                    <button class="evaluation-btn action-btn" @click="showEvaluation" v-if="!showEvaluationContent">
                       <img src="@/assets/logo2.png" alt="点评" class="evaluation-icon" /> 作答点评
                     </button>
                   </div>
                 </div>
 
                 <!-- 录音前的提示 -->
-                <div
-                  class="record-hint"
-                  v-if="!isRecording && !hasRecordedContent"
-                >
+                <div class="record-hint" v-if="!isRecording && !hasRecordedContent">
                   点击录音按钮，开始答题
 
                   <!-- 录音按钮 - 只在录音前显示 -->
@@ -344,12 +258,10 @@
                 <template v-else>
                   <div id="status"></div>
                   <div class="recorded-content" ref="recordContent">
-                    <div
-                      :class="[
-                        'evaluation-content-input',
-                        showEvaluationContentIn ? 'half-width' : 'full-width',
-                      ]"
-                    >
+                    <div :class="[
+                      'evaluation-content-input',
+                      showEvaluationContentIn ? 'half-width' : 'full-width',
+                    ]">
                       <p class="paragraph">
                         {{ asrResult }}
                         This is a comprehensive Vue single-file component for an
@@ -418,16 +330,9 @@
                       </p>
                     </div>
                     <!-- 点评内容 -->
-                    <div
-                      v-if="showEvaluationContentIn"
-                      class="evaluation-content"
-                      ref="evaluationContent"
-                    >
+                    <div v-if="showEvaluationContentIn" class="evaluation-content" ref="evaluationContent">
                       点评:
-                      <p
-                        class="paragraph model-thinking"
-                        v-html="markdownReason"
-                      ></p>
+                      <p class="paragraph model-thinking" v-html="markdownReason"></p>
                       <p class="paragraph" v-html="markdownResult"></p>
                     </div>
                   </div>
@@ -454,30 +359,20 @@
                     <div class="source-hint-actions">
                       <!-- 修改示范作答区域的朗读按钮 -->
                       <button class="icon-btn" @click.stop="toggleReadDemo">
-                        <i
-                          :class="
-                            isReading
-                              ? 'el-icon-video-pause'
-                              : 'el-icon-headset'
-                          "
-                        ></i>
+                        <i :class="isReading
+                            ? 'el-icon-video-pause'
+                            : 'el-icon-headset'
+                          "></i>
                         {{ isReading ? "停止" : "朗读" }}
                       </button>
                       <button class="icon-btn" @click.stop="startDemo">
                         <i class="el-icon-refresh"></i> 重试
                       </button>
-                      <button
-                        class="icon-btn"
-                        @click.stop="toggleDemoFullscreen"
-                      >
+                      <button class="icon-btn" @click.stop="toggleDemoFullscreen">
                         <i class="el-icon-full-screen"></i> 全屏
                       </button>
                       <button class="icon-btn" @click="toggleAn">
-                        <img
-                          v-if="isAnVisible"
-                          src="@/assets/eyein.png"
-                          class="eye-icon"
-                        />
+                        <img v-if="isAnVisible" src="@/assets/eyein.png" class="eye-icon" />
                         <i v-else class="el-icon-view"></i>
                         {{ isAnVisible ? "隐藏" : "显示" }}
                       </button>
@@ -485,31 +380,21 @@
                   </div>
                   <!-- 添加第二个source-hint标题栏 -->
                   <div class="source-hint-header thinking-header">
-                      <div class="source-hint-title">
-                        <span class="deepseek-text"
-                          >以下内容来自DeepSeek-RI-YanYi-36B-ST</span
-                        >
-                        <span class="info-icon-wrapper">
-                          <i class="el-icon-question info-icon"></i>
-                          <div class="info-tooltip">
-                            DeepSeek-RI-YanYi-36B-ST 是基于 DeepSeek-R1
-                            大规模语言模型微调而成的专用模型，专注于高效解答结构化面试题。该模型通过海量知名机构的标准面试题目及高质量答案进行精细化训练，具备卓越的逻辑推理、问题拆解和答案生成能力。
-                          </div>
-                        </span>
-                      </div>
+                    <div class="source-hint-title">
+                      <span class="deepseek-text">以下内容来自DeepSeek-RI-YanYi-36B-ST</span>
+                      <span class="info-icon-wrapper">
+                        <i class="el-icon-question info-icon"></i>
+                        <div class="info-tooltip">
+                          DeepSeek-RI-YanYi-36B-ST 是基于 DeepSeek-R1
+                          大规模语言模型微调而成的专用模型，专注于高效解答结构化面试题。该模型通过海量知名机构的标准面试题目及高质量答案进行精细化训练，具备卓越的逻辑推理、问题拆解和答案生成能力。
+                        </div>
+                      </span>
                     </div>
-                  <div
-                    class="demo-content"
-                    :class="{ blurred: !isAnVisible }"
-                    v-if="true"
-                    ref="sourceHint"
-                  >
-                    
+                  </div>
+                  <div class="demo-content" :class="{ blurred: !isAnVisible }" v-if="true" ref="sourceHint">
+
                     <div class="content-text">
-                      <p
-                        class="paragraph model-thinking"
-                        v-html="markdownReasonContent"
-                      ></p>
+                      <p class="paragraph model-thinking" v-html="markdownReasonContent"></p>
                       <p class="paragraph" v-html="markdownModelResult"></p>
                     </div>
                   </div>
@@ -527,23 +412,15 @@
             <span>示范作答</span>
           </template>
           <template v-else>
-            <img
-              src="@/assets/rightarrow.png"
-              class="arrow-icon"
-              alt="右箭头"
-            />
+            <img src="@/assets/rightarrow.png" class="arrow-icon" alt="右箭头" />
           </template>
         </div>
       </div>
     </div>
 
     <!-- 添加消息对话框 -->
-    <el-dialog
-      :visible.sync="messageDialogVisible"
-      :show-close="false"
-       :close-on-click-modal="false"
-      class="welcome-dialog"
-    >
+    <el-dialog :visible.sync="messageDialogVisible" :show-close="false" :close-on-click-modal="false"
+      class="welcome-dialog">
       <div class="welcome-content">
         <div v-html="Tipsontent"></div>
 
@@ -556,13 +433,7 @@
     </el-dialog>
 
     <!-- 添加充值弹窗 -->
-    <el-dialog
-      :visible.sync="rechargeDialogVisible"
-      class="recharge-dialog"
-      width="720px"
-      :show-close="false"
-      center
-    >
+    <el-dialog :visible.sync="rechargeDialogVisible" class="recharge-dialog" width="720px" :show-close="false" center>
       <div class="recharge-container">
         <!-- 顶部用户信息 -->
         <div class="recharge-header">
@@ -581,13 +452,8 @@
 
         <!-- 充值选项 -->
         <div class="recharge-options">
-          <div
-            v-for="(option, index) in rechargeOptions"
-            :key="index"
-            class="recharge-option"
-            :class="{ selected: selectedRechargeOption === index }"
-            @click="selectedRechargeOption = index"
-          >
+          <div v-for="(option, index) in rechargeOptions" :key="index" class="recharge-option"
+            :class="{ selected: selectedRechargeOption === index }" @click="selectedRechargeOption = index">
             <div class="original-price">{{ option.originalPrice }}元</div>
             <div class="discount-price">{{ option.discountPrice }}元</div>
             <div class="points">
@@ -607,33 +473,19 @@
           <div class="payment-right-section">
             <!-- 支付选项 -->
             <div class="payment-options">
-              <div
-                class="payment-option"
-                :class="{ selected: paymentMethod === 'wechat' }"
-                @click="paymentMethod = 'wechat'"
-              >
+              <div class="payment-option" :class="{ selected: paymentMethod === 'wechat' }"
+                @click="paymentMethod = 'wechat'">
                 <label class="radio-label">
-                  <input
-                    type="radio"
-                    name="payment"
-                    :checked="paymentMethod === 'wechat'"
-                  />
+                  <input type="radio" name="payment" :checked="paymentMethod === 'wechat'" />
                   <span class="radio-custom"></span>
                   <img src="@/assets/wechat_pay.png" alt="WeChat Pay" />
                   <span>微信支付</span>
                 </label>
               </div>
-              <div
-                class="payment-option"
-                :class="{ selected: paymentMethod === 'alipay' }"
-                @click="paymentMethod = 'alipay'"
-              >
+              <div class="payment-option" :class="{ selected: paymentMethod === 'alipay' }"
+                @click="paymentMethod = 'alipay'">
                 <label class="radio-label">
-                  <input
-                    type="radio"
-                    name="payment"
-                    :checked="paymentMethod === 'alipay'"
-                  />
+                  <input type="radio" name="payment" :checked="paymentMethod === 'alipay'" />
                   <span class="radio-custom"></span>
                   <img src="@/assets/alipay.png" alt="Alipay" />
                   <span>支付宝支付</span>
@@ -657,27 +509,15 @@
     </el-dialog>
 
     <!-- 添加登录弹框 -->
-    <el-dialog
-      :visible.sync="loginDialogVisible"
-      class="dialog-container"
-      width="400px"
-      :show-close="false"
-      :before-close="handleCloseDialog"
-      :close-on-click-modal="false"
-      center
-    >
+    <el-dialog :visible.sync="loginDialogVisible" class="dialog-container" width="400px" :show-close="false"
+      :before-close="handleCloseDialog" :close-on-click-modal="false" center>
       <div class="login-container">
         <!-- LOGO区域 -->
         <div class="login-logo">
           <img src="@/assets/logo1.png" alt="Logo" class="logo-image" />
         </div>
 
-        <el-form
-          ref="loginForm"
-          :model="loginForm"
-          :rules="loginRules"
-          label-width="0"
-        >
+        <el-form ref="loginForm" :model="loginForm" :rules="loginRules" label-width="0">
           <!-- 手机号输入框 -->
           <el-form-item prop="phone" class="form-item">
             <el-input v-model="loginForm.phone" placeholder="手机号" />
@@ -685,11 +525,7 @@
 
           <!-- 图形验证码 -->
           <el-form-item prop="captcha" class="captcha-verify">
-            <el-input
-              v-model="captcha.captchaCode"
-              placeholder="图片验证"
-              class="captcha-input"
-            />
+            <el-input v-model="captcha.captchaCode" placeholder="图片验证" class="captcha-input" />
             <el-image :src="captcha.captchaImg" alt="" class="captcha-image">
               <div slot="placeholder" class="image-slot">
                 加载中<span class="dot">...</span>
@@ -701,16 +537,8 @@
           <!-- 验证码区域 -->
           <el-form-item prop="code" class="form-item">
             <div class="verify-input-wrapper">
-              <el-input
-                v-model="loginForm.code"
-                placeholder="输入验证码"
-                class="verify-input"
-              />
-              <span
-                class="send-code-text"
-                :class="{ disabled: !canSendCode }"
-                @click="sendCode"
-              >
+              <el-input v-model="loginForm.code" placeholder="输入验证码" class="verify-input" />
+              <span class="send-code-text" :class="{ disabled: !canSendCode }" @click="sendCode">
                 {{
                   canSendCode ? "获取短信验证码" : `${countdown}秒后重新发送`
                 }}
@@ -720,33 +548,21 @@
 
           <!-- 注册/登录按钮 -->
           <el-form-item class="form-item">
-            <el-button
-              type="primary"
-              class="register-login-btn"
-              :loading="loading"
-              @click="handleLogin"
-            >
+            <el-button type="primary" class="register-login-btn" :loading="loading" @click="handleLogin">
               注册/登录
             </el-button>
           </el-form-item>
 
           <!-- 取消按钮 -->
           <el-form-item class="form-item">
-            <el-button class="cancel-btn" @click="handleCloseDialog"
-              >取消</el-button
-            >
+            <el-button class="cancel-btn" @click="handleCloseDialog">取消</el-button>
           </el-form-item>
         </el-form>
       </div>
     </el-dialog>
 
     <!-- 添加反馈对话框 -->
-    <el-dialog
-      :visible.sync="feedbackDialogVisible"
-      :show-close="false"
-      class="feedback-dialog"
-      center
-    >
+    <el-dialog :visible.sync="feedbackDialogVisible" :show-close="false" class="feedback-dialog" center>
       <div class="feedback-content">
         <div class="close-btn" @click="feedbackDialogVisible = false">
           <i class="el-icon-close"></i>
@@ -754,67 +570,38 @@
 
         <h2>言e面试对您的面试有帮助吗?</h2>
         <div class="star-rating">
-          <i
-            class="el-icon-star-off"
-            v-for="i in 5"
-            :key="'help' + i"
-            @click="setHelpRating(i)"
-            :class="{ 'el-icon-star-on': helpRating >= i }"
-          ></i>
+          <i class="el-icon-star-off" v-for="i in 5" :key="'help' + i" @click="setHelpRating(i)"
+            :class="{ 'el-icon-star-on': helpRating >= i }"></i>
         </div>
 
         <h2>言e面试的使用体验好吗?</h2>
         <div class="star-rating">
-          <i
-            class="el-icon-star-off"
-            v-for="i in 5"
-            :key="'use' + i"
-            @click="setUseRating(i)"
-            :class="{ 'el-icon-star-on': useRating >= i }"
-          ></i>
+          <i class="el-icon-star-off" v-for="i in 5" :key="'use' + i" @click="setUseRating(i)"
+            :class="{ 'el-icon-star-on': useRating >= i }"></i>
         </div>
 
         <h2>言e面试的解答是否专业?</h2>
         <div class="star-rating">
-          <i
-            class="el-icon-star-off"
-            v-for="i in 5"
-            :key="'professional' + i"
-            @click="setProfessionalRating(i)"
-            :class="{ 'el-icon-star-on': professionalRating >= i }"
-          ></i>
+          <i class="el-icon-star-off" v-for="i in 5" :key="'professional' + i" @click="setProfessionalRating(i)"
+            :class="{ 'el-icon-star-on': professionalRating >= i }"></i>
         </div>
 
         <h2>言e面试的定价是否合理?</h2>
         <div class="star-rating">
-          <i
-            class="el-icon-star-off"
-            v-for="i in 5"
-            :key="'price' + i"
-            @click="setPriceRating(i)"
-            :class="{ 'el-icon-star-on': priceRating >= i }"
-          ></i>
+          <i class="el-icon-star-off" v-for="i in 5" :key="'price' + i" @click="setPriceRating(i)"
+            :class="{ 'el-icon-star-on': priceRating >= i }"></i>
         </div>
 
         <h2>如果您还有更多想说的，请告诉我:</h2>
-        <el-input
-          type="textarea"
-          :rows="3"
-          v-model="feedbackComment"
-          placeholder="请输入您的反馈意见..."
-        ></el-input>
+        <el-input type="textarea" :rows="3" v-model="feedbackComment" placeholder="请输入您的反馈意见..."></el-input>
 
         <div class="auto-show-option">
           <el-checkbox v-model="notAutoShow">不再展示</el-checkbox>
         </div>
 
         <div class="feedback-btns">
-          <el-button class="cancel-btn" @click="feedbackDialogVisible = false"
-            >取消</el-button
-          >
-          <el-button type="primary" class="submit-btn" @click="submitFeedback"
-            >提交反馈</el-button
-          >
+          <el-button class="cancel-btn" @click="feedbackDialogVisible = false">取消</el-button>
+          <el-button type="primary" class="submit-btn" @click="submitFeedback">提交反馈</el-button>
         </div>
       </div>
     </el-dialog>
@@ -847,25 +634,9 @@
           <div class="fullscreen-columns">
             <!-- 示范作答全屏内容 -->
             <div class="fullscreen-demo-column">
-              <div class="source-hint-header thinking-header">
-                <div class="source-hint-title">
-                  <span class="deepseek-text"
-                    >以下内容来自DeepSeek-RI-YanYi-36B-ST</span
-                  >
-                  <span class="info-icon-wrapper">
-                    <i class="el-icon-question info-icon"></i>
-                    <div class="info-tooltip">
-                      DeepSeek-RI-YanYi-36B-ST 是基于 DeepSeek-R1
-                      大规模语言模型微调而成的专用模型，专注于高效解答结构化面试题。该模型通过海量知名机构的标准面试题目及高质量答案进行精细化训练，具备卓越的逻辑推理、问题拆解和答案生成能力。
-                    </div>
-                  </span>
-                </div>
-              </div>
+              
               <div class="column-content" :class="{ blurred: !isAnVisible }">
-                <p
-                  class="paragraph model-thinking"
-                  v-html="markdownReasonContent"
-                ></p>
+                <p class="paragraph model-thinking" v-html="markdownReasonContent"></p>
                 <p class="paragraph" v-html="markdownModelResult"></p>
               </div>
             </div>
@@ -899,10 +670,7 @@
             </div>
 
             <!-- 如果有点评内容，显示点评 -->
-            <div
-              class="answer-fullscreen-column"
-              v-if="showEvaluationContentIn"
-            >
+            <div class="answer-fullscreen-column" v-if="showEvaluationContentIn">
               <div class="column-title">作答点评</div>
               <div class="column-content">
                 <p class="paragraph model-thinking" v-html="markdownReason"></p>
@@ -1271,7 +1039,7 @@ export default {
       // 检查是否是180天内的首次访问或者从未访问过
       if (!lastVisitTime || daysPassed > 180) {
         // 显示欢迎对话框
-        this.messageDialogVisible = true;
+        this.showTips()
         // 更新访问时间
         localStorage.setItem(storageKey, currentTime.toString());
       }
@@ -1344,8 +1112,36 @@ export default {
     toggleAn() {
       this.isAnVisible = !this.isAnVisible;
     },
+    dealisANSWERED(data) {
+
+      // 更新题目内容对象
+      this.questionContent = {
+        questionId: data.questionId,
+        content: data.content,
+        answer: data.answer,
+        questionStateEnum: data.questionStateEnum,
+        totalCount: data.totalCount || this.totalCount,
+      };
+      this.questionContent.questionId = data.questionId;
+      // 更新页面显示的题目内容
+
+      // 更新其他状态
+      // this.selectedYear = data.examTime;
+      // this.selectedRegion = data.region;
+      // this.selectedQuestionType = data.questionType;
+      this.modelResult = data.modelResult;
+      this.hasRecordedContent = true;
+
+      this.asrResult = data.userContent;
+      this.aiResponseReasonContent = data.reasonContent;
+      this.aiResponseResult = data.modelResult;
+      this.currentIndex = data.currentIndex;
+      // 重置相关状态
+      this.isDemoStarted = false;
+      this.showEvaluationContentIn = true;
+    },
     get_exam_detail(id, I) {
-      if(this.isRecording){ 
+      if (this.isRecording) {
         this.$message.warning("请先结束作答");
         return
       }
@@ -1366,34 +1162,16 @@ export default {
         data: data,
       })
         .then((response) => {
+          this.isLoading = false;
+
           if (response.data.code === 200) {
             const data = response.data.data;
+            if (data?.questionStateEnum == "ANSWERED") {
+              this.dealisANSWERED(data)
+            } else {
+              this.dealisNotANSWERED(response)
+            }
 
-            // 更新题目内容对象
-            this.questionContent = {
-              questionId: data.questionId,
-              content: data.content,
-              answer: data.answer,
-              questionStateEnum: data.questionStateEnum,
-              totalCount: data.totalCount || this.totalCount,
-            };
-            this.questionContent.questionId = data.questionId;
-            // 更新页面显示的题目内容
-
-            // 更新其他状态
-            // this.selectedYear = data.examTime;
-            // this.selectedRegion = data.region;
-            // this.selectedQuestionType = data.questionType;
-            this.modelResult = data.modelResult;
-            this.hasRecordedContent = true;
-
-            this.asrResult = data.userContent;
-            this.aiResponseReasonContent = data.reasonContent;
-            this.aiResponseResult = data.modelResult;
-            this.currentIndex = data.currentIndex;
-            // 重置相关状态
-            this.isDemoStarted = false;
-            this.showEvaluationContentIn = true;
           } else {
             // 处理错误情况
             if (!this.errorLock) {
@@ -1406,6 +1184,8 @@ export default {
           }
         })
         .catch((error) => {
+          this.isLoading = false;
+
           console.log("error", error);
           let errorMsg = false;
           if (
@@ -1697,6 +1477,35 @@ export default {
           }
         });
     },
+    dealisNotANSWERED(response) {
+
+
+      const data = response.data.data;
+      // 更新题目内容
+      const questionData = response.data.data;
+      this.questionContent = {
+        questionId: questionData.questionId,
+        content: questionData.content,
+        answer: questionData.answer,
+        questionStateEnum: questionData.questionStateEnum
+      };
+
+
+      // 更新题目序号
+      if (questionData.currentIndex) {
+        this.currentIndex = questionData.currentIndex;
+      }
+      if (questionData.totalCount) {
+        this.totalCount = questionData.totalCount;
+      }
+
+      // 重置相关状态
+      this.isDemoStarted = false;
+      this.hasRecordedContent = false;
+      this.showEvaluationContent = false;
+      this.asrResult = "";
+      this.modelResult = "";
+    },
     changeQuestion(direction) {
       if (this.isLoading) return;
       this.isLoading = true;
@@ -1704,20 +1513,20 @@ export default {
       // 构建请求数据
       const data = this.questionContent.questionId
         ? {
-            currentId: this.questionContent.questionId, // 当前题目ID
-            direction: direction, // 方向：-1 上一题，1 下一题
-            tags: {
-              examType: "", // 根据需要设置
-              examTime: this.selectedYear || "",
-              region: this.selectedRegion || "",
-              questionType: this.selectedQuestionType || "",
-              serviceTypeEnum: this.examCode,
+          currentId: this.questionContent.questionId, // 当前题目ID
+          direction: direction, // 方向：-1 上一题，1 下一题
+          tags: {
+            examType: "", // 根据需要设置
+            examTime: this.selectedYear || "",
+            region: this.selectedRegion || "",
+            questionType: this.selectedQuestionType || "",
+            serviceTypeEnum: this.examCode,
 
-              pageNum: 1,
-              pageSize: 1,
-            },
-            keyword: "",
-          }
+            pageNum: 1,
+            pageSize: 1,
+          },
+          keyword: "",
+        }
         : { serviceTypeEnum: this.examCode };
       const token = localStorage.getItem("token");
 
@@ -1734,54 +1543,13 @@ export default {
           this.isLoading = false;
 
           if (response.data.code === 200 && response.data.data) {
-            // 更新题目内容
-            const questionData = response.data.data;
-            this.questionContent = {
-              questionId: questionData.questionId,
-              content: questionData.content,
-              answer: questionData.answer,
-              questionStateEnum: questionData.questionStateEnum,
-              // examTime: questionData.examTime,
-              // region: questionData.region,
-              // questionType: questionData.questionType
-            };
-
-            // 更新页面显示的题目内容
-            // const questionBox = document.querySelector('.question-title');
-            // if (questionBox) {
-            //   const subtitleParts = [
-            //     questionData.examTime,
-            //     questionData.region,
-            //     questionData.questionType
-            //   ].filter(item => item);
-
-            //   const subtitleText = subtitleParts.length > 0 ? `（${subtitleParts.join(' ')}）` : '';
-
-            //   questionBox.innerHTML = `
-            //   ${questionData.content}
-            //   <span class="question-subtitle">${subtitleText}</span>
-            // `;
-            // }
-
-            // 更新其他状态
-            // this.selectedYear = questionData.examTime;
-            // this.selectedRegion = questionData.region;
-            // this.selectedQuestionType = questionData.questionType;
-
-            // 更新题目序号
-            if (questionData.currentIndex) {
-              this.currentIndex = questionData.currentIndex;
-            }
-            if (questionData.totalCount) {
-              this.totalCount = questionData.totalCount;
+            const data = response.data.data;
+            if (data?.questionStateEnum == "ANSWERED") {
+              this.dealisANSWERED(data)
+            } else {
+              this.dealisNotANSWERED(response)
             }
 
-            // 重置相关状态
-            this.isDemoStarted = false;
-            this.hasRecordedContent = false;
-            this.showEvaluationContent = false;
-            this.asrResult = "";
-            this.modelResult = "";
           } else {
             // 处理错误情况
             if (!this.errorLock) {
@@ -1876,16 +1644,16 @@ export default {
                   const obj = JSON.parse(jsonStr);
                   if (obj.contentType === "reason") {
                     this.aiResponseReasonContent += obj.content;
-                   // this.$nextTick(() => {
+                    // this.$nextTick(() => {
                     //  const container = this.$refs.evaluationContent;
                     //  container.scrollTop = container.scrollHeight;
-                   // });
+                    // });
                   } else if (obj.contentType === "answer") {
                     this.aiResponseResult += obj.content;
-                  //  this.$nextTick(() => {
-                   //   const container = this.$refs.evaluationContent;
-                  //    container.scrollTop = container.scrollHeight;
-                  //  });
+                    //  this.$nextTick(() => {
+                    //   const container = this.$refs.evaluationContent;
+                    //    container.scrollTop = container.scrollHeight;
+                    //  });
                   }
                   await this.$nextTick();
                 } catch (err) {
@@ -1900,7 +1668,7 @@ export default {
         console.error("请求错误：", error);
       }
     },
-    demoAnswer() {},
+    demoAnswer() { },
     toggleDrawer() {
       this.drawerVisible = !this.drawerVisible;
       this.get_exam_history();
@@ -2065,9 +1833,9 @@ export default {
                 errorMsg = error.response.data.message;
               }
               if (!errorMsg) {
-            return;
-          }
-          if (!this.errorLock) {
+                return;
+              }
+              if (!this.errorLock) {
                 this.errorLock = true;
                 this.$message.error(errorMsg);
                 setTimeout(() => {
@@ -2153,7 +1921,7 @@ export default {
           this.$message.success("验证码发送成功");
         } catch (error) {
           console.log("发送短信验证码出错:", error);
-          
+
           // 使用错误锁防止多次显示错误消息
           if (!this.errorLock) {
             this.errorLock = true;
@@ -2162,7 +1930,7 @@ export default {
               this.errorLock = false;
             }, 2000);
           }
-          
+
           // 如果发送出错，重新启用按钮
           this.canSendCode = true;
         }
@@ -2259,23 +2027,22 @@ export default {
                   const now = new Date();
                   // 记录触发时间，可以选择打印日志或存入数组中显示在页面上
                   console.log(
-                    `开始每行处理：${now.toLocaleTimeString()} ${
-                      obj.contentType
+                    `开始每行处理：${now.toLocaleTimeString()} ${obj.contentType
                     } `
                   );
 
                   if (obj.contentType === "reason") {
                     this.reasonContent += obj.content;
-                  //  this.$nextTick(() => {
-                   //   const container = this.$refs.sourceHint;
-                  //    container.scrollTop = container.scrollHeight;
-                  //  });
+                    //  this.$nextTick(() => {
+                    //   const container = this.$refs.sourceHint;
+                    //    container.scrollTop = container.scrollHeight;
+                    //  });
                   } else if (obj.contentType === "answer") {
                     this.modelResult += obj.content;
-                  //  this.$nextTick(() => {
-                   //   const container = this.$refs.sourceHint;
+                    //  this.$nextTick(() => {
+                    //   const container = this.$refs.sourceHint;
                     //  container.scrollTop = container.scrollHeight;
-                   // });
+                    // });
                   }
                   console.log(`进行渲染：${now.toLocaleTimeString()}  `);
 
@@ -2310,7 +2077,7 @@ export default {
       }
     },
     prevQuestion() {
-      if(this.isRecording){ 
+      if (this.isRecording) {
         this.$message.warning("请先结束作答");
         return
       }
@@ -2319,7 +2086,7 @@ export default {
       }
     },
     nextQuestion() {
-      if(this.isRecording){ 
+      if (this.isRecording) {
         this.$message.warning("请先结束作答");
         return
 
@@ -2337,7 +2104,7 @@ export default {
       this.searchInput.questionType = "";
     },
     goBack() {
-      if(this.isRecording){ 
+      if (this.isRecording) {
         this.$message.warning("请先结束作答");
         return
       }
@@ -2426,9 +2193,9 @@ export default {
               errorMsg = error.response.data.message;
             }
             if (!errorMsg) {
-            return;
-          }
-          if (!this.errorLock) {
+              return;
+            }
+            if (!this.errorLock) {
               this.errorLock = true;
               this.$message.error(errorMsg);
               setTimeout(() => {
@@ -2547,12 +2314,16 @@ export default {
 
 /* ===== 右侧面板 ===== */
 .demo-panel {
-  width: 456px; /* 修改为固定宽度456px */
-  max-width: 40%; /* 调整最大宽度比例，确保在小屏幕上不会过宽 */
+  width: 456px;
+  /* 修改为固定宽度456px */
+  max-width: 40%;
+  /* 调整最大宽度比例，确保在小屏幕上不会过宽 */
   background-color: #f5f7fa;
-  overflow: hidden; /* 防止内容溢出 */
+  overflow: hidden;
+  /* 防止内容溢出 */
   box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
-  position: relative; /* 确保绝对定位的子元素相对于它定位 */
+  position: relative;
+  /* 确保绝对定位的子元素相对于它定位 */
 }
 
 /* 中间内容区，flex:1 撑开 */
@@ -2580,7 +2351,8 @@ export default {
   width: 36px;
   height: 140px;
   background-color: #f5f7fa;
-  border: none; /* 移除蓝色边框 */
+  border: none;
+  /* 移除蓝色边框 */
   border-radius: 4px 0 0 4px;
   display: flex;
   flex-direction: column;
@@ -2589,14 +2361,16 @@ export default {
   cursor: pointer;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   z-index: 9;
-  transition: right 0.3s ease; /* 添加过渡效果 */
+  transition: right 0.3s ease;
+  /* 添加过渡效果 */
   padding: 0;
   overflow: hidden;
 }
 
 /* 当抽屉打开时，按钮跟随移动 */
 .demo-trigger.drawer-open {
-  right: 456px; /* 抽屉宽度，使按钮贴在抽屉左侧 */
+  right: 456px;
+  /* 抽屉宽度，使按钮贴在抽屉左侧 */
 }
 
 .demo-trigger-area {
@@ -3151,6 +2925,7 @@ export default {
   color: #ff4d4f;
   margin-right: 5px;
 }
+
 .evaluation-content-input {
   height: 100%;
   overflow-y: auto;
@@ -3167,6 +2942,7 @@ export default {
 .evaluation-content-input.half-width {
   width: 50%;
 }
+
 /* 点评内容区域 */
 .evaluation-content {
   width: 50%;
@@ -3226,18 +3002,22 @@ export default {
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s;
-  position: relative; /* 添加相对定位 */
-  box-shadow: none; /* 移除阴影 */
+  position: relative;
+  /* 添加相对定位 */
+  box-shadow: none;
+  /* 移除阴影 */
 }
 
 .demo-start-area:hover {
   background: rgba(0, 0, 0, 0.02);
-  box-shadow: none; /* 确保悬停状态也没有阴影 */
+  box-shadow: none;
+  /* 确保悬停状态也没有阴影 */
 }
 
 .demo-start-area:active {
   background: rgba(0, 0, 0, 0.05);
-  box-shadow: none; /* 确保激活状态也没有阴影 */
+  box-shadow: none;
+  /* 确保激活状态也没有阴影 */
 }
 
 /* 提示文字样式 */
@@ -3252,7 +3032,8 @@ export default {
 .demo-start-area::after {
   content: "不知道怎么回答？让AI做个示范";
   position: absolute;
-  bottom: -30px; /* 调整位置在按钮下方 */
+  bottom: -30px;
+  /* 调整位置在按钮下方 */
   font-size: 14px;
   color: #909399;
   width: 100%;
@@ -3337,9 +3118,12 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start; /* 从顶部开始 */
-  padding-top: 0; /* 移除顶部内边距 */
-  padding-bottom: 0; /* 移除底部内边距 */
+  justify-content: flex-start;
+  /* 从顶部开始 */
+  padding-top: 0;
+  /* 移除顶部内边距 */
+  padding-bottom: 0;
+  /* 移除底部内边距 */
   cursor: pointer;
   color: #606266;
   box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
@@ -3350,7 +3134,8 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 16px; /* 与抽屉头部相同的内边距 */
+  padding-top: 16px;
+  /* 与抽屉头部相同的内边距 */
   width: 100%;
 }
 
@@ -3373,7 +3158,8 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px; /* 确保与触发区域的内边距一致 */
+  padding: 16px;
+  /* 确保与触发区域的内边距一致 */
   border-bottom: 1px solid #ebeef5;
 }
 
@@ -3699,13 +3485,11 @@ export default {
   top: 0;
   width: 100%;
   height: 100%;
-  background: repeating-linear-gradient(
-    90deg,
-    #dcdfe6,
-    #dcdfe6 4px,
-    transparent 4px,
-    transparent 8px
-  );
+  background: repeating-linear-gradient(90deg,
+      #dcdfe6,
+      #dcdfe6 4px,
+      transparent 4px,
+      transparent 8px);
 }
 
 .recorded-content {
@@ -3815,9 +3599,12 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(255, 255, 255, 0.3); /* 降低白色背景的不透明度 */
-  backdrop-filter: blur(4px); /* 从8px降低到4px */
-  -webkit-backdrop-filter: blur(4px); /* 从8px降低到4px */
+  background-color: rgba(255, 255, 255, 0.3);
+  /* 降低白色背景的不透明度 */
+  backdrop-filter: blur(4px);
+  /* 从8px降低到4px */
+  -webkit-backdrop-filter: blur(4px);
+  /* 从8px降低到4px */
   z-index: 10;
   border-radius: 4px;
 }
@@ -3830,9 +3617,11 @@ export default {
   letter-spacing: 0.5px;
   word-wrap: break-word;
   overflow-wrap: break-word;
-  padding: 24px;
-  max-height: 100%; /* 设置最大高度 */
-  overflow-y: auto; /* 添加垂直滚动 */
+  padding: 0 24px 24px 24px;
+  max-height: 100%;
+  /* 设置最大高度 */
+  overflow-y: auto;
+  /* 添加垂直滚动 */
 }
 
 .paragraph {
@@ -3856,19 +3645,13 @@ export default {
   color: #404040;
 }
 
-.source-hint-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 20px;
-  background-color: rgba(85, 1, 151, 0.5); /* #550197 with 50% opacity */
-  border-bottom: none; /* 移除底部边框 */
-}
+
 
 .source-hint-title {
   font-size: 18px;
   font-weight: 500;
-  color: #ffffff; /* 白色文本，提高在紫色背景上的可读性 */
+  color: #ffffff;
+  /* 白色文本，提高在紫色背景上的可读性 */
 }
 
 .source-hint-actions {
@@ -3877,7 +3660,6 @@ export default {
 }
 
 .thinking-header {
-  background-color: rgba(85, 1, 151, 0.5); /* #550197 with 50% opacity */
   margin-bottom: 0;
   width: 456px;
   height: 38px;
@@ -4183,7 +3965,7 @@ export default {
   transition: opacity 0.2s;
 }
 
-.radio-label input[type="radio"]:checked + .radio-custom::after {
+.radio-label input[type="radio"]:checked+.radio-custom::after {
   opacity: 1;
 }
 
@@ -4225,32 +4007,36 @@ export default {
 }
 
 
-.welcome-dialog >>> .el-dialog__header,
-.welcome-dialog >>> .el-dialog__footer {
+.welcome-dialog>>>.el-dialog__header,
+.welcome-dialog>>>.el-dialog__footer {
   display: none;
 }
 
-.welcome-dialog >>> .el-dialog__body {
+.welcome-dialog>>>.el-dialog__body {
   padding: 0;
   margin: 0;
   width: 100%;
   height: 100%;
   overflow: hidden;
   display: flex;
-  justify-content: center; /* 水平居中 */
-  align-items: center; /* 垂直居中 */
+  justify-content: center;
+  /* 水平居中 */
+  align-items: center;
+  /* 垂直居中 */
 }
 
 .welcome-content {
-      width: fit-content;
-    height: fit-content;
-  padding: 40px 100px;
+  width: fit-content;
+  height: fit-content;
+  padding: 20px 40px;
   box-sizing: border-box;
   position: relative;
   display: flex;
   flex-direction: column;
-  margin: 0 auto; /* 添加水平居中对齐 */
-  max-width: 100%; /* 确保内容不会超出对话框宽度 */
+  margin: 0 auto;
+  /* 添加水平居中对齐 */
+  max-width: 100%;
+  /* 确保内容不会超出对话框宽度 */
 }
 
 /* 添加welcome-content内部文本的样式 */
@@ -4262,17 +4048,17 @@ export default {
 }
 
 /* 直接选择v-html内容中的标题 */
-.welcome-content h1, 
-.welcome-content h2, 
-.welcome-content h3, 
-.welcome-content h4, 
-.welcome-content h5, 
+.welcome-content h1,
+.welcome-content h2,
+.welcome-content h3,
+.welcome-content h4,
+.welcome-content h5,
 .welcome-content h6,
-.welcome-content div h1, 
-.welcome-content div h2, 
-.welcome-content div h3, 
-.welcome-content div h4, 
-.welcome-content div h5, 
+.welcome-content div h1,
+.welcome-content div h2,
+.welcome-content div h3,
+.welcome-content div h4,
+.welcome-content div h5,
 .welcome-content div h6 {
   color: #7b2cf5 !important;
   margin-bottom: 15px;
@@ -4309,12 +4095,12 @@ export default {
 }
 
 /* 覆盖Element-UI对话框中可能的默认样式 */
-.welcome-dialog >>> h1,
-.welcome-dialog >>> h2,
-.welcome-dialog >>> h3,
-.welcome-dialog >>> h4,
-.welcome-dialog >>> h5,
-.welcome-dialog >>> h6 {
+.welcome-dialog>>>h1,
+.welcome-dialog>>>h2,
+.welcome-dialog>>>h3,
+.welcome-dialog>>>h4,
+.welcome-dialog>>>h5,
+.welcome-dialog>>>h6 {
   color: #7b2cf5 !important;
   margin-bottom: 15px;
   font-weight: bold;
@@ -4391,7 +4177,7 @@ export default {
   background-color: #7b2cf5;
   color: white;
   border: none;
-  border-radius: 23px;
+  border-radius: 8px;
   font-size: 16px;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -4421,7 +4207,7 @@ export default {
   z-index: 2000;
 }
 
-.feedback-dialog >>> .el-dialog {
+.feedback-dialog>>>.el-dialog {
   width: 580px !important;
   height: 720px !important;
   margin: 0 !important;
@@ -4436,12 +4222,12 @@ export default {
   transform: translate(-50%, -50%);
 }
 
-.feedback-dialog >>> .el-dialog__header,
-.feedback-dialog >>> .el-dialog__footer {
+.feedback-dialog>>>.el-dialog__header,
+.feedback-dialog>>>.el-dialog__footer {
   display: none;
 }
 
-.feedback-dialog >>> .el-dialog__body {
+.feedback-dialog>>>.el-dialog__body {
   padding: 0;
   margin: 0;
   width: 100%;
@@ -4475,17 +4261,23 @@ export default {
   font-weight: 500;
   color: #111111;
   margin-bottom: 5px;
-  text-align: left !important; /* 让问题标题靠左对齐 */
-  margin-left: 0; /* 移除可能的左边距 */
-  font-family: "PingFang SC", "Microsoft YaHei", sans-serif !important; /* 设置字体为 PingFang SC */
+  text-align: left !important;
+  /* 让问题标题靠左对齐 */
+  margin-left: 0;
+  /* 移除可能的左边距 */
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif !important;
+  /* 设置字体为 PingFang SC */
 }
 
 .star-rating {
-  display: flex; 
-  justify-content: flex-start !important; /* 让星星从左开始排 */
-  gap: 25px; /* 保持原有的间距 */
+  display: flex;
+  justify-content: flex-start !important;
+  /* 让星星从左开始排 */
+  gap: 25px;
+  /* 保持原有的间距 */
   margin-bottom: 8px;
-  margin-left: 0; /* 确保没有左边距 */
+  margin-left: 0;
+  /* 确保没有左边距 */
 }
 
 .star-rating i {
@@ -4507,9 +4299,11 @@ export default {
 .feedback-btns {
   display: flex;
   justify-content: center;
-  gap: 64px; /* 使用 gap 控制按钮间距 */
+  gap: 64px;
+  /* 使用 gap 控制按钮间距 */
   margin-top: 15px;
-  flex-direction: row-reverse; /* 反转按钮顺序 */
+  flex-direction: row-reverse;
+  /* 反转按钮顺序 */
 }
 
 .feedback-btns .cancel-btn,
@@ -4522,9 +4316,12 @@ export default {
 
 .feedback-btns .submit-btn {
   background: #7B2CF5;
-  border-color: #7B2CF5 !important; /* 确保边框颜色与背景一致 */
-  border: none !important; /* 完全移除边框 */
-  margin-left: 0 !important; /* 移除左侧边距 */
+  border-color: #7B2CF5 !important;
+  /* 确保边框颜色与背景一致 */
+  border: none !important;
+  /* 完全移除边框 */
+  margin-left: 0 !important;
+  /* 移除左侧边距 */
 }
 
 .feedback-btns .submit-btn:focus,
@@ -4536,7 +4333,8 @@ export default {
 
 /* 或者如果您想保留元素但不显示 */
 .feedback-content .close-btn .el-icon-close:before {
-  content: none !important; /* 移除反馈的×图标内容 */
+  content: none !important;
+  /* 移除反馈的×图标内容 */
 }
 
 .login-button {
@@ -4817,7 +4615,7 @@ export default {
   z-index: 2000;
 }
 
-.message-dialog >>> .el-dialog {
+.message-dialog>>>.el-dialog {
   margin: 0 !important;
   background-color: #fff;
   border-radius: 8px;
@@ -4826,12 +4624,12 @@ export default {
   padding: 0;
 }
 
-.message-dialog >>> .el-dialog__header,
-.message-dialog >>> .el-dialog__footer {
+.message-dialog>>>.el-dialog__header,
+.message-dialog>>>.el-dialog__footer {
   display: none;
 }
 
-.message-dialog >>> .el-dialog__body {
+.message-dialog>>>.el-dialog__body {
   padding: 0;
   margin: 0;
   width: 100%;
@@ -4853,9 +4651,11 @@ export default {
   overflow-y: auto;
 }
 
-.welcome-dialog >>> .el-dialog {
+.welcome-dialog>>>.el-dialog {
+  background: linear-gradient(180deg, /* 第1个色标：#3948F2 + 100%不透明度 */ rgba(57, 72, 242, 0.07) 0%, /* 第2个色标：#550197 + 50%不透明度 */ rgba(85, 1, 151, 0.035) 50%, /* 第3个色标：#FFFFFF + 100%不透明度 */ rgba(255, 255, 255, 0.07) 100%);
   margin: 0 !important;
-  width: auto !important; /* 自适应内容宽度 */
+  width: auto !important;
+  /* 自适应内容宽度 */
   background-color: #fff;
   border-radius: 8px;
   overflow: hidden;
@@ -4863,12 +4663,12 @@ export default {
   padding: 0;
 }
 
-.welcome-dialog >>> .el-dialog__header,
-.welcome-dialog >>> .el-dialog__footer {
+.welcome-dialog>>>.el-dialog__header,
+.welcome-dialog>>>.el-dialog__footer {
   display: none;
 }
 
-.welcome-dialog >>> .el-dialog__body {
+.welcome-dialog>>>.el-dialog__body {
   padding: 0;
   margin: 0;
   width: 100%;
@@ -4908,9 +4708,11 @@ export default {
 
 .demo-drawer-content {
   height: calc(100vh - 60px) !important;
-  background-color: #f5f7fa;
-  overflow: hidden; /* 修改为 hidden */
-  position: relative; /* 添加相对定位 */
+  background: linear-gradient(/* 使用 "to bottom right" 表示从左上角到右下角 */ to bottom right, /* 第一个色标：蓝色 + 100% 不透明度 */ rgba(57, 72, 242, 0.01) 0%, /* 第二个色标：紫色 + 50% 不透明度 */ rgba(85, 1, 151, 0.005) 100%);
+  overflow: hidden;
+  /* 修改为 hidden */
+  position: relative;
+  /* 添加相对定位 */
 }
 
 .demo-drawer-content .demo-start-area {
@@ -5305,10 +5107,7 @@ export default {
   transition: opacity 0.2s;
 }
 
-.demo-drawer-content
-  .radio-label
-  input[type="radio"]:checked
-  + .radio-custom::after {
+.demo-drawer-content .radio-label input[type="radio"]:checked+.radio-custom::after {
   opacity: 1;
 }
 
@@ -5363,12 +5162,12 @@ export default {
 
 
 
-.demo-drawer-content .welcome-dialog >>> .el-dialog__header,
-.demo-drawer-content .welcome-dialog >>> .el-dialog__footer {
+.demo-drawer-content .welcome-dialog>>>.el-dialog__header,
+.demo-drawer-content .welcome-dialog>>>.el-dialog__footer {
   display: none;
 }
 
-.demo-drawer-content .welcome-dialog >>> .el-dialog__body {
+.demo-drawer-content .welcome-dialog>>>.el-dialog__body {
   padding: 0;
   margin: 0;
   width: 100%;
@@ -5476,7 +5275,7 @@ export default {
   z-index: 2000;
 }
 
-.demo-drawer-content .feedback-dialog >>> .el-dialog {
+.demo-drawer-content .feedback-dialog>>>.el-dialog {
   width: 580px !important;
   height: 720px !important;
   margin: 0 !important;
@@ -5491,12 +5290,12 @@ export default {
   transform: translate(-50%, -50%);
 }
 
-.demo-drawer-content .feedback-dialog >>> .el-dialog__header,
-.demo-drawer-content .feedback-dialog >>> .el-dialog__footer {
+.demo-drawer-content .feedback-dialog>>>.el-dialog__header,
+.demo-drawer-content .feedback-dialog>>>.el-dialog__footer {
   display: none;
 }
 
-.demo-drawer-content .feedback-dialog >>> .el-dialog__body {
+.demo-drawer-content .feedback-dialog>>>.el-dialog__body {
   padding: 0;
   margin: 0;
   width: 100%;
@@ -5851,7 +5650,7 @@ export default {
   z-index: 2000;
 }
 
-.demo-drawer-content .message-dialog >>> .el-dialog {
+.demo-drawer-content .message-dialog>>>.el-dialog {
   width: 1600px !important;
   height: 800px !important;
   margin: 0 !important;
@@ -5862,12 +5661,12 @@ export default {
   padding: 0;
 }
 
-.demo-drawer-content .message-dialog >>> .el-dialog__header,
-.demo-drawer-content .message-dialog >>> .el-dialog__footer {
+.demo-drawer-content .message-dialog>>>.el-dialog__header,
+.demo-drawer-content .message-dialog>>>.el-dialog__footer {
   display: none;
 }
 
-.demo-drawer-content .message-dialog >>> .el-dialog__body {
+.demo-drawer-content .message-dialog>>>.el-dialog__body {
   padding: 0;
   margin: 0;
   width: 100%;
@@ -5888,7 +5687,7 @@ export default {
   z-index: 2000;
 }
 
-.demo-drawer-content .welcome-dialog >>> .el-dialog {
+.demo-drawer-content .welcome-dialog>>>.el-dialog {
   margin: 0 !important;
   background-color: #fff;
   border-radius: 8px;
@@ -5897,12 +5696,12 @@ export default {
   padding: 0;
 }
 
-.demo-drawer-content .welcome-dialog >>> .el-dialog__header,
-.demo-drawer-content .welcome-dialog >>> .el-dialog__footer {
+.demo-drawer-content .welcome-dialog>>>.el-dialog__header,
+.demo-drawer-content .welcome-dialog>>>.el-dialog__footer {
   display: none;
 }
 
-.demo-drawer-content .welcome-dialog >>> .el-dialog__body {
+.demo-drawer-content .welcome-dialog>>>.el-dialog__body {
   padding: 0;
   margin: 0;
   width: 100%;
@@ -6107,48 +5906,59 @@ export default {
   animation-delay: 0.1s;
   height: 30%;
 }
+
 .recording-wave span:nth-child(2) {
   animation-delay: 0.2s;
   height: 60%;
 }
+
 .recording-wave span:nth-child(3) {
   animation-delay: 0.3s;
   height: 40%;
 }
+
 .recording-wave span:nth-child(4) {
   animation-delay: 0.4s;
   height: 80%;
 }
+
 .recording-wave span:nth-child(5) {
   animation-delay: 0.5s;
   height: 100%;
 }
+
 .recording-wave span:nth-child(6) {
   animation-delay: 0.6s;
   height: 50%;
 }
+
 .recording-wave span:nth-child(7) {
   animation-delay: 0.7s;
   height: 70%;
 }
+
 .recording-wave span:nth-child(8) {
   animation-delay: 0.8s;
   height: 45%;
 }
+
 .recording-wave span:nth-child(9) {
   animation-delay: 0.9s;
   height: 65%;
 }
+
 .recording-wave span:nth-child(10) {
   animation-delay: 1s;
   height: 35%;
 }
 
 @keyframes waveform-animation {
+
   0%,
   100% {
     transform: scaleY(1);
   }
+
   50% {
     transform: scaleY(0.6);
   }
@@ -6184,14 +5994,17 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 16px 24px;
-  background-color: #ffffff; /* 改为白色背景 */
-  border-bottom: 1px solid #ebeef5; /* 添加底部边框以区分内容区域 */
+  background-color: #ffffff;
+  /* 改为白色背景 */
+  /* border-bottom: 1px solid #ebeef5; */
+  /* 添加底部边框以区分内容区域 */
 }
 
 .fullscreen-title {
   font-size: 18px;
   font-weight: 500;
-  color: #303133; /* 改为深色文本，适合白色背景 */
+  color: #303133;
+  /* 改为深色文本，适合白色背景 */
 }
 
 .fullscreen-actions {
@@ -6273,8 +6086,6 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 12px 16px;
-  background-color: #f5f7fa;
-  border-bottom: 1px solid #ebeef5;
 }
 
 .source-hint-title {
@@ -6290,7 +6101,6 @@ export default {
 }
 
 .thinking-header {
-  background-color: #ffffff;
   margin-bottom: 0;
 }
 
@@ -6406,15 +6216,7 @@ export default {
   opacity: 0.8;
 }
 
-/* 修改标题样式和布局 */
-.source-hint-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 20px;
-  background-color: #fff;
-  border-bottom: 1px solid #ebeef5;
-}
+
 
 .source-hint-title {
   font-size: 18px;
@@ -6434,9 +6236,12 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(255, 255, 255, 0.3); /* 降低白色背景的不透明度 */
-  backdrop-filter: blur(4px); /* 从8px降低到4px */
-  -webkit-backdrop-filter: blur(4px); /* 从8px降低到4px */
+  background-color: rgba(255, 255, 255, 0.3);
+  /* 降低白色背景的不透明度 */
+  backdrop-filter: blur(4px);
+  /* 从8px降低到4px */
+  -webkit-backdrop-filter: blur(4px);
+  /* 从8px降低到4px */
   z-index: 10;
   border-radius: 4px;
 }
@@ -6561,7 +6366,8 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 10000; /* 确保比其他元素高 */
+  z-index: 10000;
+  /* 确保比其他元素高 */
 }
 
 .answer-fullscreen-content {
@@ -6647,13 +6453,15 @@ export default {
   color: #333333;
   flex: 1;
   padding: 10px;
-  overflow: hidden; /* 改为 hidden，防止整体出现滚动条 */
+  overflow: hidden;
+  /* 改为 hidden，防止整体出现滚动条 */
 }
 
 /* 修改评估内容输入区域，确保只在需要时显示滚动条 */
 .evaluation-content-input {
   height: 100%;
-  overflow-y: auto; /* 保持自动滚动 */
+  overflow-y: auto;
+  /* 保持自动滚动 */
   padding: 10px;
   border-radius: 4px;
   margin-top: 10px;
@@ -6663,7 +6471,8 @@ export default {
 .evaluation-content {
   width: 50%;
   height: 100%;
-  overflow-y: auto; /* 保持自动滚动 */
+  overflow-y: auto;
+  /* 保持自动滚动 */
   padding: 10px;
   border-radius: 4px;
   margin-top: 10px;
@@ -6673,18 +6482,22 @@ export default {
 .paragraph {
   margin-bottom: 20px;
   text-indent: 2em;
-  word-wrap: break-word; /* 确保长文本会换行 */
-  overflow-wrap: break-word; /* 确保长文本会换行 */
+  word-wrap: break-word;
+  /* 确保长文本会换行 */
+  overflow-wrap: break-word;
+  /* 确保长文本会换行 */
 }
 
 /* 自主作答全屏模式下的内容区域样式 */
 .answer-fullscreen-column .column-content {
   flex: 1;
   padding: 16px;
-  overflow-y: auto; /* 保持自动滚动 */
+  overflow-y: auto;
+  /* 保持自动滚动 */
   font-size: 16px;
   line-height: 1.8;
-  white-space: normal; /* 改为 normal 而不是 pre-wrap，防止不必要的空白 */
+  white-space: normal;
+  /* 改为 normal 而不是 pre-wrap，防止不必要的空白 */
   word-wrap: break-word;
   overflow-wrap: break-word;
 }
@@ -6749,6 +6562,7 @@ export default {
 .icon-btn:hover {
   opacity: 0.8;
 }
+
 /* 整体滚动条宽度 */
 ::-webkit-scrollbar {
   width: 12px;
@@ -6773,11 +6587,12 @@ export default {
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
 /* welcome-dialog内容样式 */
-.welcome-dialog >>> p, 
-.welcome-dialog >>> div, 
-.welcome-dialog >>> span,
-.welcome-dialog >>> li {
+.welcome-dialog>>>p,
+.welcome-dialog>>>div,
+.welcome-dialog>>>span,
+.welcome-dialog>>>li {
   font-family: "PingFang SC", "Microsoft YaHei", sans-serif !important;
   font-size: 14px !important;
   line-height: 1.8;
@@ -6785,50 +6600,40 @@ export default {
 }
 
 /* 确保所有文本元素都应用样式 */
-.welcome-dialog >>> * {
+.welcome-dialog>>>* {
   font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
 }
 
 /* 添加对对话框内容区域的样式调整 */
-.welcome-dialog >>> .el-dialog__body {
+.welcome-dialog>>>.el-dialog__body {
   padding: 0;
   margin: 0;
   width: 100%;
   overflow: auto;
   display: flex;
-  justify-content: center; /* 水平居中 */
-  align-items: center; /* 垂直居中 */
+  justify-content: center;
+  /* 水平居中 */
+  align-items: center;
+  /* 垂直居中 */
 }
 
-.welcome-dialog >>> .el-dialog {
-  margin: 0 !important;
-  width: auto !important; /* 自适应内容宽度 */
-  background-color: #fff;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  padding: 0;
-}
 
 .welcome-content {
   width: fit-content;
   height: fit-content;
-  margin: 30px; /* 修改为统一的30px内边距 */
   box-sizing: border-box;
   position: relative;
   display: flex;
   flex-direction: column;
-  max-width: 100%; /* 确保内容不会超出对话框宽度 */
+  max-width: 100%;
+  /* 确保内容不会超出对话框宽度 */
 }
 
-/* 确保 thinking-header 在全屏模式下也使用白色背景 */
-.fullscreen-demo-column .thinking-header {
-  background-color: #ffffff;
-  border-bottom: 1px solid #ebeef5;
-}
+
 
 .fullscreen-demo-column .source-hint-title {
-  color: #303133; /* 改为深色文本 */
+  color: #303133;
+  /* 改为深色文本 */
 }
 
 /* 示范作答全屏按钮样式 */
@@ -6850,9 +6655,12 @@ export default {
 
 .demo-fullscreen-btn i {
   margin-right: 4px;
-  font-size: 20px; /* 调整图标大小为20px */
-  width: 20px; /* 设置宽度 */
-  height: 20px; /* 设置高度 */
+  font-size: 20px;
+  /* 调整图标大小为20px */
+  width: 20px;
+  /* 设置宽度 */
+  height: 20px;
+  /* 设置高度 */
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -6924,7 +6732,8 @@ export default {
   -webkit-background-clip: initial;
   background-clip: initial;
   -webkit-text-fill-color: initial;
-  color: #333333; /* 恢复默认颜色 */
+  color: #333333;
+  /* 恢复默认颜色 */
 }
 
 /* 只为点评内容添加渐变色 */
@@ -6934,8 +6743,10 @@ export default {
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  color: #7B2CF5; /* 兼容不支持渐变的浏览器 */
+  color: #7B2CF5;
+  /* 兼容不支持渐变的浏览器 */
 }
+
 /* 保持思考部分的颜色不变 */
 .model-thinking {
   color: #909399 !important;
@@ -6945,12 +6756,13 @@ export default {
 
 /* 修复 recorded-content 被按钮挡住的问题 */
 .recorded-content {
-  margin-top: 30px; /* 增加顶部外边距，避开按钮区域 */
+  margin-top: 30px;
+  /* 增加顶部外边距，避开按钮区域 */
 }
 
 /* 确保全屏模式下内容也不被按钮挡住 */
 .answer-fullscreen-column .column-content {
-  margin-top: 20px; /* 为全屏模式下的内容添加顶部外边距 */
+  margin-top: 20px;
+  /* 为全屏模式下的内容添加顶部外边距 */
 }
-
 </style>

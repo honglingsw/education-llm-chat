@@ -670,7 +670,7 @@ export default {
         size: size || 10,
         serviceTypeEnum: this.serviceTypeEnum || "GOV_EXAM"
       }
-      
+
       var config = {
         method: 'get',
         url: 'https://test.aigcpmer.com/api/api/exam/history',
@@ -712,38 +712,76 @@ export default {
         data: data
       })
         .then(response => {
-          if (response.data.code === 200) {
-            const data = response.data.data;
-
-            // 更新题目内容对象
-            this.questionContent = {
-              questionId: data.questionId,
-              content: data.content,
-              answer: data.answer,
-              questionStateEnum: data.questionStateEnum,
-              totalCount: data.totalCount || this.totalCount
-            };
-            this.questionContent.questionId = data.questionId
-            // 更新页面显示的题目内容
-
-            // 更新其他状态
-            // this.selectedYear = data.examTime;
-            // this.selectedRegion = data.region;
-            // this.selectedQuestionType = data.questionType;
-            this.modelResult = data.modelResult;
-            this.hasRecordedContent = true;
-            this.asrResult = data.userContent;
-            this.aiResponseReasonContent = data.reasonContent;
-            this.aiResponseResult = data.modelResult
-            this.currentIndex = data.currentIndex
-            // 重置相关状态
-            this.isDemoStarted = false;
-            this.showEvaluationContent = true;
+          const data = response?.data?.data;
+          if (data?.questionStateEnum == "ANSWERED") {
+            this.dealisANSWERED(data)
+          } else {
+            this.dealisNotANSWERED(response)
           }
         })
-        .catch(function (error) {
-          console.log(error);
+        .catch(error => {
+          console.log('接口错误：', error);
+          this.isLoading = false;
+          if (!this.errorLock) {
+            this.errorLock = true;
+            const msg =
+              (error.response && error.response.data && error.response.data.message) ||
+              '切换题目失败';
+            this.$message.error(msg);
+            setTimeout(() => {
+              this.errorLock = false;
+            }, 2000);
+          }
         });
+    },
+    dealisANSWERED(data) {
+      // 更新题目内容对象
+      this.questionContent = {
+        questionId: data.questionId,
+        content: data.content,
+        answer: data.answer,
+        questionStateEnum: data.questionStateEnum,
+        totalCount: data.totalCount || this.totalCount
+      };
+      this.questionContent.questionId = data.questionId
+      // 更新页面显示的题目内容
+
+      // 更新其他状态
+      // this.selectedYear = data.examTime;
+      // this.selectedRegion = data.region;
+      // this.selectedQuestionType = data.questionType;
+      this.modelResult = data.modelResult;
+      this.hasRecordedContent = true;
+      this.asrResult = data.userContent;
+      this.aiResponseReasonContent = data.reasonContent;
+      this.aiResponseResult = data.modelResult
+      this.currentIndex = data.currentIndex
+      // 重置相关状态
+      this.isDemoStarted = false;
+      this.showEvaluationContent = true;// 更新题目内容对象
+      this.questionContent = {
+        questionId: data.questionId,
+        content: data.content,
+        answer: data.answer,
+        questionStateEnum: data.questionStateEnum,
+        totalCount: data.totalCount || this.totalCount
+      };
+      this.questionContent.questionId = data.questionId
+      // 更新页面显示的题目内容
+
+      // 更新其他状态
+      // this.selectedYear = data.examTime;
+      // this.selectedRegion = data.region;
+      // this.selectedQuestionType = data.questionType;
+      this.modelResult = data.modelResult;
+      this.hasRecordedContent = true;
+      this.asrResult = data.userContent;
+      this.aiResponseReasonContent = data.reasonContent;
+      this.aiResponseResult = data.modelResult
+      this.currentIndex = data.currentIndex
+      // 重置相关状态
+      this.isDemoStarted = false;
+      this.showEvaluationContent = true;
     },
     getCaptcha() {
       var config = {
@@ -875,6 +913,45 @@ export default {
         });
 
     },
+    dealisNotANSWERED(response) {
+      this.isLoading = false;
+
+      if (response.data.code === 200 && response.data.data) {
+        // 更新题目内容
+        const questionData = response.data.data;
+        this.questionContent = {
+          questionId: questionData.questionId,
+          content: questionData.content,
+          answer: questionData.answer,
+          questionStateEnum: questionData.questionStateEnum
+        };
+
+
+        // 更新题目序号
+        if (questionData.currentIndex) {
+          this.currentIndex = questionData.currentIndex;
+        }
+        if (questionData.totalCount) {
+          this.totalCount = questionData.totalCount;
+        }
+
+        // 重置相关状态
+        this.isDemoStarted = false;
+        this.hasRecordedContent = false;
+        this.showEvaluationContent = false;
+        this.asrResult = '';
+        this.modelResult = '';
+      } else {
+        // 处理错误情况
+        if (!this.errorLock) {
+          this.errorLock = true;
+          this.$message.error(response.data.message || '切换题目失败');
+          setTimeout(() => {
+            this.errorLock = false;
+          }, 2000);
+        }
+      }
+    },
     changeQuestion(direction) {
       if (this.isLoading) return;
       this.isLoading = true;
@@ -906,67 +983,14 @@ export default {
         data: data
       })
         .then(response => {
-          this.isLoading = false;
 
-          if (response.data.code === 200 && response.data.data) {
-            // 更新题目内容
-            const questionData = response.data.data;
-            this.questionContent = {
-              questionId: questionData.questionId,
-              content: questionData.content,
-              answer: questionData.answer,
-              questionStateEnum: questionData.questionStateEnum
-              // examTime: questionData.examTime,
-              // region: questionData.region,
-              // questionType: questionData.questionType
-            };
-
-            // 更新页面显示的题目内容
-            // const questionBox = document.querySelector('.question-title');
-            // if (questionBox) {
-            //   const subtitleParts = [
-            //     questionData.examTime,
-            //     questionData.region,
-            //     questionData.questionType
-            //   ].filter(item => item);
-
-            //   const subtitleText = subtitleParts.length > 0 ? `（${subtitleParts.join(' ')}）` : '';
-
-            //   questionBox.innerHTML = `
-            //   ${questionData.content}
-            //   <span class="question-subtitle">${subtitleText}</span>
-            // `;
-            // }
-
-            // 更新其他状态
-            // this.selectedYear = questionData.examTime;
-            // this.selectedRegion = questionData.region;
-            // this.selectedQuestionType = questionData.questionType;
-
-            // 更新题目序号
-            if (questionData.currentIndex) {
-              this.currentIndex = questionData.currentIndex;
-            }
-            if (questionData.totalCount) {
-              this.totalCount = questionData.totalCount;
-            }
-
-            // 重置相关状态
-            this.isDemoStarted = false;
-            this.hasRecordedContent = false;
-            this.showEvaluationContent = false;
-            this.asrResult = '';
-            this.modelResult = '';
+          const data = response?.data?.data;
+          if (data?.questionStateEnum == "ANSWERED") {
+            this.dealisANSWERED(data)
           } else {
-            // 处理错误情况
-            if (!this.errorLock) {
-              this.errorLock = true;
-              this.$message.error(response.data.message || '切换题目失败');
-              setTimeout(() => {
-                this.errorLock = false;
-              }, 2000);
-            }
+            this.dealisNotANSWERED(response)
           }
+
         })
         .catch(error => {
           console.log('接口错误：', error);
