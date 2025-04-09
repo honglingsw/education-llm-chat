@@ -351,7 +351,7 @@
                     >
                       <p class="paragraph">
                         {{ asrResult }}
-                        This is a comprehensive Vue single-file component for an
+                        <!-- This is a comprehensive Vue single-file component for an
                         interview page, handling user authentication, audio
                         recording, question navigation, feedback dialogs, and
                         more. Could you let me know what you'd like assistance
@@ -399,7 +399,7 @@
                         more. Could you let me know what you'd like assistance
                         with? For example, do you need help debugging an issue,
                         refactoring the code, or understanding how a specific
-                        part works?
+                        part works? -->
                       </p>
                     </div>
                     <!-- 点评内容 -->
@@ -1049,59 +1049,63 @@ export default {
     this.examCode = this.getExamCode();
     this.getUserInfo();
     this.getToken();
-    this.get_exam_history();
+    // this.get_exam_history();
     this.changeQuestion();
     this.searchInput.examType = this.$route.query.type;
     const token = localStorage.getItem("token");
-    var config = {
-      method: "get",
-      url: "https://test.aigcpmer.com/api/api/exam/tags",
-      headers: { Authorization: `Bearer ${token}` },
-    };
-    axios(config)
-      .then((response) => {
-        debugger;
-        if (response.data.code === 200) {
-          console.log(response.data);
-          this.questionTypes = response.data.data[0].tags;
-          this.years = response.data.data[1].tags;
-          this.regions = response.data.data[2].tags;
-        } else {
-          // 处理错误情况
-          if (!this.errorLock) {
-            this.errorLock = true;
-            this.$message.error(response.data.message);
-            setTimeout(() => {
-              this.errorLock = false;
-            }, 2000);
-          }
-        }
-      })
-      .catch((error) => {
-        console.log("error", error);
-        let errorMsg = false;
-        if (
-          error.response &&
-          error.response.data &&
-          error.response.data.message
-        ) {
-          errorMsg = error.response.data.message;
-        }
-        if (!this.errorLock) {
-          this.errorLock = true;
-          this.$message.error(errorMsg);
-          setTimeout(() => {
-            this.errorLock = false;
-          }, 2000);
-        }
-      });
+    // 使用生命周期钩子在组件卸载前停止语音录入
 
-    this.getCaptcha();
-    this.asrRecording();
-    this.changeQuestion();
+
+    // var config = {
+    //   method: "get",
+    //   url: "https://test.aigcpmer.com/api/api/exam/tags",
+    //   headers: { Authorization: `Bearer ${token}` },
+    // };
+    // axios(config)
+    //   .then((response) => {
+    //     debugger;
+    //     if (response.data.code === 200) {
+    //       console.log(response.data);
+    //       this.questionTypes = response.data.data[0].tags;
+    //       this.years = response.data.data[1].tags;
+    //       this.regions = response.data.data[2].tags;
+    //     } else {
+    //       // 处理错误情况
+    //       if (!this.errorLock) {
+    //         this.errorLock = true;
+    //         // this.$message.error(response.data.message);
+    //         setTimeout(() => {
+    //           this.errorLock = false;
+    //         }, 2000);
+    //       }
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.log("error", error);
+    //     let errorMsg = false;
+    //     if (
+    //       error.response &&
+    //       error.response.data &&
+    //       error.response.data.message
+    //     ) {
+    //       errorMsg = error.response.data.message;
+    //     }
+    //     if (!this.errorLock) {
+    //       this.errorLock = true;
+    //       // this.$message.error(errorMsg);
+    //       setTimeout(() => {
+    //         this.errorLock = false;
+    //       }, 2000);
+    //     }
+    //   });
+
+    // this.getCaptcha();
+    // this.asrRecording();
+    // this.changeQuestion();
 
     // 检查是否需要显示欢迎对话框
     this.checkWelcomeDialog();
+        //关闭已经存在的
 
     // 添加全局点击监听器
     document.addEventListener("click", this.handlePageClick);
@@ -1533,7 +1537,7 @@ export default {
 
       // 如果ASR客户端不存在或已断开连接，重新创建并连接
       if (!this.asrClient) {
-        this.asrClient = new ASRClient("wss://test.aigcpmer.com/asr/ws");
+        this.asrClient = new ASRClient("wss://test.aigcpmer.com/asr/ws");        
 
         // 设置回调函数
         this.asrClient.setCallbacks({
@@ -1594,6 +1598,7 @@ export default {
     },
     // 新增一个方法来处理停止按钮的点击
     endRecording() {
+      console.log("结束录音");
       // 停止录音
       if (this.asrClient) {
         this.asrClient.stopRecognition();
@@ -1792,7 +1797,7 @@ export default {
         method: "POST", // 根据实际需求设置请求方法
         headers: {
           "Content-Type": "application/json",
-          Accept: "text/plain",
+          Accept: "*/*",
           Authorization: `Bearer ${token}`,
         },
         // 如果需要请求体数据，请在 body 中传入字符串化后的 JSON
@@ -1810,6 +1815,14 @@ export default {
         if (!response.body) {
           throw new Error("当前浏览器不支持流式响应");
         }
+
+        const data = await response.json();
+        console.log("data", data);
+        if(response.status === 200 && data.code === 10002){
+          this.$message.error(data.message);
+          return;
+        }
+
 
         const reader = response.body.getReader();
         const decoder = new TextDecoder("utf-8");
@@ -1951,7 +1964,6 @@ export default {
     },
     getToken() {
       const token = localStorage.getItem("token");
-
       var config = {
         method: "get",
         url: "https://test.aigcpmer.com/api/user/detail",
@@ -1968,13 +1980,27 @@ export default {
           // 处理错误情况
           if (!this.errorLock) {
             this.errorLock = true;
-            this.$message.error(response.data.message);
+            // this.$message.error(response.data.message);
             setTimeout(() => {
               this.errorLock = false;
             }, 2000);
           }
         }
-      });
+      }).catch ((error)=> {
+        if (error.response) {
+              if (error.response.status === 401) {
+                // 处理 401 错误
+                localStorage.removeItem("userPhone");
+                localStorage.removeItem("token");
+                this.isLoggedIn = false;
+                this.userPhone = "";
+                return;
+              } else if (error.response.data && error.response.data.message) {
+                errorMsg = error.response.data.message;
+              }
+            }
+        })
+     
     },
     handleLogin() {
       this.$refs.loginForm.validate((valid) => {
@@ -2186,6 +2212,18 @@ export default {
           "https://test.aigcpmer.com/api/api/exam/demoAnswner",
           config
         );
+        console.log("demoAnswner", response);
+        if(response.status === 401){
+          this.$message.error("请先登录");
+          return;
+        }
+      
+        const data = await response.json();
+        console.log("data", data);
+        if(response.status === 200 && data.code === 10002){
+          this.$message.error(data.message);
+          return;
+        }
         if (!response.body) {
           throw new Error("当前浏览器不支持流式响应");
         }

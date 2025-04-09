@@ -691,7 +691,8 @@ export default {
 
       axios(config)
         .then((response) => {
-          debugger;
+          console.log('response', response);
+          
           if (response.data.code === 200) {
             // console.log(response.data);
             this.coinBalance = response.data.data.coinBalance;
@@ -707,6 +708,18 @@ export default {
           }
         })
         .catch((error) => {
+          if (error.response) {
+              if (error.response.status === 401) {
+                // 处理 401 错误
+                localStorage.removeItem("userPhone");
+                localStorage.removeItem("token");
+                this.isLoggedIn = false;
+                this.userPhone = "";
+                return;
+              } else if (error.response.data && error.response.data.message) {
+                errorMsg = error.response.data.message;
+              }
+            }
           console.log("error", error);
           let errorMsg = false;
           if (
@@ -744,7 +757,7 @@ export default {
           };
 
           axios(config)
-            .then((response) => {
+            .then((response) => {    
               if (response.data.code === 200) {
                 this.loading = false;
                 this.isLoggedIn = true;
