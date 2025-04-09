@@ -1335,6 +1335,10 @@ export default {
       this.isAnVisible = !this.isAnVisible;
     },
     get_exam_detail(id, I) {
+      if(this.isRecording){ 
+        this.$message.warning("请先结束作答");
+        return
+      }
       this.currentQuestionIndex = I;
       console.log("id", id);
       const token = localStorage.getItem("token");
@@ -1871,16 +1875,16 @@ export default {
                   const obj = JSON.parse(jsonStr);
                   if (obj.contentType === "reason") {
                     this.aiResponseReasonContent += obj.content;
-                    this.$nextTick(() => {
-                      const container = this.$refs.evaluationContent;
-                      container.scrollTop = container.scrollHeight;
-                    });
+                   // this.$nextTick(() => {
+                    //  const container = this.$refs.evaluationContent;
+                    //  container.scrollTop = container.scrollHeight;
+                   // });
                   } else if (obj.contentType === "answer") {
                     this.aiResponseResult += obj.content;
-                    this.$nextTick(() => {
-                      const container = this.$refs.evaluationContent;
-                      container.scrollTop = container.scrollHeight;
-                    });
+                  //  this.$nextTick(() => {
+                   //   const container = this.$refs.evaluationContent;
+                  //    container.scrollTop = container.scrollHeight;
+                  //  });
                   }
                   await this.$nextTick();
                 } catch (err) {
@@ -2286,16 +2290,16 @@ export default {
 
                   if (obj.contentType === "reason") {
                     this.reasonContent += obj.content;
-                    this.$nextTick(() => {
-                      const container = this.$refs.sourceHint;
-                      container.scrollTop = container.scrollHeight;
-                    });
+                  //  this.$nextTick(() => {
+                   //   const container = this.$refs.sourceHint;
+                  //    container.scrollTop = container.scrollHeight;
+                  //  });
                   } else if (obj.contentType === "answer") {
                     this.modelResult += obj.content;
-                    this.$nextTick(() => {
-                      const container = this.$refs.sourceHint;
-                      container.scrollTop = container.scrollHeight;
-                    });
+                  //  this.$nextTick(() => {
+                   //   const container = this.$refs.sourceHint;
+                    //  container.scrollTop = container.scrollHeight;
+                   // });
                   }
                   console.log(`进行渲染：${now.toLocaleTimeString()}  `);
 
@@ -2330,11 +2334,20 @@ export default {
       }
     },
     prevQuestion() {
+      if(this.isRecording){ 
+        this.$message.warning("请先结束作答");
+        return
+      }
       if (this.currentIndex > 1) {
         this.changeQuestion(-1);
       }
     },
     nextQuestion() {
+      if(this.isRecording){ 
+        this.$message.warning("请先结束作答");
+        return
+
+      }
       if (this.currentIndex < this.totalCount) {
         this.changeQuestion(1);
       }
@@ -2348,6 +2361,10 @@ export default {
       this.searchInput.questionType = "";
     },
     goBack() {
+      if(this.isRecording){ 
+        this.$message.warning("请先结束作答");
+        return
+      }
       // 返回面试广场
       this.$router.push("/interview-square");
     },
