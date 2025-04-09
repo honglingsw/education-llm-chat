@@ -17,7 +17,7 @@
                   <div class="qr-tooltip">
                     <div class="qr-tooltip-content">
                       <img
-                        src="@/assets/qr_code.png"
+                        src="@/assets/qr_code.jpg"
                         alt="QR Code"
                         class="qr-code-img"
                       />
@@ -50,7 +50,7 @@
                   <div class="qr-tooltip">
                     <div class="qr-tooltip-content">
                       <img
-                        src="@/assets/qr_code.png"
+                        src="@/assets/qr_code.jpg"
                         alt="QR Code"
                         class="qr-code-img"
                       />
@@ -269,7 +269,7 @@
         <div class="payment-section">
           <!-- 二维码区域 -->
           <div class="qr-code">
-            <img src="@/assets/qr_code.png" alt="QR Code" />
+            <img src="@/assets/qr_code.jpg" alt="QR Code" />
           </div>
 
           <!-- 右侧区域：支付选项和说明文字 -->
