@@ -5,7 +5,7 @@
       <div class="header-container">
         <!-- 左侧logo -->
         <div class="header-left">
-          <img class="nav-logo" src="@/assets/logo1.png" alt="Logo" />
+          <img class="nav-logo" src="@/assets/logo1.png" alt="Logo" @click="goBack" />
         </div>
         <!-- 右侧工具栏 -->
         <div class="header-right">
@@ -205,6 +205,11 @@
                 <div class="record-header">
                   <div class="record-title">
                     自主作答
+                    <!-- 移除这里的波形图 -->
+                  </div>
+
+                  <!-- 录音中显示结束作答按钮 -->
+                  <div class="header-actions" v-if="isRecording">
                     <div class="recording-wave" v-if="isRecording">
                       <span></span>
                       <span></span>
@@ -217,10 +222,6 @@
                       <span></span>
                       <span></span>
                     </div>
-                  </div>
-
-                  <!-- 录音中显示结束作答按钮 -->
-                  <div class="header-actions" v-if="isRecording">
                     <button class="action-btn end-record-btn" @click="endRecording">
                       结束作答
                     </button>
@@ -264,7 +265,14 @@
                     ]">
                       <p class="paragraph">
                         {{ asrResult }}
-                        <!-- This is a comprehensive Vue single-file component for an
+                         This is a comprehensive Vue single-file component for an
+                        interview page, handling user authentication, audio
+                        recording, question navigation, feedback dialogs, and
+                        more. Could you let me know what you'd like assistance
+                        with? For example, do you need help debugging an issue,
+                        refactoring the code, or understanding how a specific
+                        part works?
+                        This is a comprehensive Vue single-file component for an
                         interview page, handling user authentication, audio
                         recording, question navigation, feedback dialogs, and
                         more. Could you let me know what you'd like assistance
@@ -317,7 +325,7 @@
                     </div>
                     <!-- 点评内容 -->
                     <div v-if="showEvaluationContentIn" class="evaluation-content" ref="evaluationContent">
-                      点评:
+                      <span class="gradient-text">作答点评如下:</span>
                       <p class="paragraph model-thinking" v-html="markdownReason"></p>
                       <p class="paragraph" v-html="markdownResult"></p>
                     </div>
@@ -369,7 +377,12 @@
                     <div class="source-hint-title">
                       <span class="deepseek-text">以下内容来自DeepSeek-RI-YanYi-36B-ST</span>
                       <span class="info-icon-wrapper">
-                        <i class="el-icon-question info-icon"></i>
+                        <img 
+                          src="@/assets/question.png" 
+                          class="info-icon" 
+                          v-popover:popover
+                          style="width: 16px; height: 16px;"
+                        />
                         <div class="info-tooltip">
                           DeepSeek-RI-YanYi-36B-ST 是基于 DeepSeek-R1
                           大规模语言模型微调而成的专用模型，专注于高效解答结构化面试题。该模型通过海量知名机构的标准面试题目及高质量答案进行精细化训练，具备卓越的逻辑推理、问题拆解和答案生成能力。
@@ -622,8 +635,9 @@
             <div class="fullscreen-demo-column">
               
               <div class="column-content" :class="{ blurred: !isAnVisible }">
-                <p class="paragraph model-thinking" v-html="markdownReasonContent"></p>
-                <p class="paragraph" v-html="markdownModelResult"></p>
+                <span class="gradient-text">作答点评如下:</span>
+                <p class="paragraph model-thinking" v-html="markdownReason"></p>
+                <p class="paragraph" v-html="markdownResult"></p>
               </div>
             </div>
           </div>
@@ -637,7 +651,7 @@
         <div class="answer-fullscreen-header">
           <div class="answer-fullscreen-title">自主作答</div>
           <div class="answer-fullscreen-actions">
-            <button class="answer-fullscreen-btn" @click.stop="startRecording">
+            <button class="answer-fullscreen-btn" @click.stop="restartRecording">
               <i class="el-icon-microphone"></i> 重新回答
             </button>
             <button class="answer-fullscreen-btn" @click="toggleAnswerFullscreen">
@@ -649,7 +663,7 @@
           <div class="answer-fullscreen-columns">
             <!-- 自主作答全屏内容 -->
             <div class="answer-fullscreen-column">
-              <div class="column-title">我的作答</div>
+              <!-- 移除这个标题 -->
               <div class="column-content">
                 <p class="paragraph" v-html="asrResult"></p>
               </div>
@@ -657,8 +671,9 @@
 
             <!-- 如果有点评内容，显示点评 -->
             <div class="answer-fullscreen-column" v-if="showEvaluationContentIn">
-              <div class="column-title">作答点评</div>
+              <!-- 移除这个标题 -->
               <div class="column-content">
+                <span class="gradient-text">作答点评如下:</span>
                 <p class="paragraph model-thinking" v-html="markdownReason"></p>
                 <p class="paragraph" v-html="markdownResult"></p>
               </div>
@@ -903,6 +918,10 @@ export default {
     selectedRegion(newVal, oldVal) {
       this.searchInput.region = newVal;
     },
+    // 添加对 currentIndex 的监听
+    currentIndex(newVal) {
+      this.currentQuestionIndex = newVal - 1;
+    }
   },
 
   methods: {
@@ -1613,8 +1632,7 @@ export default {
            return;
         }
 
-      
-
+    
         const reader = response.body.getReader();
         const decoder = new TextDecoder("utf-8");
         let done = false;
@@ -2001,7 +2019,6 @@ export default {
         }
         const response = await fetch(
           "https://test.aigcpmer.com/api/api/exam/demoAnswner",
-          // "http://localhost:8080/api/exam/demoAnswner",
           config
         );
         console.log("demoAnswner", response);
@@ -2020,6 +2037,7 @@ export default {
           }
            return;
         }
+        
         if (!response.body) {
           throw new Error("当前浏览器不支持流式响应");
         }
@@ -2240,6 +2258,7 @@ export default {
     },
     // 添加重新回答方法
     restartRecording() {
+       this.isAnswerFullscreen =false
       // 重置状态
       this.asrResult = "";
       this.aiResponseReasonContent = "";
@@ -2509,6 +2528,7 @@ export default {
 .nav-logo {
   height: 24px;
   width: 24px;
+  cursor: pointer; /* 添加这一行，使鼠标悬停时显示为手型指针 */
 }
 
 .header-right {
@@ -2668,7 +2688,7 @@ export default {
   background-color: white;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: none;
   font-size: 14px;
   font-weight: bold;
   margin-right: auto;
@@ -3659,6 +3679,7 @@ export default {
 
 .paragraph {
   margin-bottom: 20px;
+  margin-top: 0px;
   text-indent: 2em;
 }
 
@@ -5820,12 +5841,13 @@ export default {
   color: #000000;
   display: flex;
   align-items: center;
+  padding-left: 4px; /* 设置自主作答文字左边距为4px跟上面对齐 */
 }
 
 /* 头部操作按钮容器 */
 .header-actions {
   display: flex;
-  gap: 10px;
+  gap: 12px;
   align-items: center;
 }
 
@@ -5868,7 +5890,7 @@ export default {
   transition: all 0.3s;
   font-weight: normal;
   line-height: 1;
-  margin-left: 20px;
+  margin-left: 0px;/* 设置重新回答和全屏的左边距为0px */
 }
 
 .restart-btn:hover,
@@ -5889,7 +5911,7 @@ export default {
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.3s;
-  margin-left: 20px;
+  margin-left: 0px;/* 设置作答点评按钮的左边距为0px */
 }
 
 .evaluation-btn:hover {
@@ -5913,7 +5935,7 @@ export default {
 .recording-wave {
   display: inline-flex;
   align-items: center;
-  margin-left: 10px;
+  margin-right: 10px; /* 改为右侧间距 */
   height: 16px;
   width: 60px;
 }
@@ -6419,7 +6441,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 16px 24px;
-  border-bottom: 1px solid #ebeef5;
+  border-bottom: none; /* 移除底部边框 */
 }
 
 .answer-fullscreen-title {
@@ -6456,7 +6478,7 @@ export default {
   flex: 1;
   display: flex;
   flex-direction: column;
-  border-right: 1px solid #ebeef5;
+  border-right: none; /* 移除右侧边框 */
 }
 
 /* 最后一个栏目不需要右边框 */
@@ -6514,6 +6536,7 @@ export default {
 /* 确保段落内容不会导致不必要的滚动 */
 .paragraph {
   margin-bottom: 20px;
+  margin-top: 0px;
   text-indent: 2em;
   word-wrap: break-word;
   /* 确保长文本会换行 */
@@ -6793,9 +6816,17 @@ export default {
   /* 增加顶部外边距，避开按钮区域 */
 }
 
-/* 确保全屏模式下内容也不被按钮挡住 */
-.answer-fullscreen-column .column-content {
-  margin-top: 20px;
-  /* 为全屏模式下的内容添加顶部外边距 */
+/* 渐变文本样式 */
+.gradient-text {
+  background: linear-gradient(to right, #7B2CF5, #3948F2);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: #7B2CF5; /* 兼容不支持渐变的浏览器 */
+  font-weight: 500;
+  display: block;
+  margin-bottom: 10px;
 }
+
+
 </style>

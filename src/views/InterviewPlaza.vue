@@ -124,16 +124,15 @@
             class="interview-card"
             @click="goToInterview(interview)"
           >
-            <div class="card-icon">
-              <i :class="interview.icon" />
+            <div class="card-header">
+              <div class="card-icon">
+                <i :class="interview.icon" />
+              </div>
+              <h3 class="card-title">{{ interview.title }}</h3>
             </div>
             <div class="card-content">
-              <h3 class="card-title">{{ interview.title }}</h3>
               <p class="card-desc">{{ interview.description }}</p>
             </div>
-            <!-- <div class="card-action">
-              <span class="action-text">立即加入</span>
-            </div> -->
             <div class="forWaiting" v-if="interview.isForWaiting">敬请期待</div>
           </div>
         </div>
@@ -636,16 +635,16 @@ export default {
         });
     },
     goToInterview(interview) {
+      // 如果是"敬请期待"的卡片，则不执行任何操作
+      if (interview.isForWaiting) {
+        return;
+      }
+      
+      // 否则正常导航到面试页面
       this.$router.push({
-        name: "InterviewPracticeTest",
+        name: 'InterviewPracticeTest',
         params: { code: interview.code },
       });
-      // 导航到面试练习页面
-      // this.$router.push({
-      //   name: 'InterviewPractice',
-      //   params: { id: interview.id },
-      //   query: { type: interview.type }
-      // })
     },
 
     // 新增登录相关方法
@@ -1369,13 +1368,14 @@ export default {
 }
 
 .tab.active {
-  background: #ccc;
+  background: rgba(85, 1, 151, 0.05);
   border-radius: 5px;
   height: 40px;
+  color: rgba(0, 0, 0, 0.8);
 }
 
 .tab:hover {
-  background: #eee;
+  background: rgba(85, 1, 151, 0.1);
   border-radius: 5px;
   height: 40px;
 }
@@ -1391,7 +1391,7 @@ export default {
   background: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+  overflow: visible;
   transition: all 0.3s;
   cursor: pointer;
   position: relative;
@@ -1403,23 +1403,32 @@ export default {
 .forWaiting {
   position: absolute;
   text-align: center;
-  top: 0;
+  top: -4px;
   right: 10px;
-  width: 20px;
-  height: 80px;
-  background-color: #fad964;
-  font-size: 14px;
-  padding-top: 5px;
+  width: 32px;
+  height: 76px;
+  background: linear-gradient(to bottom, #FFF2E6, #FFE6A3); /* 线性渐变从浅米色到淡黄色 */
+  font-size: 12px;
+  writing-mode: vertical-lr;
+  letter-spacing: 2px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  z-index: 1;
+}
 
-  clip-path: polygon(
-    0 0,
-    100% 0,
-    100% 100%,
-    calc(50% + 10px) 100%,
-    50% calc(100% - 10px),
-    calc(50% - 10px) 100%,
-    0 100%
-  );
+/* 利用伪元素画左侧的对角线三角形 */
+.forWaiting::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -4px; /* 放在左侧 */
+  width: 4px;
+  height: 4px;
+  background-color: #FFF2E6; /* 使用渐变的顶部颜色 */
+  /* 裁剪出从右上角到左下角的三角形 */
+  clip-path: polygon(100% 0, 100% 100%, 0 100%);
 }
 
 .interview-card:hover {
@@ -1427,35 +1436,48 @@ export default {
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
 }
 
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 20px 20px 8px;
+}
+
 .card-icon {
-  width: 50px;
-  height: 50px;
+  width: 28px;
+  height: 28px;
   background: #f0f2f5;
-  border-radius: 5px;
+  border-radius: 2px;
   display: flex;
   align-items: center;
   justify-content: center;
-  position: absolute;
-  top: 30px;
-  left: 20px;
-}
-
-.card-icon i {
-  font-size: 24px;
-  color: #606266;
-}
-
-.card-content {
-  padding: 20px 20px 20px 20px;
-  flex: 1;
 }
 
 .card-title {
   font-size: 18px;
   font-weight: 500;
-  color: #ca7ff6;
-  margin-bottom: 20px;
-  margin-left: 60px;
+  color: #7B2CF5;
+  margin: 0;
+  position: relative; /* 添加相对定位，作为箭头的参考点 */
+}
+
+/* 为没有敬请期待的卡片标题添加箭头 */
+.interview-card:not(:has(.forWaiting)) .card-title::after {
+  content: "";
+  position: absolute;
+  right: -20px; /* 调整箭头位置 */
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  background-image: url('~@/assets/arrow-right.png'); /* 添加波浪线前缀 */
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.card-content {
+  padding: 0 20px 20px 20px;
+  flex: 1;
 }
 
 .card-desc {
@@ -1466,18 +1488,6 @@ export default {
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.card-action {
-  padding: 15px 20px;
-  background: #f5f7fa;
-  text-align: right;
-}
-
-.action-text {
-  color: #409eff;
-  font-size: 14px;
-  padding-right: 5px;
 }
 
 .dialog-container {
@@ -2212,5 +2222,10 @@ export default {
   padding: 0;
   object-fit: contain;
   object-position: center;
+}
+
+/* 为有"敬请期待"标签的卡片单独设置样式 */
+.interview-card:has(.forWaiting) {
+  overflow: visible;
 }
 </style>
