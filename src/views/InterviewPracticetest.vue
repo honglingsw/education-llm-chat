@@ -2250,6 +2250,7 @@ export default {
     },
     // 添加重新回答方法
     restartRecording() {
+       this.isAnswerFullscreen =false
       // 重置状态
       this.asrResult = "";
       this.aiResponseReasonContent = "";
