@@ -1835,13 +1835,12 @@ export default {
           throw new Error("当前浏览器不支持流式响应");
         }
 
-        const data = await response.json();
-        console.log("data", data);
-        if(response.status === 200 && data.code === 10002){
+        if(response.status === 10002){
+          const data =  await response.json();
+          console.log("data", data);
           this.$message.error(data.message);
           return;
         }
-
 
         const reader = response.body.getReader();
         const decoder = new TextDecoder("utf-8");
@@ -2229,6 +2228,7 @@ export default {
         }
         const response = await fetch(
           "https://test.aigcpmer.com/api/api/exam/demoAnswner",
+          // "http://localhost:8080/api/exam/demoAnswner",
           config
         );
         console.log("demoAnswner", response);
@@ -2237,9 +2237,10 @@ export default {
           return;
         }
       
-        const data = await response.json();
-        console.log("data", data);
-        if(response.status === 200 && data.code === 10002){
+        // const data = await response.json();
+        if(response.status === 10002){
+          const data =  await response.json();
+          console.log("data", data);
           this.$message.error(data.message);
           return;
         }
