@@ -1603,12 +1603,17 @@ export default {
           throw new Error("当前浏览器不支持流式响应");
         }
 
-        if(response.status === 10002){
+        if(response.status === 500){
           const data =  await response.json();
           console.log("data", data);
-          this.$message.error(data.message);
-          return;
+          if(data.code === 10002){
+            this.$message.error(data.message);
+            return;
+          }
+           return;
         }
+
+      
 
         const reader = response.body.getReader();
         const decoder = new TextDecoder("utf-8");
@@ -2006,11 +2011,14 @@ export default {
         }
       
         // const data = await response.json();
-        if(response.status === 10002){
+        if(response.status === 500){
           const data =  await response.json();
           console.log("data", data);
-          this.$message.error(data.message);
-          return;
+          if(data.code === 10002){
+            this.$message.error(data.message);
+            return;
+          }
+           return;
         }
         if (!response.body) {
           throw new Error("当前浏览器不支持流式响应");
