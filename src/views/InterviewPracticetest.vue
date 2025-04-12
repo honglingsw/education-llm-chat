@@ -137,7 +137,7 @@
             <el-button @click="changeQuestion()">查询</el-button>
             <el-button @click="clearFilters">清空</el-button>
           </div>
-         
+
         </div>  -->
 
             <!-- 题目区域 -->
@@ -150,6 +150,8 @@
                     {
                       GOV_EXAM: "公务员考试",
                       INTERNET: "互联网考试",
+                      TEACHER_QUALIFICATION_EXAM:"教师资格证考试",
+                      TEACHER_RECRUITMENT_EXAM:"教师招聘考试"
                     }[examCode] || "考试"
                   }}
                 </span>
@@ -411,42 +413,46 @@
                 </div>
               </div>
 
-              <!-- 根据状态显示不同内容 -->
-              <template v-if="!isDemoStarted">
-                <div class="demo-start-area">
-                  <button class="demo-button" @click="startDemo">
-                    查看示范
-                  </button>
-                  <div class="demo-hint-text">
-                    不知道怎么回答？让AI做个示范
+                <!-- 根据状态显示不同内容 -->
+                <template v-if="!isDemoStarted">
+                  <div class="demo-start-area">
+                    <button class="demo-button" @click="handleDemoClick">
+                      查看示范
+                    </button>
+                    <div class="demo-hint-text">
+                      不知道怎么回答？让AI做个示范
+                    </div>
                   </div>
-                </div>
-              </template>
-              <template v-else>
-                <!-- 添加第二个source-hint标题栏 -->
-                <div class="source-hint-header thinking-header">
-                  <div class="source-hint-title">
-                    <span class="deepseek-text">以下内容来自DeepSeek-RI-YanYi-36B-ST</span>
-                    <span class="info-icon-wrapper">
-                      <img src="@/assets/question.png" class="info-icon" v-popover:popover
-                        style="width: 16px; height: 16px;" />
-                      <div class="info-tooltip">
-                        DeepSeek-RI-YanYi-36B-ST 是基于 DeepSeek-R1
-                        大规模语言模型微调而成的专用模型，专注于高效解答结构化面试题。该模型通过海量知名机构的标准面试题目及高质量答案进行精细化训练，具备卓越的逻辑推理、问题拆解和答案生成能力。
-                      </div>
-                    </span>
+                </template>
+                <template v-else>
+                  <!-- 添加第二个source-hint标题栏 -->
+                  <div class="source-hint-header thinking-header">
+                    <div class="source-hint-title">
+                      <span class="deepseek-text">以下内容来自DeepSeek-RI-YanYi-36B-ST</span>
+                      <span class="info-icon-wrapper">
+                        <img
+                          src="@/assets/question.png"
+                          class="info-icon"
+                          v-popover:popover
+                          style="width: 16px; height: 16px;"
+                        />
+                        <div class="info-tooltip">
+                          DeepSeek-RI-YanYi-36B-ST 是基于 DeepSeek-R1
+                          大规模语言模型微调而成的专用模型，专注于高效解答结构化面试题。该模型通过海量知名机构的标准面试题目及高质量答案进行精细化训练，具备卓越的逻辑推理、问题拆解和答案生成能力。
+                        </div>
+                      </span>
+                    </div>
                   </div>
-                </div>
-                <div class="demo-content" :class="{ blurred: !isAnVisible }" ref="sourceHint">
-                  <div class="content-text">
-                    <p class="paragraph model-thinking" v-html="markdownReasonContent"></p>
-                    <p class="paragraph" v-html="markdownModelResult"></p>
+                  <div class="demo-content" :class="{ blurred: !isAnVisible }" ref="sourceHint">
+                    <div class="content-text">
+                      <p class="paragraph model-thinking" v-html="markdownReasonContent"></p>
+                      <p class="paragraph" v-html="markdownModelResult"></p>
+                    </div>
                   </div>
-                </div>
-              </template>
+                </template>
+              </div>
             </div>
-          </div>
-          <!-- </transition> -->
+          </transition>
         </div>
       </main>
 
@@ -940,7 +946,7 @@ export default {
 
     // var config = {
     //   method: "get",
-    //   url: "https://test.aigcpmer.com/api/api/exam/tags",
+    //   url: "http://localhost:8080/api/exam/tags",
     //   headers: { Authorization: `Bearer ${token}` },
     // };
     // axios(config)
@@ -1056,7 +1062,7 @@ export default {
 
       var config = {
         method: "post",
-        url: "https://test.aigcpmer.com/api/userFeedback/create",
+        url: "http://localhost:8080/userFeedback/create",
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -1155,7 +1161,7 @@ export default {
 
       var config = {
         method: "get",
-        url: "https://test.aigcpmer.com/api/api/exam/history",
+        url: "http://localhost:8080/api/exam/history",
         headers: { Authorization: `Bearer ${token}` },
         params: data,
       };
@@ -1206,7 +1212,7 @@ export default {
       this.isAnVisible = !this.isAnVisible;
     },
     dealisANSWERED(data) {
-
+      console.log(data);
       // 更新题目内容对象
       this.questionContent = {
         questionId: data.questionId,
@@ -1216,6 +1222,7 @@ export default {
         totalCount: data.totalCount || this.totalCount,
       };
       this.questionContent.questionId = data.questionId;
+      this.totalCount = data.totalCount;
       // 更新页面显示的题目内容
 
       // 更新其他状态
@@ -1254,7 +1261,7 @@ export default {
 
       axios({
         method: "post",
-        url: "https://test.aigcpmer.com/api/api/exam/switchQuestionById",
+        url: "http://localhost:8080/api/exam/switchQuestionById",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -1307,7 +1314,7 @@ export default {
     getCaptcha() {
       var config = {
         method: "get",
-        url: "https://test.aigcpmer.com/api/auth/captcha",
+        url: "http://localhost:8080/auth/captcha",
         headers: {},
       };
 
@@ -1505,8 +1512,36 @@ export default {
         this.asrClient.startRecognition();
       }
     },
+    // 新增保存用户作答信息的方法
+    async saveUserContent() {
+      try {
+        const token = localStorage.getItem("token"); // 获取token，根据你的实际存储方式调整
+        const response = await fetch("http://localhost:8080/api/exam/saveUserContent",
+          {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "*/*",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            questionId: this.questionContent.questionId,
+            submitContent: this.asrResult,
+          }),
+        });
+
+        const result = await response.json();
+        if (result.code === 200) {
+          console.log("保存用户作答信息成功");
+        } else {
+          console.error("保存用户作答信息失败:", result.message);
+        }
+      } catch (error) {
+        console.error("保存用户作答信息出错:", error);
+      }
+    },
     // 新增一个方法来处理停止按钮的点击
-    endRecording() {
+    endRecording(needSave = true) {
       console.log("结束录音");
       // 停止录音
       if (this.asrClient) {
@@ -1518,7 +1553,13 @@ export default {
       this.isRecording = false;
       this.hasRecordedContent = true;
       this.showEvaluationContent = false;
+      // 保存用户作答信息
+      if(needSave){
+        this.saveUserContent();
+      }
+      debugger
     },
+
     searchQuestion(pageNum, pageSize) {
       console.log(this.searchInput);
 
@@ -1622,6 +1663,7 @@ export default {
         ? {
           currentId: this.questionContent.questionId, // 当前题目ID
           direction: direction, // 方向：-1 上一题，1 下一题
+          serviceTypeEnum: this.examCode,
           tags: {
             examType: "", // 根据需要设置
             examTime: this.selectedYear || "",
@@ -1639,7 +1681,7 @@ export default {
 
       axios({
         method: "post",
-        url: "https://test.aigcpmer.com/api/api/exam/switch",
+        url: "http://localhost:8080/api/exam/switch",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -1713,7 +1755,7 @@ export default {
 
       try {
         const response = await fetch(
-          "https://test.aigcpmer.com/api/api/exam/submit",
+          "http://localhost:8080/api/exam/submit",
           config
         );
         if (!response.body) {
@@ -1835,7 +1877,7 @@ export default {
       }
       this.submitAnswer();
       console.log("endRecording");
-      this.endRecording();
+      this.endRecording(false);
     },
     // 新增登录相关方法
     showLoginDialog() {
@@ -1874,7 +1916,7 @@ export default {
       const token = localStorage.getItem("token");
       var config = {
         method: "get",
-        url: "https://test.aigcpmer.com/api/user/detail",
+        url: "http://localhost:8080/user/detail",
         headers: { Authorization: `Bearer ${token}` },
       };
       debugger;
@@ -1916,7 +1958,7 @@ export default {
           this.loading = true;
           var config = {
             method: "post",
-            url: "https://test.aigcpmer.com/api/auth/login",
+            url: "http://localhost:8080/auth/login",
             headers: {
               "Content-Type": "application/json",
               Accept: "*/*",
@@ -2014,7 +2056,7 @@ export default {
 
           var config = {
             method: "post",
-            url: "https://test.aigcpmer.com/api/auth/sms",
+            url: "http://localhost:8080/auth/sms",
             headers: {
               "Content-Type": "application/json",
             },
@@ -2098,6 +2140,14 @@ export default {
         this.$refs.loginForm.clearValidate();
       }
     },
+    handleDemoClick() {
+      console.log("测试",this.modelResult)
+      if (!this.modelResult) {
+        this.startDemo()
+      } else{
+        this.isDemoStarted = true
+      }
+    },
     async startDemo() {
       this.abortStream = false;
       var data = {
@@ -2118,7 +2168,7 @@ export default {
           this.isDemoStarted = true;
         }
         const response = await fetch(
-          "https://test.aigcpmer.com/api/api/exam/demoAnswner",
+          "http://localhost:8080/api/exam/demoAnswner",
           config
         );
         console.log("demoAnswner", response);
@@ -2126,6 +2176,7 @@ export default {
           this.$message.error("请先登录");
           return;
         }
+
 
         // const data = await response.json();
         if (response.status === 500) {
@@ -2137,6 +2188,7 @@ export default {
           }
           return;
         }
+
 
         if (!response.body) {
           throw new Error("当前浏览器不支持流式响应");
