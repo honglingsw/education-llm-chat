@@ -449,78 +449,94 @@ export default {
           id: 1,
           title: "公务员考试",
           description:
-            "涵盖全国31省市近5年真题，500+高仿真模拟题，协助考生语言表达训练、应急应变技巧、考官评分视角分析",
+            "公考考生请注意！从“基层矛盾调解”到“政策落地难点分析”，你的答题需体现政务思维与民生视角。本工具接入最新时政热点题库，AI 考官实时评估你的政治站位、问题拆解深度与对策可行性，助你跳出“空泛表态”，练出“公务员式”精准应答！",
           type: "structured",
           code: "GOV_EXAM",
           icon: "el-icon-user",
-          isForWaiting: false,
+          isForWaiting: false
         },
         {
           id: 2,
           title: "互联网考试",
-          description:
-            "这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述",
-          type: "structured",
+          description: "互联网考试",
+          type: "internet",
           code: "INTERNET",
-
           icon: "el-icon-user-solid",
-          isForWaiting: false,
+          isForWaiting: false
         },
         {
           id: 3,
           title: "教师资格证考试",
           description:
-            "这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述",
+            "准教师们！面对 “课堂突发状况如何处理”、“新课标如何融入教学”等高频考题，本工具提供教育场景 1:1 模拟，实时反馈你的教育理念落地逻辑、师生沟通话术，助你避开“理论脱离实践”误区，让答题既有温度又显专业！",
           type: "structured",
+          code: "TEACHER_QUALIFICATION_EXAM",
           icon: "el-icon-user-solid",
-          isForWaiting: false,
+          isForWaiting: false
         },
         {
           id: 4,
-          title: "教师资格证考试",
-          description:
-            "这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述",
-          type: "internet",
+          title: "教师招聘考试",
+          description:"目标明确的未来园丁！招聘考官更关注“如何平衡家校沟通”、“学科特色课程设计”等岗位痛点。我们拆解各学段、学科考情，用真实学校管理案例训练你的人岗匹配度，专业导师团直击答题盲区，让你告别“通用模板”，答出岗位专属竞争力！",
+          type: "structured",
+          code: "TEACHER_RECRUITMENT_EXAM",
           icon: "el-icon-user-solid",
-          isForWaiting: false,
+          isForWaiting: false
         },
         {
           id: 5,
-          title: "公务员考试",
-          description:
-            "涵盖全国31省市近5年真题，500+高仿真模拟题，协助考生语言表达训练、应急应变技巧、考官评分视角分析",
+          title: "事业编考试",
+          description:"敬请期待",
           type: "structured",
-          code: "GOV_EXAM",
-          icon: "el-icon-user",
-          isForWaiting: false,
+          code: "GOV_INTERVIEW",
+          icon: "el-icon-user-solid",
+          isForWaiting: false
         },
         {
           id: 6,
-          title: "教师资格证考试",
-          description:
-            "这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述",
+          title: "AI产品经理",
+          description:"敬请期待",
           type: "structured",
+          code: "AI_PRODUCT_MANAGER",
           icon: "el-icon-user-solid",
-          isForWaiting: false,
+          isForWaiting: false
         },
         {
           id: 7,
-          title: "教师资格证考试",
-          description:
-            "这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述",
+          title: "产品运营",
+          description:"敬请期待",
           type: "structured",
+          code: "PRODUCT_OPERATION",
           icon: "el-icon-user-solid",
-          isForWaiting: true,
+          isForWaiting: false
         },
         {
           id: 8,
-          title: "教师资格证考试",
-          description:
-            "这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述",
-          type: "internet",
+          title: "前端开发",
+          description:"敬请期待",
+          type: "structured",
+          code: "FRONTEND_DEVELOPMENT",
           icon: "el-icon-user-solid",
-          isForWaiting: true,
+          isForWaiting: false
         },
+        {
+          id: 9,
+          title: "后端开发",
+          description:"敬请期待",
+          type: "structured",
+          code: "BACKEND_DEVELOPMENT",
+          icon: "el-icon-user-solid",
+          isForWaiting: false
+        },
+        {
+          id: 10,
+          title: "数据科学",
+          description:"敬请期待",
+          type: "structured",
+          code: "DATA_SCIENCE",
+          icon: "el-icon-user-solid",
+          isForWaiting: false
+        }
       ],
       isLoggedIn: false,
       userPhone: "",
@@ -610,7 +626,7 @@ export default {
     getCaptcha() {
       var config = {
         method: "get",
-        url: "https://test.aigcpmer.com/api/auth/captcha",
+        url: "http://localhost:8080/auth/captcha",
         headers: {},
       };
 
@@ -639,7 +655,7 @@ export default {
       if (interview.isForWaiting) {
         return;
       }
-      
+
       // 否则正常导航到面试页面
       this.$router.push({
         name: 'InterviewPracticeTest',
@@ -684,14 +700,14 @@ export default {
 
       var config = {
         method: "get",
-        url: "https://test.aigcpmer.com/api/user/detail",
+        url: "http://localhost:8080/user/detail",
         headers: { Authorization: `Bearer ${token}` },
       };
 
       axios(config)
         .then((response) => {
           console.log('response', response);
-          
+
           if (response.data.code === 200) {
             // console.log(response.data);
             this.coinBalance = response.data.data.coinBalance;
@@ -747,7 +763,7 @@ export default {
           this.loading = true;
           var config = {
             method: "post",
-            url: "https://test.aigcpmer.com/api/auth/login",
+            url: "http://localhost:8080/auth/login",
             headers: {
               "Content-Type": "application/json",
               Accept: "*/*",
@@ -756,7 +772,7 @@ export default {
           };
 
           axios(config)
-            .then((response) => {    
+            .then((response) => {
               if (response.data.code === 200) {
                 this.loading = false;
                 this.isLoggedIn = true;
@@ -838,7 +854,7 @@ export default {
 
           var config = {
             method: "post",
-            url: "https://test.aigcpmer.com/api/auth/sms",
+            url: "http://localhost:8080/auth/sms",
             headers: {
               "Content-Type": "application/json",
             },
@@ -947,7 +963,7 @@ export default {
 
       var config = {
         method: "post",
-        url: "https://test.aigcpmer.com/api/userFeedback/create",
+        url: "http://localhost:8080/userFeedback/create",
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -2108,7 +2124,7 @@ export default {
 }
 
 .star-rating {
-  display: flex; 
+  display: flex;
   justify-content: flex-start !important; /* 让星星从左开始排 */
   gap: 25px; /* 保持原有的间距 */
   margin-bottom: 8px;

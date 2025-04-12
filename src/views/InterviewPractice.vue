@@ -548,7 +548,7 @@ export default {
     const token = localStorage.getItem('token');
     var config = {
       method: 'get',
-      url: 'https://test.aigcpmer.com/api/api/exam/tags',
+      url: 'http://localhost:8080/api/exam/tags',
       headers: { 'Authorization': `Bearer ${token}` }
     };
     axios(config)
@@ -610,7 +610,7 @@ export default {
 
       var config = {
         method: 'post',
-        url: 'https://test.aigcpmer.com/api/userFeedback/create',
+        url: 'http://localhost:8080/userFeedback/create',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -673,7 +673,7 @@ export default {
 
       var config = {
         method: 'get',
-        url: 'https://test.aigcpmer.com/api/api/exam/history',
+        url: 'http://localhost:8080/api/exam/history',
         headers: { 'Authorization': `Bearer ${token}` },
         params: data
       };
@@ -704,7 +704,7 @@ export default {
 
       axios({
         method: 'post',
-        url: 'https://test.aigcpmer.com/api/api/exam/switchQuestionById',
+        url: 'http://localhost:8080/api/exam/switchQuestionById',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
@@ -786,7 +786,7 @@ export default {
     getCaptcha() {
       var config = {
         method: 'get',
-        url: 'https://test.aigcpmer.com/api/auth/captcha',
+        url: 'http://localhost:8080/auth/captcha',
         headers: {}
       };
 
@@ -975,7 +975,7 @@ export default {
 
       axios({
         method: 'post',
-        url: 'https://test.aigcpmer.com/api/api/exam/switch',
+        url: 'http://localhost:8080/api/exam/switch',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
@@ -1026,7 +1026,7 @@ export default {
       };
 
       try {
-        const response = await fetch('https://test.aigcpmer.com/api/api/exam/submit', config);
+        const response = await fetch('http://localhost:8080/api/exam/submit', config);
         if (!response.body) {
           throw new Error('当前浏览器不支持流式响应');
         }
@@ -1167,7 +1167,7 @@ export default {
 
       var config = {
         method: 'get',
-        url: 'https://test.aigcpmer.com/api/user/detail',
+        url: 'http://localhost:8080/user/detail',
         headers: { 'Authorization': `Bearer ${token}` }
       };
 
@@ -1187,7 +1187,7 @@ export default {
           this.loading = true
           var config = {
             method: 'post',
-            url: 'https://test.aigcpmer.com/api/auth/login',
+            url: 'http://localhost:8080/auth/login',
             headers: {
               'Content-Type': 'application/json',
               'Accept': '*/*',
@@ -1241,7 +1241,7 @@ export default {
 
           var config = {
             method: 'post',
-            url: 'https://test.aigcpmer.com/api/auth/sms',
+            url: 'http://localhost:8080/auth/sms',
             headers: {
               'Content-Type': 'application/json'
             },
@@ -1316,7 +1316,7 @@ export default {
         if (!this.isDemoStarted) {
           this.isDemoStarted = true
         }
-        const response = await fetch('https://test.aigcpmer.com/api/api/exam/demoAnswner', config);
+        const response = await fetch('http://localhost:8080/api/exam/demoAnswner', config);
         if (!response.body) {
           throw new Error('当前浏览器不支持流式响应');
         }
