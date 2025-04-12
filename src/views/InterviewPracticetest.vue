@@ -177,14 +177,21 @@
                       </div>
                 </div>
                 <div class="nav-buttons">
-                  <el-button class="square-nav-btn" @click="prevQuestion">
+                  <el-button 
+                    class="square-nav-btn" 
+                    @click="prevQuestion" 
+                    :class="{ 'btn-disabled': currentIndex === 1 }"
+                  >
                     <img src="@/assets/left.png" alt="上一题" class="arrow-icon" />
                   </el-button>
-                  <span>{{ currentIndex < 10 ? '0' + currentIndex : currentIndex }}/{{ totalCount < 10 ? '0' +
-                      totalCount : totalCount }}</span>
-                      <el-button class="square-nav-btn" @click="nextQuestion">
-                        <img src="@/assets/right.png" alt="下一题" class="arrow-icon" />
-                      </el-button>
+                  <span>{{ currentIndex < 10 ? '0' + currentIndex : currentIndex }}/{{ totalCount < 10 ? '0' + totalCount : totalCount }}</span>
+                  <el-button 
+                    class="square-nav-btn" 
+                    @click="nextQuestion" 
+                    :class="{ 'btn-disabled': currentIndex === totalCount }"
+                  >
+                    <img src="@/assets/right.png" alt="下一题" class="arrow-icon" />
+                  </el-button>
                 </div>
               </div>
               <h1 class="question-title">
@@ -243,16 +250,17 @@
                   </div>
                 </div>
 
-                <!-- 录音前的提示 -->
+                <!-- 修改录音提示区域的结构 -->
                 <div class="record-hint" v-if="!isRecording && !hasRecordedContent">
-                  点击录音按钮，开始答题
-
-                  <!-- 录音按钮 - 只在录音前显示 -->
+                  <!-- 录音按钮区域 - 先显示 -->
                   <div class="record-button-wrapper">
                     <div class="mic-circle" @click="toggleRecording">
                       <img src="@/assets/microphone.png" alt="microphone" />
                     </div>
                   </div>
+
+                  <!-- 提示文字 - 放在按钮下面 -->
+                  回答问题，AI点评
                 </div>
 
                 <!-- 录音中或录音后的内容 -->
@@ -266,6 +274,62 @@
                       <p class="paragraph">
                         {{ asrResult }}
                          This is a comprehensive Vue single-file component for an
+                        interview page, handling user authentication, audio
+                        recording, question navigation, feedback dialogs, and
+                        more. Could you let me know what you'd like assistance
+                        with? For example, do you need help debugging an issue,
+                        refactoring the code, or understanding how a specific
+                        part works?
+                        This is a comprehensive Vue single-file component for an
+                        interview page, handling user authentication, audio
+                        recording, question navigation, feedback dialogs, and
+                        more. Could you let me know what you'd like assistance
+                        with? For example, do you need help debugging an issue,
+                        refactoring the code, or understanding how a specific
+                        part works?
+                        This is a comprehensive Vue single-file component for an
+                        interview page, handling user authentication, audio
+                        recording, question navigation, feedback dialogs, and
+                        more. Could you let me know what you'd like assistance
+                        with? For example, do you need help debugging an issue,
+                        refactoring the code, or understanding how a specific
+                        part works?
+                        This is a comprehensive Vue single-file component for an
+                        interview page, handling user authentication, audio
+                        recording, question navigation, feedback dialogs, and
+                        more. Could you let me know what you'd like assistance
+                        with? For example, do you need help debugging an issue,
+                        refactoring the code, or understanding how a specific
+                        part works?
+                        This is a comprehensive Vue single-file component for an
+                        interview page, handling user authentication, audio
+                        recording, question navigation, feedback dialogs, and
+                        more. Could you let me know what you'd like assistance
+                        with? For example, do you need help debugging an issue,
+                        refactoring the code, or understanding how a specific
+                        part works?
+                        This is a comprehensive Vue single-file component for an
+                        interview page, handling user authentication, audio
+                        recording, question navigation, feedback dialogs, and
+                        more. Could you let me know what you'd like assistance
+                        with? For example, do you need help debugging an issue,
+                        refactoring the code, or understanding how a specific
+                        part works?
+                        This is a comprehensive Vue single-file component for an
+                        interview page, handling user authentication, audio
+                        recording, question navigation, feedback dialogs, and
+                        more. Could you let me know what you'd like assistance
+                        with? For example, do you need help debugging an issue,
+                        refactoring the code, or understanding how a specific
+                        part works?
+                        This is a comprehensive Vue single-file component for an
+                        interview page, handling user authentication, audio
+                        recording, question navigation, feedback dialogs, and
+                        more. Could you let me know what you'd like assistance
+                        with? For example, do you need help debugging an issue,
+                        refactoring the code, or understanding how a specific
+                        part works?
+                        This is a comprehensive Vue single-file component for an
                         interview page, handling user authentication, audio
                         recording, question navigation, feedback dialogs, and
                         more. Could you let me know what you'd like assistance
@@ -337,6 +401,29 @@
           <transition name="slide-right">
             <div class="demo-panel" v-show="demoDrawerVisible">
               <div class="demo-drawer-content">
+                <!-- 标题栏始终显示 -->
+                <div class="source-hint-header">
+                  <div class="source-hint-title">示范作答</div>
+                  <div class="source-hint-actions" v-if="isDemoStarted">
+                    <button class="icon-btn" @click.stop="toggleReadDemo">
+                      <i :class="isReading ? 'el-icon-video-pause' : 'el-icon-headset'"></i>
+                      {{ isReading ? "停止" : "朗读" }}
+                    </button>
+                    <button class="icon-btn" @click.stop="startDemo">
+                      <i class="el-icon-refresh"></i> 重试
+                    </button>
+                    <button class="icon-btn" @click.stop="toggleDemoFullscreen">
+                      <i class="el-icon-full-screen"></i> 全屏
+                    </button>
+                    <button class="icon-btn" @click="toggleAn">
+                      <img v-if="isAnVisible" src="@/assets/eyein.png" class="eye-icon" />
+                      <i v-else class="el-icon-view"></i>
+                      {{ isAnVisible ? "隐藏" : "显示" }}
+                    </button>
+                  </div>
+                </div>
+
+                <!-- 根据状态显示不同内容 -->
                 <template v-if="!isDemoStarted">
                   <div class="demo-start-area">
                     <button class="demo-button" @click="startDemo">
@@ -348,30 +435,6 @@
                   </div>
                 </template>
                 <template v-else>
-                  <div class="source-hint-header">
-                    <div class="source-hint-title">示范作答</div>
-                    <div class="source-hint-actions">
-                      <!-- 修改示范作答区域的朗读按钮 -->
-                      <button class="icon-btn" @click.stop="toggleReadDemo">
-                        <i :class="isReading
-                            ? 'el-icon-video-pause'
-                            : 'el-icon-headset'
-                          "></i>
-                        {{ isReading ? "停止" : "朗读" }}
-                      </button>
-                      <button class="icon-btn" @click.stop="startDemo">
-                        <i class="el-icon-refresh"></i> 重试
-                      </button>
-                      <button class="icon-btn" @click.stop="toggleDemoFullscreen">
-                        <i class="el-icon-full-screen"></i> 全屏
-                      </button>
-                      <button class="icon-btn" @click="toggleAn">
-                        <img v-if="isAnVisible" src="@/assets/eyein.png" class="eye-icon" />
-                        <i v-else class="el-icon-view"></i>
-                        {{ isAnVisible ? "隐藏" : "显示" }}
-                      </button>
-                    </div>
-                  </div>
                   <!-- 添加第二个source-hint标题栏 -->
                   <div class="source-hint-header thinking-header">
                     <div class="source-hint-title">
@@ -390,8 +453,7 @@
                       </span>
                     </div>
                   </div>
-                  <div class="demo-content" :class="{ blurred: !isAnVisible }" v-if="true" ref="sourceHint">
-
+                  <div class="demo-content" :class="{ blurred: !isAnVisible }" ref="sourceHint">
                     <div class="content-text">
                       <p class="paragraph model-thinking" v-html="markdownReasonContent"></p>
                       <p class="paragraph" v-html="markdownModelResult"></p>
@@ -408,10 +470,13 @@
       <div class="demo-trigger" :class="{ 'drawer-open': demoDrawerVisible }">
         <div class="demo-trigger-area" @click="toggleDemoDrawer">
           <template v-if="!demoDrawerVisible">
-            <span>示范作答</span>
+            <div class="demo-trigger-content">
+              <span class="demo-text">示范作答</span>
+              <i class="el-icon-arrow-left arrow-icon"></i>
+            </div>
           </template>
           <template v-else>
-            <img src="@/assets/rightarrow.png" class="arrow-icon" alt="右箭头" />
+            <i class="el-icon-arrow-right arrow-icon bold-icon"></i>
           </template>
         </div>
       </div>
@@ -546,14 +611,14 @@
           </el-form-item>
 
           <!-- 注册/登录按钮 -->
-          <el-form-item class="form-item">
+          <el-form-item class="form-item register-form-item">
             <el-button type="primary" class="register-login-btn" :loading="loading" @click="handleLogin">
               注册/登录
             </el-button>
           </el-form-item>
 
           <!-- 取消按钮 -->
-          <el-form-item class="form-item">
+          <el-form-item class="form-item cancel-form-item">
             <el-button class="cancel-btn" @click="handleCloseDialog">取消</el-button>
           </el-form-item>
         </el-form>
@@ -2258,12 +2323,13 @@ export default {
     },
     // 添加重新回答方法
     restartRecording() {
-       this.isAnswerFullscreen =false
+       this.isAnswerFullscreen = false
       // 重置状态
       this.asrResult = "";
       this.aiResponseReasonContent = "";
       this.aiResponseResult = "";
       this.showEvaluationContent = false;
+      this.showEvaluationContentIn = false; // 添加这一行，隐藏作答点评区域
 
       // 开始新的录音
       this.isRecording = true;
@@ -2367,15 +2433,11 @@ export default {
 /* ===== 右侧面板 ===== */
 .demo-panel {
   width: 456px;
-  /* 修改为固定宽度456px */
   max-width: 40%;
-  /* 调整最大宽度比例，确保在小屏幕上不会过宽 */
   background-color: #f5f7fa;
   overflow: hidden;
-  /* 防止内容溢出 */
-  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+  box-shadow: none; /* 移除阴影 */
   position: relative;
-  /* 确保绝对定位的子元素相对于它定位 */
 }
 
 /* 中间内容区，flex:1 撑开 */
@@ -2394,17 +2456,16 @@ export default {
   /* 其他样式略 */
 }
 
-/* 右侧触发按钮（demo-trigger）- 添加过渡效果和位置调整 */
+/* 右侧触发按钮（demo-trigger）- 添加梯形效果和阴影 */
 .demo-trigger {
   position: fixed;
   top: 50%;
   right: 0;
   transform: translateY(-50%);
-  width: 36px;
-  height: 140px;
+  width: 36px;  /* 默认宽度 */
+  height: 140px;  /* 默认高度 */
   background-color: #f5f7fa;
   border: none;
-  /* 移除蓝色边框 */
   border-radius: 4px 0 0 4px;
   display: flex;
   flex-direction: column;
@@ -2414,34 +2475,29 @@ export default {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   z-index: 9;
   transition: right 0.3s ease;
-  /* 添加过渡效果 */
   padding: 0;
   overflow: hidden;
+  clip-path: polygon(0 3%, 100% 0, 100% 100%, 0 97%);
 }
 
-/* 当抽屉打开时，按钮跟随移动 */
+/* 当抽屉打开时的样式 */
 .demo-trigger.drawer-open {
   right: 456px;
-  /* 抽屉宽度，使按钮贴在抽屉左侧 */
+  width: 24px;  /* 展开时的宽度 */
+  height: 70px;  /* 展开时的高度 */
 }
 
 .demo-trigger-area {
-  width: 100%;
-  height: 100%;
-  display: -webkit-box;
-  flex-direction: column;
+  width: 36px;
+  height: 140px;
+  display: flex;
   align-items: center;
   justify-content: center;
-  color: #7b2cf5;
-  transition: all 0.3s;
-  writing-mode: vertical-lr;
-  font-size: 16px;
-  letter-spacing: 2px;
+  padding: 20px 0;
 }
 
 .demo-trigger-area span {
   writing-mode: vertical-lr;
-  transform: rotate(180deg);
   font-weight: 500;
 }
 
@@ -2455,7 +2511,19 @@ export default {
 }
 
 .demo-trigger-area i {
-  display: none;
+  display: inline-block;
+  color: #7b2cf5;
+  font-size: 20px; /* 增大字体大小 */
+  font-weight: bold; /* 加粗 */
+  font-weight: 900; /* 极粗 */
+  -webkit-text-stroke: 0.1px #7b2cf5; /* 添加文字阴影增加粗度感 */
+}
+
+/* 添加特定的粗体图标类 */
+.bold-icon:before {
+  content: "\e6e0"; /* Element UI 右箭头图标的 Unicode */
+  font-weight: 900; /* 极粗 */
+  -webkit-text-stroke: 0.1px #666666; /* 添加描边使图标更粗 */
 }
 
 /* 过渡动画示例，可根据需要自定义 */
@@ -2508,9 +2576,10 @@ export default {
 }
 
 .header {
-  padding: 0px 0;
+  padding: 0;
   background: #fff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: none; /* 移除阴影 */
+  border-bottom: 1px solid #F0F2FA; /* 添加底部边框 */
 }
 
 .header-container {
@@ -2767,19 +2836,21 @@ export default {
 
 .question-box {
   background: #fff;
-  padding: 24px;
-  border: 1px solid #f0f2fa;
+  padding: 24px 32px; /* 修改左右内边距为32px */
+  border-bottom: 1px solid #F0F2FA;
   height: 156px;
 }
 
 .question-title {
-  font-size: 18px;
-  font-weight: 500;
+  font-size: 16px;
+  font-weight: 400;
   margin-top: 0;
   margin-bottom: 0;
   line-height: 1.4;
   max-height: 75px;
   overflow: hidden;
+  font-family: "PingFang SC";
+  color: #111111;
 }
 
 .question-subtitle {
@@ -2808,7 +2879,7 @@ export default {
   background: #fff;
   padding: 20px;
   /* border-radius: 8px; */
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: none;
   height: calc(100vh - 212px);
   display: flex;
   flex-direction: column;
@@ -3053,24 +3124,8 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s;
   position: relative;
-  /* 添加相对定位 */
   box-shadow: none;
-  /* 移除阴影 */
-}
-
-.demo-start-area:hover {
-  background: rgba(0, 0, 0, 0.02);
-  box-shadow: none;
-  /* 确保悬停状态也没有阴影 */
-}
-
-.demo-start-area:active {
-  background: rgba(0, 0, 0, 0.05);
-  box-shadow: none;
-  /* 确保激活状态也没有阴影 */
 }
 
 /* 提示文字样式 */
@@ -3100,7 +3155,7 @@ export default {
   border: none;
   border-radius: 4px;
   font-size: 16px;
-  cursor: pointer;
+  cursor: pointer;  /* 只在按钮上保留手型指针 */
   transition: all 0.3s;
 }
 
@@ -3111,10 +3166,6 @@ export default {
 .demo-start-area:hover .demo-text,
 .demo-start-area:hover .demo-hint {
   color: #409eff;
-}
-
-.demo-start-area:active {
-  background: rgba(0, 0, 0, 0.05);
 }
 
 .demo-text {
@@ -3172,14 +3223,12 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  /* 从顶部开始 */
   padding-top: 0;
-  /* 移除顶部内边距 */
   padding-bottom: 0;
-  /* 移除底部内边距 */
   cursor: pointer;
   color: #606266;
-  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+  box-shadow: none;
+  border-right: 1px solid #F0F2FA; /* 添加右边框 */
 }
 
 /* 添加一个容器来包裹图标和文字，并设置与抽屉头部相同的内边距 */
@@ -3228,19 +3277,48 @@ export default {
   height: 100%;
 }
 
+/* 修改 question-item 样式 */
 .question-item {
   padding: 10px;
   border-bottom: 1px solid #ebeef5;
   cursor: pointer;
   font-size: 14px;
+  position: relative; /* 为 tooltip 定位 */
 }
 
+/* 限制文本显示为2行 */
+.question-item span {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* hover 时显示完整内容 */
+.question-item:hover span {
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 100%;
+  background: white;
+  padding: 10px;
+  border-radius: 4px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  width: 100%;
+  box-sizing: border-box;
+  white-space: normal;
+  word-break: break-all;
+}
+
+/* 保持其他样式不变 */
 .question-item:hover {
   background-color: #f0f2f5;
 }
 
 .question-item.active {
-  background-color: #e6f1fc;
+  background-color: #F7F8F9; 
 }
 
 .dialog-container {
@@ -3363,14 +3441,14 @@ export default {
 
   /* 修改表单项间距 */
   .form-item {
-    margin-bottom: 20px !important;
+    margin-bottom: 24px !important;
     font-family: "PingFang SC", sans-serif;
     font-size: 16px;
   }
 
   /* 特别调整验证码输入框的间距 */
   .captcha-verify {
-    margin-bottom: 20px !important;
+    margin-bottom: 24px !important;
     display: flex;
     align-items: center;
     font-family: "PingFang SC", sans-serif;
@@ -3391,10 +3469,15 @@ export default {
   }
 
   .el-icon-refresh {
-    margin-left: 5px;
+    height: 40px !important; /* 保持容器高度与其他元素一致 */
+    width: 20px !important; /* 设置宽度为20px */
+    margin-left: 8px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important; /* 确保图标居中 */
     cursor: pointer;
     color: #7b2cf5;
-    font-size: 16px;
+    font-size: 20px !important; /* 设置图标大小为20px */
   }
 
   /* 登录和取消按钮 */
@@ -3413,9 +3496,9 @@ export default {
   }
 
   .cancel-btn {
-    background: transparent !important;
-    color: #606266 !important;
-    border: 1px solid #dcdcdc !important;
+    background: #F3F6F8;
+    color: #111111 !important;
+    border: none !important; /* 移除边框 */
   }
 
   :deep(.el-form-item__error) {
@@ -3463,6 +3546,68 @@ export default {
   .send-code-text.disabled {
     color: #909399;
     cursor: not-allowed;
+  }
+
+  .register-form-item {
+    margin-bottom: 12px !important; /* 设置注册按钮的表单项底部间距为12px */
+  }
+
+  .cancel-form-item {
+    margin-bottom: 0 !important; /* 取消按钮的表单项不需要底部间距 */
+  }
+
+  /* 验证码区域容器 */
+  .captcha-verify {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    margin-bottom: 24px !important;
+    justify-content: flex-start !important; /* 确保向左对齐 */
+  }
+
+  /* 验证码区域内所有直接子元素 */
+  .captcha-verify > * {
+    display: inline-flex !important;
+    align-items: center !important;
+    vertical-align: middle;
+  }
+
+  /* 验证码输入框 */
+  .captcha-input {
+    flex: 0 0 134px;
+    width: 134px !important;
+
+    .el-input__inner {
+      height: 40px !important;
+      line-height: 40px !important;
+      padding: 0 15px !important;
+      box-sizing: border-box;
+    }
+  }
+
+  /* 验证码图片 */
+  .captcha-image {
+    width: 148px;
+    height: 40px !important;
+    object-fit: contain;
+    margin-left: 10px; /* 与输入框间距10px */
+  }
+
+  /* 刷新图标 */
+  .el-icon-refresh {
+    height: 40px !important;
+    margin-left: 8px !important; /* 与验证码图片间距8px */
+    display: inline-flex !important;
+    align-items: center !important;
+    cursor: pointer;
+    color: #7b2cf5;
+    font-size: 16px;
+  }
+
+  /* 确保表单项内容没有额外的内边距 */
+  .el-form-item__content {
+    padding: 0 !important;
+    margin: 0 !important;
   }
 }
 
@@ -4776,12 +4921,6 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.demo-drawer-content .demo-start-area:hover {
-  background: rgba(0, 0, 0, 0.02);
 }
 
 .demo-drawer-content .demo-start-area:hover .demo-text,
@@ -4790,7 +4929,7 @@ export default {
 }
 
 .demo-drawer-content .demo-start-area:active {
-  background: rgba(0, 0, 0, 0.05);
+  background: none; /* 移除点击效果 */
 }
 
 .demo-drawer-content .logo {
@@ -5825,9 +5964,9 @@ export default {
 /* 添加自主作答标题样式 */
 .record-header {
   position: absolute;
-  top: 15px;
-  left: 20px;
-  right: 20px;
+  top: 19px;
+  left: 32px;  /* 改为32px */
+  right: 32px; /* 改为32px */
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -5841,7 +5980,6 @@ export default {
   color: #000000;
   display: flex;
   align-items: center;
-  padding-left: 4px; /* 设置自主作答文字左边距为4px跟上面对齐 */
 }
 
 /* 头部操作按钮容器 */
@@ -5866,9 +6004,15 @@ export default {
 
 /* 结束作答按钮样式 */
 .end-record-btn {
+  width: 88px;
+  height: 32px;
+  padding: 0;
   background-color: #7b2cf5;
   color: white;
   border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .end-record-btn:hover {
@@ -5907,11 +6051,13 @@ export default {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 8px 16px;
-  border-radius: 4px;
+  padding: 8px 12px;
+  border-radius: 2px;
   cursor: pointer;
   transition: all 0.3s;
   margin-left: 0px;/* 设置作答点评按钮的左边距为0px */
+  font-size: 16px;
+  font-family: "PingFang SC"!important;
 }
 
 .evaluation-btn:hover {
@@ -5927,7 +6073,7 @@ export default {
 .evaluation-btn .evaluation-icon {
   width: 15px;
   height: 16px;
-  margin-right: 4px;
+  margin-right: 2px;
   vertical-align: middle;
 }
 
@@ -6378,16 +6524,18 @@ export default {
   top: 100%;
   left: 50%;
   transform: translateX(-50%);
-  margin-top: 5px;
   background-color: #fff;
   border-radius: 4px;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-  padding: 10px;
+  padding: 12px;
   width: 200px;
-  font-size: 12px;
+  font-size: 14px;
   color: #606266;
   z-index: 1000;
   display: none;
+  line-height: 20px;
+  font-family: "PingFang SC";
+  font-weight: 400; /* 添加字体粗细 */
 }
 
 .info-icon-wrapper:hover .info-tooltip {
@@ -6828,5 +6976,43 @@ export default {
   margin-bottom: 10px;
 }
 
+/* 新增示范作答触发区域的样式 */
+.demo-trigger-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
 
+.demo-text {
+  font-size: 14px;
+  color: #7b2cf5;
+  letter-spacing: 2px;
+}
+
+.arrow-icon {
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+  color: #7b2cf5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 修改触发区域的样式以适应新的布局 */
+.demo-trigger-area {
+  width: 36px;
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 0;
+}
+
+/* 简化的禁用状态样式 */
+.btn-disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
 </style>
