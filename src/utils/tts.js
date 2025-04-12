@@ -231,7 +231,7 @@ stop() {
 
  async fetchAnswer(questionId) {
       try {
-          const response = await fetch('http://localhost:8080/api/exam/demoAnswner', {
+          const response = await fetch('https://test.aigcpmer.com/api/api/exam/demoAnswner', {
               method: 'POST',
               headers: {
                   'accept': '*/*',

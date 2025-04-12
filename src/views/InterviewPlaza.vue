@@ -16,30 +16,18 @@
                   <img class="icon-img" src="@/assets/all.png" alt="all" />
                   <div class="qr-tooltip">
                     <div class="qr-tooltip-content">
-                      <img
-                        src="@/assets/qr_code.jpg"
-                        alt="QR Code"
-                        class="qr-code-img"
-                      />
+                      <img src="@/assets/qr_code.jpg" alt="QR Code" class="qr-code-img" />
                       <div class="qr-tooltip-text">进群送次数</div>
                     </div>
                   </div>
                 </div>
                 <div class="wallet nav-icon" @click="showRechargeDialog">
-                  <img
-                    class="wallet-icon"
-                    src="@/assets/wallet.png"
-                    alt="wallet"
-                  />
-                  <span
-                    class="balance"
-                    style="
+                  <img class="wallet-icon" src="@/assets/wallet.png" alt="wallet" />
+                  <span class="balance" style="
                       font-size: 14px;
                       color: #111111;
                       font-family: 'Alibaba Sans', sans-serif;
-                    "
-                    >{{ coinBalance }}</span
-                  >
+                    ">{{ coinBalance }}</span>
                 </div>
               </div>
             </template>
@@ -49,50 +37,27 @@
                   <img class="icon-img" src="@/assets/all.png" alt="all" />
                   <div class="qr-tooltip">
                     <div class="qr-tooltip-content">
-                      <img
-                        src="@/assets/qr_code.jpg"
-                        alt="QR Code"
-                        class="qr-code-img"
-                      />
+                      <img src="@/assets/qr_code.jpg" alt="QR Code" class="qr-code-img" />
                       <div class="qr-tooltip-text">进群送次数</div>
                     </div>
                   </div>
                 </div>
-                <img
-                  class="icon-img"
-                  src="@/assets/wallet.png"
-                  alt="wallet"
-                  @click="showRechargeDialog"
-                />
+                <img class="icon-img" src="@/assets/wallet.png" alt="wallet" @click="showRechargeDialog" />
               </div>
             </template>
           </div>
           <div class="user-actions">
             <template v-if="isLoggedIn">
               <img src="@/assets/user.png" class="user-icon" alt="user" />
-              <span
-                class="user-phone"
-                style="
+              <span class="user-phone" style="
                   color: #111111;
                   font-family: 'Alibaba Sans', sans-serif;
                   font-size: 14px;
-                "
-                >{{ maskPhoneNumber }}</span
-              >
-              <img
-                src="@/assets/out.png"
-                class="logout-icon"
-                alt="logout"
-                @click="handleLogout"
-              />
+                ">{{ maskPhoneNumber }}</span>
+              <img src="@/assets/out.png" class="logout-icon" alt="logout" @click="handleLogout" />
             </template>
             <template v-else>
-              <el-button
-                class="login-button"
-                type="primary"
-                @click="showLoginDialog"
-                >登录</el-button
-              >
+              <el-button class="login-button" type="primary" @click="showLoginDialog">登录</el-button>
             </template>
           </div>
         </div>
@@ -100,33 +65,28 @@
     </header>
 
     <!-- 主体内容 -->
-    <div style="margin: 10px 100px; background-color: #ffffff">
+    <div
+      style="    overflow-y: auto;  background-color: #fff;background: linear-gradient(to bottom right, rgba(57, 72, 242, 0.03) 0%, /* #3948F2, 不透明度 100% */ rgba(85, 1, 151, 0.015) 100% /* #550197, 不透明度 50% */);">
       <main class="main-content">
         <h1 class="page-title">面试广场</h1>
 
         <!-- 导航标签 -->
         <div class="tab-container">
-          <span
-            v-for="tab in tabs"
-            :key="tab.value"
-            :class="['tab', { active: activeTab === tab.value }]"
-            @click="activeTab = tab.value"
-          >
+          <span v-for="tab in tabs" :key="tab.value" :class="['tab', { active: activeTab === tab.value }]"
+            @click="activeTab = tab.value">
             {{ tab.label }}
           </span>
         </div>
 
         <!-- 面试卡片列表 -->
         <div class="card-list">
-          <div
-            v-for="(interview, index) in filteredInterviews"
-            :key="index"
-            class="interview-card"
-            @click="goToInterview(interview)"
-          >
+          <div v-for="(interview, index) in filteredInterviews" :key="index" class="interview-card"
+          :class="{ disabled: interview.isForWaiting }"
+            @click="goToInterview(interview)">
             <div class="card-header">
               <div class="card-icon">
-                <i :class="interview.icon" />
+                <!-- <i :class="interview.icon" /> -->
+                <img class="card-icon" :src="interview.image" alt="头像" />
               </div>
               <h3 class="card-title">{{ interview.title }}</h3>
             </div>
@@ -140,27 +100,15 @@
     </div>
 
     <!-- 添加登录弹框 -->
-    <el-dialog
-      :visible.sync="loginDialogVisible"
-      class="dialog-container"
-      width="400px"
-      :show-close="false"
-      :before-close="handleCloseDialog"
-      :close-on-click-modal="false"
-      center
-    >
+    <el-dialog :visible.sync="loginDialogVisible" class="dialog-container" width="400px" :show-close="false"
+      :before-close="handleCloseDialog" :close-on-click-modal="false" center>
       <div class="login-container">
         <!-- LOGO区域 -->
         <div class="login-logo">
           <img src="@/assets/logo1.png" alt="Logo" class="logo-image" />
         </div>
 
-        <el-form
-          ref="loginForm"
-          :model="loginForm"
-          :rules="loginRules"
-          label-width="0"
-        >
+        <el-form ref="loginForm" :model="loginForm" :rules="loginRules" label-width="0">
           <!-- 手机号输入框 -->
           <el-form-item prop="phone" class="form-item">
             <el-input v-model="loginForm.phone" placeholder="手机号" />
@@ -168,11 +116,7 @@
 
           <!-- 图形验证码 -->
           <el-form-item prop="captcha" class="captcha-verify">
-            <el-input
-              v-model="captcha.captchaCode"
-              placeholder="图片验证"
-              class="captcha-input"
-            />
+            <el-input v-model="captcha.captchaCode" placeholder="图片验证" class="captcha-input" />
             <el-image :src="captcha.captchaImg" alt="" class="captcha-image">
               <div slot="placeholder" class="image-slot">
                 加载中<span class="dot">...</span>
@@ -184,16 +128,8 @@
           <!-- 验证码区域 -->
           <el-form-item prop="code" class="form-item">
             <div class="verify-input-wrapper">
-              <el-input
-                v-model="loginForm.code"
-                placeholder="输入验证码"
-                class="verify-input"
-              />
-              <span
-                class="send-code-text"
-                :class="{ disabled: !canSendCode }"
-                @click="sendCode"
-              >
+              <el-input v-model="loginForm.code" placeholder="输入验证码" class="verify-input" />
+              <span class="send-code-text" :class="{ disabled: !canSendCode }" @click="sendCode">
                 {{
                   canSendCode ? "获取短信验证码" : `${countdown}秒后重新发送`
                 }}
@@ -203,34 +139,21 @@
 
           <!-- 注册/登录按钮 -->
           <el-form-item class="form-item">
-            <el-button
-              type="primary"
-              class="register-login-btn"
-              :loading="loading"
-              @click="handleLogin"
-            >
+            <el-button type="primary" class="register-login-btn" :loading="loading" @click="handleLogin">
               注册/登录
             </el-button>
           </el-form-item>
 
           <!-- 取消按钮 -->
           <el-form-item class="form-item">
-            <el-button class="cancel-btn" @click="handleCloseDialog"
-              >取消</el-button
-            >
+            <el-button class="cancel-btn" @click="handleCloseDialog">取消</el-button>
           </el-form-item>
         </el-form>
       </div>
     </el-dialog>
 
     <!-- 添加充值弹窗 -->
-    <el-dialog
-      :visible.sync="rechargeDialogVisible"
-      class="recharge-dialog"
-      width="720px"
-      :show-close="false"
-      center
-    >
+    <el-dialog :visible.sync="rechargeDialogVisible" class="recharge-dialog" width="720px" :show-close="false" center>
       <div class="recharge-container">
         <!-- 顶部用户信息 -->
         <div class="recharge-header">
@@ -249,13 +172,8 @@
 
         <!-- 充值选项 -->
         <div class="recharge-options">
-          <div
-            v-for="(option, index) in rechargeOptions"
-            :key="index"
-            class="recharge-option"
-            :class="{ selected: selectedRechargeOption === index }"
-            @click="selectedRechargeOption = index"
-          >
+          <div v-for="(option, index) in rechargeOptions" :key="index" class="recharge-option"
+            :class="{ selected: selectedRechargeOption === index }" @click="selectedRechargeOption = index">
             <div class="original-price">{{ option.originalPrice }}元</div>
             <div class="discount-price">{{ option.discountPrice }}元</div>
             <div class="points">
@@ -275,33 +193,19 @@
           <div class="payment-right-section">
             <!-- 支付选项 -->
             <div class="payment-options">
-              <div
-                class="payment-option"
-                :class="{ selected: paymentMethod === 'wechat' }"
-                @click="paymentMethod = 'wechat'"
-              >
+              <div class="payment-option" :class="{ selected: paymentMethod === 'wechat' }"
+                @click="paymentMethod = 'wechat'">
                 <label class="radio-label">
-                  <input
-                    type="radio"
-                    name="payment"
-                    :checked="paymentMethod === 'wechat'"
-                  />
+                  <input type="radio" name="payment" :checked="paymentMethod === 'wechat'" />
                   <span class="radio-custom"></span>
                   <img src="@/assets/wechat_pay.png" alt="WeChat Pay" />
                   <span>微信支付</span>
                 </label>
               </div>
-              <div
-                class="payment-option"
-                :class="{ selected: paymentMethod === 'alipay' }"
-                @click="paymentMethod = 'alipay'"
-              >
+              <div class="payment-option" :class="{ selected: paymentMethod === 'alipay' }"
+                @click="paymentMethod = 'alipay'">
                 <label class="radio-label">
-                  <input
-                    type="radio"
-                    name="payment"
-                    :checked="paymentMethod === 'alipay'"
-                  />
+                  <input type="radio" name="payment" :checked="paymentMethod === 'alipay'" />
                   <span class="radio-custom"></span>
                   <img src="@/assets/alipay.png" alt="Alipay" />
                   <span>支付宝支付</span>
@@ -325,12 +229,7 @@
     </el-dialog>
 
     <!-- 添加反馈对话框 -->
-    <el-dialog
-      :visible.sync="feedbackDialogVisible"
-      :show-close="false"
-      class="feedback-dialog"
-      center
-    >
+    <el-dialog :visible.sync="feedbackDialogVisible" :show-close="false" class="feedback-dialog" center>
       <div class="feedback-content">
         <div class="close-btn" @click="closeFeedbackDialog">
           <i class="el-icon-close"></i>
@@ -338,67 +237,38 @@
 
         <h2>言e面试对您的面试有帮助吗?</h2>
         <div class="star-rating">
-          <i
-            class="el-icon-star-off"
-            v-for="i in 5"
-            :key="'help' + i"
-            @click="setHelpRating(i)"
-            :class="{ 'el-icon-star-on': helpRating >= i }"
-          ></i>
+          <i class="el-icon-star-off" v-for="i in 5" :key="'help' + i" @click="setHelpRating(i)"
+            :class="{ 'el-icon-star-on': helpRating >= i }"></i>
         </div>
 
         <h2>言e面试的使用体验好吗?</h2>
         <div class="star-rating">
-          <i
-            class="el-icon-star-off"
-            v-for="i in 5"
-            :key="'use' + i"
-            @click="setUseRating(i)"
-            :class="{ 'el-icon-star-on': useRating >= i }"
-          ></i>
+          <i class="el-icon-star-off" v-for="i in 5" :key="'use' + i" @click="setUseRating(i)"
+            :class="{ 'el-icon-star-on': useRating >= i }"></i>
         </div>
 
         <h2>言e面试的解答是否专业?</h2>
         <div class="star-rating">
-          <i
-            class="el-icon-star-off"
-            v-for="i in 5"
-            :key="'professional' + i"
-            @click="setProfessionalRating(i)"
-            :class="{ 'el-icon-star-on': professionalRating >= i }"
-          ></i>
+          <i class="el-icon-star-off" v-for="i in 5" :key="'professional' + i" @click="setProfessionalRating(i)"
+            :class="{ 'el-icon-star-on': professionalRating >= i }"></i>
         </div>
 
         <h2>言e面试的定价是否合理?</h2>
         <div class="star-rating">
-          <i
-            class="el-icon-star-off"
-            v-for="i in 5"
-            :key="'price' + i"
-            @click="setPriceRating(i)"
-            :class="{ 'el-icon-star-on': priceRating >= i }"
-          ></i>
+          <i class="el-icon-star-off" v-for="i in 5" :key="'price' + i" @click="setPriceRating(i)"
+            :class="{ 'el-icon-star-on': priceRating >= i }"></i>
         </div>
 
         <h2>如果您还有更多想说的，请告诉我:</h2>
-        <el-input
-          type="textarea"
-          :rows="3"
-          v-model="feedbackComment"
-          placeholder="请输入您的反馈意见..."
-        ></el-input>
+        <el-input type="textarea" :rows="3" v-model="feedbackComment" placeholder="请输入您的反馈意见..."></el-input>
 
         <div class="auto-show-option">
           <el-checkbox v-model="notAutoShow">不再展示</el-checkbox>
         </div>
 
         <div class="feedback-btns">
-          <el-button class="cancel-btn" @click="closeFeedbackDialog"
-            >取消</el-button
-          >
-          <el-button type="primary" class="submit-btn" @click="submitFeedback"
-            >提交反馈</el-button
-          >
+          <el-button class="cancel-btn" @click="closeFeedbackDialog">取消</el-button>
+          <el-button type="primary" class="submit-btn" @click="submitFeedback">提交反馈</el-button>
         </div>
       </div>
     </el-dialog>
@@ -412,6 +282,7 @@
 
 <script>
 import axios from "axios";
+import interviews from "@/views/data/interviews.js";
 export default {
   name: "InterviewPlaza",
   data() {
@@ -444,100 +315,7 @@ export default {
         { label: "结构化面试", value: "structured" },
         { label: "互联网面试", value: "internet" },
       ],
-      interviews: [
-        {
-          id: 1,
-          title: "公务员考试",
-          description:
-            "公考考生请注意！从“基层矛盾调解”到“政策落地难点分析”，你的答题需体现政务思维与民生视角。本工具接入最新时政热点题库，AI 考官实时评估你的政治站位、问题拆解深度与对策可行性，助你跳出“空泛表态”，练出“公务员式”精准应答！",
-          type: "structured",
-          code: "GOV_EXAM",
-          icon: "el-icon-user",
-          isForWaiting: false
-        },
-        {
-          id: 2,
-          title: "互联网考试",
-          description: "互联网考试",
-          type: "internet",
-          code: "INTERNET",
-          icon: "el-icon-user-solid",
-          isForWaiting: false
-        },
-        {
-          id: 3,
-          title: "教师资格证考试",
-          description:
-            "准教师们！面对 “课堂突发状况如何处理”、“新课标如何融入教学”等高频考题，本工具提供教育场景 1:1 模拟，实时反馈你的教育理念落地逻辑、师生沟通话术，助你避开“理论脱离实践”误区，让答题既有温度又显专业！",
-          type: "structured",
-          code: "TEACHER_QUALIFICATION_EXAM",
-          icon: "el-icon-user-solid",
-          isForWaiting: false
-        },
-        {
-          id: 4,
-          title: "教师招聘考试",
-          description:"目标明确的未来园丁！招聘考官更关注“如何平衡家校沟通”、“学科特色课程设计”等岗位痛点。我们拆解各学段、学科考情，用真实学校管理案例训练你的人岗匹配度，专业导师团直击答题盲区，让你告别“通用模板”，答出岗位专属竞争力！",
-          type: "structured",
-          code: "TEACHER_RECRUITMENT_EXAM",
-          icon: "el-icon-user-solid",
-          isForWaiting: false
-        },
-        {
-          id: 5,
-          title: "事业编考试",
-          description:"敬请期待",
-          type: "structured",
-          code: "GOV_INTERVIEW",
-          icon: "el-icon-user-solid",
-          isForWaiting: false
-        },
-        {
-          id: 6,
-          title: "AI产品经理",
-          description:"敬请期待",
-          type: "structured",
-          code: "AI_PRODUCT_MANAGER",
-          icon: "el-icon-user-solid",
-          isForWaiting: false
-        },
-        {
-          id: 7,
-          title: "产品运营",
-          description:"敬请期待",
-          type: "structured",
-          code: "PRODUCT_OPERATION",
-          icon: "el-icon-user-solid",
-          isForWaiting: false
-        },
-        {
-          id: 8,
-          title: "前端开发",
-          description:"敬请期待",
-          type: "structured",
-          code: "FRONTEND_DEVELOPMENT",
-          icon: "el-icon-user-solid",
-          isForWaiting: false
-        },
-        {
-          id: 9,
-          title: "后端开发",
-          description:"敬请期待",
-          type: "structured",
-          code: "BACKEND_DEVELOPMENT",
-          icon: "el-icon-user-solid",
-          isForWaiting: false
-        },
-        {
-          id: 10,
-          title: "数据科学",
-          description:"敬请期待",
-          type: "structured",
-          code: "DATA_SCIENCE",
-          icon: "el-icon-user-solid",
-          isForWaiting: false
-        }
-      ],
+      interviews: interviews,
       isLoggedIn: false,
       userPhone: "",
       loginDialogVisible: false,
@@ -626,7 +404,7 @@ export default {
     getCaptcha() {
       var config = {
         method: "get",
-        url: "http://localhost:8080/auth/captcha",
+        url: "https://test.aigcpmer.com/api/auth/captcha",
         headers: {},
       };
 
@@ -686,7 +464,7 @@ export default {
       this.$refs.loginForm.resetFields();
       this.captcha.captchaCode = "";
     },
-    showRechargeDialog() {},
+    showRechargeDialog() { },
     getUserInfo() {
       const userPhone = localStorage.getItem("userPhone");
       const token = localStorage.getItem("token");
@@ -700,7 +478,7 @@ export default {
 
       var config = {
         method: "get",
-        url: "http://localhost:8080/user/detail",
+        url: "https://test.aigcpmer.com/api/user/detail",
         headers: { Authorization: `Bearer ${token}` },
       };
 
@@ -724,17 +502,17 @@ export default {
         })
         .catch((error) => {
           if (error.response) {
-              if (error.response.status === 401) {
-                // 处理 401 错误
-                localStorage.removeItem("userPhone");
-                localStorage.removeItem("token");
-                this.isLoggedIn = false;
-                this.userPhone = "";
-                return;
-              } else if (error.response.data && error.response.data.message) {
-                errorMsg = error.response.data.message;
-              }
+            if (error.response.status === 401) {
+              // 处理 401 错误
+              localStorage.removeItem("userPhone");
+              localStorage.removeItem("token");
+              this.isLoggedIn = false;
+              this.userPhone = "";
+              return;
+            } else if (error.response.data && error.response.data.message) {
+              errorMsg = error.response.data.message;
             }
+          }
           console.log("error", error);
           let errorMsg = false;
           if (
@@ -763,7 +541,7 @@ export default {
           this.loading = true;
           var config = {
             method: "post",
-            url: "http://localhost:8080/auth/login",
+            url: "https://test.aigcpmer.com/api/auth/login",
             headers: {
               "Content-Type": "application/json",
               Accept: "*/*",
@@ -854,7 +632,7 @@ export default {
 
           var config = {
             method: "post",
-            url: "http://localhost:8080/auth/sms",
+            url: "https://test.aigcpmer.com/api/auth/sms",
             headers: {
               "Content-Type": "application/json",
             },
@@ -963,7 +741,7 @@ export default {
 
       var config = {
         method: "post",
-        url: "http://localhost:8080/userFeedback/create",
+        url: "https://test.aigcpmer.com/api/userFeedback/create",
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -1034,11 +812,13 @@ export default {
   padding: 0px 0;
   background: #fff;
   box-shadow: none;
-  border-bottom: 1px solid #f0f0f0; /* 可选：添加一个非常淡的底部边框 */
+  border-bottom: 1px solid #f0f0f0;
+  /* 可选：添加一个非常淡的底部边框 */
 }
 
 .header-container {
-  margin: 16px 24px 16px 24px;
+  height: 56px;
+  margin: 0 24px ;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1354,23 +1134,25 @@ export default {
 }
 
 .main-content {
-  max-width: 1200px;
   margin: 0 auto;
-  padding: 24px;
+  padding:0 84px;
 }
 
 .page-title {
-  font-size: 28px;
+  font-size: 32px;
   font-weight: 500;
-  color: #333;
+  color: #111111;
   text-align: center;
-  margin-bottom: 30px;
+  margin-top: 144px;
+
+  margin-bottom: 50px;
+  font-family: "PingFang SC" !important;
+
 }
 
 .tab-container {
   display: flex;
   justify-content: start;
-  margin-bottom: 30px;
 }
 
 .tab {
@@ -1397,13 +1179,20 @@ export default {
 }
 
 .card-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-  gap: 20px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding-bottom: 200px;
 }
 
 .interview-card {
-  padding-top: 10px;
+  width:300px ;
+  height:152px ;
+
+  margin-top: 40px;
+  margin-right: 24px;
+
   background: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
@@ -1411,11 +1200,13 @@ export default {
   transition: all 0.3s;
   cursor: pointer;
   position: relative;
-  height: 180px;
   display: flex;
   flex-direction: column;
 }
-
+.interview-card.disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
 .forWaiting {
   position: absolute;
   text-align: center;
@@ -1423,7 +1214,8 @@ export default {
   right: 10px;
   width: 32px;
   height: 76px;
-  background: linear-gradient(to bottom, #FFF2E6, #FFE6A3); /* 线性渐变从浅米色到淡黄色 */
+  background: linear-gradient(to bottom, #FFF2E6, #FFE6A3);
+  /* 线性渐变从浅米色到淡黄色 */
   font-size: 12px;
   writing-mode: vertical-lr;
   letter-spacing: 2px;
@@ -1439,10 +1231,12 @@ export default {
   content: "";
   position: absolute;
   top: 0;
-  left: -4px; /* 放在左侧 */
+  left: -4px;
+  /* 放在左侧 */
   width: 4px;
   height: 4px;
-  background-color: #FFF2E6; /* 使用渐变的顶部颜色 */
+  background-color: #FFF2E6;
+  /* 使用渐变的顶部颜色 */
   /* 裁剪出从右上角到左下角的三角形 */
   clip-path: polygon(100% 0, 100% 100%, 0 100%);
 }
@@ -1474,19 +1268,22 @@ export default {
   font-weight: 500;
   color: #7B2CF5;
   margin: 0;
-  position: relative; /* 添加相对定位，作为箭头的参考点 */
+  position: relative;
+  /* 添加相对定位，作为箭头的参考点 */
 }
 
 /* 为没有敬请期待的卡片标题添加箭头 */
 .interview-card:not(:has(.forWaiting)) .card-title::after {
   content: "";
   position: absolute;
-  right: -20px; /* 调整箭头位置 */
+  right: -20px;
+  /* 调整箭头位置 */
   top: 50%;
   transform: translateY(-50%);
   width: 16px;
   height: 16px;
-  background-image: url('~@/assets/arrow-right.png'); /* 添加波浪线前缀 */
+  background-image: url('~@/assets/arrow-right.png');
+  /* 添加波浪线前缀 */
   background-size: contain;
   background-repeat: no-repeat;
 }
@@ -1654,10 +1451,19 @@ export default {
   }
 
   .el-icon-refresh {
-    margin-left: 5px;
+    height: 40px !important;
+    /* 保持容器高度与其他元素一致 */
+    width: 20px !important;
+    /* 设置宽度为20px */
+    margin-left: 8px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    /* 确保图标居中 */
     cursor: pointer;
     color: #7b2cf5;
-    font-size: 16px;
+    font-size: 20px !important;
+    /* 设置图标大小为20px */
   }
 
   /* 登录和取消按钮 */
@@ -1676,9 +1482,11 @@ export default {
   }
 
   .cancel-btn {
-    background: transparent !important;
-    color: #606266 !important;
-    border: 1px solid #dcdcdc !important;
+    background: #F3F6F8;
+    color: #111111 !important;
+    border: none !important;
+    margin-bottom: 32px;
+
   }
 
   :deep(.el-form-item__error) {
@@ -1695,7 +1503,7 @@ export default {
 
   .login-logo {
     width: 480px;
-    height: 120px;
+    height: 100px;
     background: #ffffff;
     display: flex;
     align-items: center;
@@ -1704,9 +1512,11 @@ export default {
     font-weight: bold;
     color: #606266;
   }
+
   .el-form-item__content {
     display: flex;
   }
+
   :deep(.el-form) {
     width: 80% !important;
   }
@@ -2010,7 +1820,7 @@ export default {
   transition: opacity 0.2s;
 }
 
-.radio-label input[type="radio"]:checked + .radio-custom::after {
+.radio-label input[type="radio"]:checked+.radio-custom::after {
   opacity: 1;
 }
 
@@ -2064,7 +1874,7 @@ export default {
   z-index: 2000;
 }
 
-.feedback-dialog >>> .el-dialog {
+.feedback-dialog>>>.el-dialog {
   width: 580px !important;
   height: 720px !important;
   margin: 0 !important;
@@ -2079,12 +1889,12 @@ export default {
   transform: translate(-50%, -50%);
 }
 
-.feedback-dialog >>> .el-dialog__header,
-.feedback-dialog >>> .el-dialog__footer {
+.feedback-dialog>>>.el-dialog__header,
+.feedback-dialog>>>.el-dialog__footer {
   display: none;
 }
 
-.feedback-dialog >>> .el-dialog__body {
+.feedback-dialog>>>.el-dialog__body {
   padding: 0;
   margin: 0;
   width: 100%;
@@ -2118,17 +1928,23 @@ export default {
   font-weight: 500;
   color: #111111;
   margin-bottom: 5px;
-  text-align: left !important; /* 让问题标题靠左对齐 */
-  margin-left: 0; /* 移除可能的左边距 */
-  font-family: "PingFang SC", "Microsoft YaHei", sans-serif !important; /* 设置字体为 PingFang SC */
+  text-align: left !important;
+  /* 让问题标题靠左对齐 */
+  margin-left: 0;
+  /* 移除可能的左边距 */
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif !important;
+  /* 设置字体为 PingFang SC */
 }
 
 .star-rating {
   display: flex;
-  justify-content: flex-start !important; /* 让星星从左开始排 */
-  gap: 25px; /* 保持原有的间距 */
+  justify-content: flex-start !important;
+  /* 让星星从左开始排 */
+  gap: 25px;
+  /* 保持原有的间距 */
   margin-bottom: 8px;
-  margin-left: 0; /* 确保没有左边距 */
+  margin-left: 0;
+  /* 确保没有左边距 */
 }
 
 .star-rating i {
@@ -2150,9 +1966,11 @@ export default {
 .feedback-btns {
   display: flex;
   justify-content: center;
-  gap: 64px; /* 使用 gap 控制按钮间距 */
+  gap: 64px;
+  /* 使用 gap 控制按钮间距 */
   margin-top: 15px;
-  flex-direction: row-reverse; /* 反转按钮顺序 */
+  flex-direction: row-reverse;
+  /* 反转按钮顺序 */
 }
 
 .feedback-btns .cancel-btn,
@@ -2165,9 +1983,12 @@ export default {
 
 .feedback-btns .submit-btn {
   background: #7B2CF5;
-  border-color: #7B2CF5 !important; /* 确保边框颜色与背景一致 */
-  border: none !important; /* 完全移除边框 */
-  margin-left: 0 !important; /* 移除左侧边距 */
+  border-color: #7B2CF5 !important;
+  /* 确保边框颜色与背景一致 */
+  border: none !important;
+  /* 完全移除边框 */
+  margin-left: 0 !important;
+  /* 移除左侧边距 */
 }
 
 .feedback-btns .submit-btn:focus,
@@ -2184,15 +2005,19 @@ export default {
 
 /* 禁用文本域拖动调整大小功能 */
 .el-textarea__inner {
-  resize: none !important; /* 禁止调整大小 */
+  resize: none !important;
+  /* 禁止调整大小 */
 }
 
 /* 修改取消按钮的悬停样式 */
 .feedback-btns .cancel-btn:hover,
 .feedback-btns .cancel-btn:focus {
-  background-color: #f5f7fa !important; /* 浅灰色背景 */
-  color: #606266 !important; /* 保持原有文字颜色 */
-  border-color: #dcdfe6 !important; /* 保持原有边框颜色 */
+  background-color: #f5f7fa !important;
+  /* 浅灰色背景 */
+  color: #606266 !important;
+  /* 保持原有文字颜色 */
+  border-color: #dcdfe6 !important;
+  /* 保持原有边框颜色 */
 }
 
 /* 确保取消按钮的边框样式一致 */
@@ -2201,6 +2026,7 @@ export default {
   color: #606266;
   border: 1px solid #dcdfe6 !important;
 }
+
 /* 悬浮按钮样式 */
 .float-button {
   position: fixed;

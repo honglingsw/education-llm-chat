@@ -147,12 +147,7 @@
                 <span>返回</span>
                 <span class="exam-title">
                   {{
-                    {
-                      GOV_EXAM: "公务员考试",
-                      INTERNET: "互联网考试",
-                      TEACHER_QUALIFICATION_EXAM:"教师资格证考试",
-                      TEACHER_RECRUITMENT_EXAM:"教师招聘考试"
-                    }[examCode] || "考试"
+                    examTitle
                   }}
                 </span>
                 <div class="light-btn" @click.stop="showTips">
@@ -393,7 +388,7 @@
             <div class="demo-drawer-content">
               <!-- 标题栏始终显示 -->
               <div class="source-hint-header">
-                <div class="source-hint-title">示范作答</div>
+                <div class="source-hint-title-demo">示范作答</div>
                 <div class="source-hint-actions" v-if="isDemoStarted">
                   <button class="icon-btn" @click.stop="toggleReadDemo">
                     <i :class="isReading ? 'el-icon-video-pause' : 'el-icon-headset'"></i>
@@ -413,45 +408,41 @@
                 </div>
               </div>
 
-                <!-- 根据状态显示不同内容 -->
-                <template v-if="!isDemoStarted">
-                  <div class="demo-start-area">
-                    <button class="demo-button" @click="handleDemoClick">
-                      查看示范
-                    </button>
-                    <div class="demo-hint-text">
-                      不知道怎么回答？让AI做个示范
-                    </div>
+              <!-- 根据状态显示不同内容 -->
+              <template v-if="!isDemoStarted">
+                <div class="demo-start-area">
+                  <button class="demo-button" @click="handleDemoClick">
+                    查看示范
+                  </button>
+                  <div class="demo-hint-text">
+                    不知道怎么回答？让AI做个示范
                   </div>
-                </template>
-                <template v-else>
-                  <!-- 添加第二个source-hint标题栏 -->
-                  <div class="source-hint-header thinking-header">
-                    <div class="source-hint-title">
-                      <span class="deepseek-text">以下内容来自DeepSeek-RI-YanYi-36B-ST</span>
-                      <span class="info-icon-wrapper">
-                        <img
-                          src="@/assets/question.png"
-                          class="info-icon"
-                          v-popover:popover
-                          style="width: 16px; height: 16px;"
-                        />
-                        <div class="info-tooltip">
-                          DeepSeek-RI-YanYi-36B-ST 是基于 DeepSeek-R1
-                          大规模语言模型微调而成的专用模型，专注于高效解答结构化面试题。该模型通过海量知名机构的标准面试题目及高质量答案进行精细化训练，具备卓越的逻辑推理、问题拆解和答案生成能力。
-                        </div>
-                      </span>
-                    </div>
+                </div>
+              </template>
+              <template v-else>
+                <!-- 添加第二个source-hint标题栏 -->
+                <div class="source-hint-header thinking-header">
+                  <div class="source-hint-title">
+                    <span class="deepseek-text">以下内容来自DeepSeek-RI-YanYi-36B-ST</span>
+                    <span class="info-icon-wrapper">
+                      <img src="@/assets/question.png" class="info-icon" v-popover:popover
+                        style="width: 16px; height: 16px;" />
+                      <div class="info-tooltip">
+                        DeepSeek-RI-YanYi-36B-ST 是基于 DeepSeek-R1
+                        大规模语言模型微调而成的专用模型，专注于高效解答结构化面试题。该模型通过海量知名机构的标准面试题目及高质量答案进行精细化训练，具备卓越的逻辑推理、问题拆解和答案生成能力。
+                      </div>
+                    </span>
                   </div>
-                  <div class="demo-content" :class="{ blurred: !isAnVisible }" ref="sourceHint">
-                    <div class="content-text">
-                      <p class="paragraph model-thinking" v-html="markdownReasonContent"></p>
-                      <p class="paragraph" v-html="markdownModelResult"></p>
-                    </div>
+                </div>
+                <div class="demo-content" :class="{ blurred: !isAnVisible }" ref="sourceHint">
+                  <div class="content-text">
+                    <p class="paragraph model-thinking" v-html="markdownReasonContent"></p>
+                    <p class="paragraph" v-html="markdownModelResult"></p>
                   </div>
-                </template>
-              </div>
+                </div>
+              </template>
             </div>
+          </div>
           </transition>
         </div>
       </main>
@@ -478,7 +469,7 @@
       <div class="welcome-content">
         <!-- 提示内容 -->
         <h1 class="welcome-title">欢迎使用结构化面试陪练助手！</h1>
-        <p class="user-greeting">亲爱的考生：</p>
+        <p class="intro-text">亲爱的考生：</p>
         <p class="intro-text">
           感谢您对我们产品的信任！在这里，我们将为您简单介绍当前工具的使用场景及特色功能：
         </p>
@@ -723,11 +714,11 @@
             <!-- 示范作答全屏内容 -->
             <div class="fullscreen-demo-column">
 
-              <div class="column-content" :class="{ blurred: !isAnVisible }">
-                <span class="gradient-text">作答点评如下:</span>
-                <p class="paragraph model-thinking" v-html="markdownReason"></p>
-                <p class="paragraph" v-html="markdownResult"></p>
-                
+              <div class="column-content">
+
+                <p class="paragraph model-thinking" v-html="markdownReasonContent"></p>
+                <p class="paragraph" v-html="markdownModelResult"></p>
+
               </div>
             </div>
           </div>
@@ -780,6 +771,8 @@ import axios from "axios";
 import ASRClient from "@/utils/asr";
 import { stream } from "xlsx";
 import { marked } from "marked";
+import interviews from "@/views/data/interviews.js";
+
 export default {
   data() {
     // 自定义手机号验证规则
@@ -810,6 +803,7 @@ export default {
       drawerVisible: false,
       demoDrawerVisible: false,
       isRecording: false,
+      interviews: interviews,
       loginDialogVisible: false,
       loading: false,
       token: "",
@@ -931,7 +925,11 @@ export default {
     },
     markdownModelResult() {
       return marked(this.modelResult || "");
-    },
+    }, examTitle() {
+      const exam = this.interviews.find(item => item.code === this.examCode);
+      // 这里可以选择返回记录的 title 或自己定义的映射值
+      return exam ? exam.title : "考试";
+    }
   },
   mounted() {
     this.examCode = this.getExamCode();
@@ -946,7 +944,7 @@ export default {
 
     // var config = {
     //   method: "get",
-    //   url: "http://localhost:8080/api/exam/tags",
+    //   url: "https://test.aigcpmer.com/api/api/exam/tags",
     //   headers: { Authorization: `Bearer ${token}` },
     // };
     // axios(config)
@@ -1062,7 +1060,7 @@ export default {
 
       var config = {
         method: "post",
-        url: "http://localhost:8080/userFeedback/create",
+        url: "https://test.aigcpmer.com/api/userFeedback/create",
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -1161,7 +1159,7 @@ export default {
 
       var config = {
         method: "get",
-        url: "http://localhost:8080/api/exam/history",
+        url: "https://test.aigcpmer.com/api/api/exam/history",
         headers: { Authorization: `Bearer ${token}` },
         params: data,
       };
@@ -1261,7 +1259,7 @@ export default {
 
       axios({
         method: "post",
-        url: "http://localhost:8080/api/exam/switchQuestionById",
+        url: "https://test.aigcpmer.com/api/api/exam/switchQuestionById",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -1314,7 +1312,7 @@ export default {
     getCaptcha() {
       var config = {
         method: "get",
-        url: "http://localhost:8080/auth/captcha",
+        url: "https://test.aigcpmer.com/api/auth/captcha",
         headers: {},
       };
 
@@ -1365,7 +1363,7 @@ export default {
       // console.log(startBtn, stopBtn, resultDiv, statusDiv);
 
       // 创建ASR客户端
-      this.asrClient = new ASRClient("wss://test.aigcpmer.com/asr/ws");
+      this.asrClient = new ASRClient("wss://test.aigcpmer.com/api/asr/ws");
 
       // 设置回调函数
       this.asrClient.setCallbacks({
@@ -1453,7 +1451,7 @@ export default {
 
       // 如果ASR客户端不存在或已断开连接，重新创建并连接
       if (!this.asrClient) {
-        this.asrClient = new ASRClient("wss://test.aigcpmer.com/asr/ws");
+        this.asrClient = new ASRClient("wss://test.aigcpmer.com/api/asr/ws");
 
         // 设置回调函数
         this.asrClient.setCallbacks({
@@ -1516,19 +1514,19 @@ export default {
     async saveUserContent() {
       try {
         const token = localStorage.getItem("token"); // 获取token，根据你的实际存储方式调整
-        const response = await fetch("http://localhost:8080/api/exam/saveUserContent",
+        const response = await fetch("https://test.aigcpmer.com/api/api/exam/saveUserContent",
           {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "*/*",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            questionId: this.questionContent.questionId,
-            submitContent: this.asrResult,
-          }),
-        });
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "*/*",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              questionId: this.questionContent.questionId,
+              submitContent: this.asrResult,
+            }),
+          });
 
         const result = await response.json();
         if (result.code === 200) {
@@ -1554,7 +1552,7 @@ export default {
       this.hasRecordedContent = true;
       this.showEvaluationContent = false;
       // 保存用户作答信息
-      if(needSave){
+      if (needSave) {
         this.saveUserContent();
       }
       debugger
@@ -1681,7 +1679,7 @@ export default {
 
       axios({
         method: "post",
-        url: "http://localhost:8080/api/exam/switch",
+        url: "https://test.aigcpmer.com/api/api/exam/switch",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -1755,7 +1753,7 @@ export default {
 
       try {
         const response = await fetch(
-          "http://localhost:8080/api/exam/submit",
+          "https://test.aigcpmer.com/api/api/exam/submit",
           config
         );
         if (!response.body) {
@@ -1916,7 +1914,7 @@ export default {
       const token = localStorage.getItem("token");
       var config = {
         method: "get",
-        url: "http://localhost:8080/user/detail",
+        url: "https://test.aigcpmer.com/api/user/detail",
         headers: { Authorization: `Bearer ${token}` },
       };
       debugger;
@@ -1958,7 +1956,7 @@ export default {
           this.loading = true;
           var config = {
             method: "post",
-            url: "http://localhost:8080/auth/login",
+            url: "https://test.aigcpmer.com/api/auth/login",
             headers: {
               "Content-Type": "application/json",
               Accept: "*/*",
@@ -2056,7 +2054,7 @@ export default {
 
           var config = {
             method: "post",
-            url: "http://localhost:8080/auth/sms",
+            url: "https://test.aigcpmer.com/api/auth/sms",
             headers: {
               "Content-Type": "application/json",
             },
@@ -2141,10 +2139,10 @@ export default {
       }
     },
     handleDemoClick() {
-      console.log("测试",this.modelResult)
+      console.log("测试", this.modelResult)
       if (!this.modelResult) {
         this.startDemo()
-      } else{
+      } else {
         this.isDemoStarted = true
       }
     },
@@ -2168,7 +2166,7 @@ export default {
           this.isDemoStarted = true;
         }
         const response = await fetch(
-          "http://localhost:8080/api/exam/demoAnswner",
+          "https://test.aigcpmer.com/api/api/exam/demoAnswner",
           config
         );
         console.log("demoAnswner", response);
@@ -2200,13 +2198,13 @@ export default {
         const reader = response.body.getReader();
         const decoder = new TextDecoder("utf-8");
         let done = false;
-       this.isAnVisible = true
+        this.isAnVisible = true
 
         this.reasonContent = "";
         this.modelResult = "";
         let partialData = "";
         console.log(`开始处理${now.toLocaleTimeString()}`);
-        while (!done&& !this.abortStream) {
+        while (!done && !this.abortStream) {
           const { value, done: streamDone } = await reader.read();
           done = streamDone;
 
@@ -2287,7 +2285,7 @@ export default {
         return
       }
       this.abortStream = true;
-   
+
       if (this.currentIndex > 1) {
         this.changeQuestion(-1);
       }
@@ -2299,7 +2297,7 @@ export default {
 
       }
       this.abortStream = true;
-   
+
       if (this.currentIndex < this.totalCount) {
         this.changeQuestion(1);
       }
@@ -2455,7 +2453,32 @@ export default {
   },
 };
 </script>
+<style>
+/* 整体滚动条宽度 */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
 
+/* 滚动条轨道 */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 6px;
+}
+
+/* 滚动条滑块 */
+::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 6px;
+  border: 3px solid #f1f1f1;
+  transform: translateX(-3px);
+}
+
+/* 鼠标悬停时 */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+</style>
 <style scoped>
 /* 外层容器：左右中三栏布局 */
 /* 外层容器：左右中三栏布局 */
@@ -2518,7 +2541,11 @@ export default {
   /* 默认宽度 */
   height: 140px;
   /* 默认高度 */
-  background-color: #f5f7fa;
+  background: linear-gradient(
+    to bottom right,
+    rgba(57, 72, 242, 0.03) 0%,
+    rgba(85, 1, 151, 0.015) 100%
+  );
   border: none;
   border-radius: 4px 0 0 4px;
   display: flex;
@@ -2648,7 +2675,8 @@ export default {
 }
 
 .header-container {
-  margin: 16px 24px 16px 24px;
+  height: 56px;
+  margin: 0 24px ;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -3347,8 +3375,8 @@ export default {
 
 /* 修改 question-item 样式 */
 .question-item {
-  padding: 10px;
-  border-bottom: 1px solid #ebeef5;
+  padding: 12px;
+  /* border-bottom: 1px solid #ebeef5; */
   cursor: pointer;
   font-size: 14px;
   position: relative;
@@ -3370,16 +3398,18 @@ export default {
 /* hover 时显示完整内容 */
 .question-item:hover .question-text {
   display: block;
-  position: absolute;
+  /* position: absolute; */
   left: 0;
   top: 100%;
   background: white;
+  color: #7B2CF5;
+
   padding: 10px;
   border-radius: 4px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1); */
   z-index: 10;
   width: 100%;
-  box-sizing: border-box;
+  /* box-sizing: border-box; */
   white-space: normal;
   word-break: break-all;
 }
@@ -3600,6 +3630,7 @@ export default {
     background: #F3F6F8;
     color: #111111 !important;
     border: none !important;
+    margin-bottom: 12px;
     /* 移除边框 */
   }
 
@@ -3933,6 +3964,10 @@ export default {
   margin-bottom: 20px;
   margin-top: 0px;
   text-indent: 2em;
+  color: #111111;
+  font-size: 16px;
+  font-weight: 400;
+  font-family: "PingFang SC" !important;
 }
 
 .section {
@@ -3959,6 +3994,15 @@ export default {
   color: #ffffff;
   /* 白色文本，提高在紫色背景上的可读性 */
 }
+
+.source-hint-title-demo {
+  font-size: 20px;
+  font-weight: 500;
+  font-family: "PingFang SC" !important;
+  color: #000000;
+  /* 白色文本，提高在紫色背景上的可读性 */
+}
+
 
 .source-hint-actions {
   display: flex;
@@ -4029,7 +4073,10 @@ export default {
 }
 
 .model-thinking {
-  color: #909399;
+  color: #999999;
+  font-size: 16px;
+  font-weight: 400;
+  font-family: "PingFang SC" !important;
   /* 使用浅灰色 */
 }
 
@@ -4415,11 +4462,13 @@ export default {
 }
 
 .welcome-title {
-  font-size: 32px;
-  font-weight: bold;
+  font-size: 20px !important;
+  font-weight: 500 !important;
   text-align: center;
-  margin-top: 10px;
-  margin-bottom: 40px;
+  margin-top: 20px;
+  margin-bottom: 20px !important;
+  font-family: "PingFang SC" !important;
+
 }
 
 .user-greeting {
@@ -4427,6 +4476,14 @@ export default {
   margin-left: 40px;
   margin-bottom: 30px;
   font-weight: normal;
+}
+
+.intro-text {
+  font-size: 14px;
+  font-weight: 400;
+  font-family: "PingFang SC" !important;
+  color: #111111;
+
 }
 
 .intro-text,
@@ -4473,13 +4530,13 @@ export default {
   width: 100%;
   display: flex;
   justify-content: center;
-  margin-top: auto;
-  margin-bottom: 40px;
+  padding-top: 24px;
+  padding-bottom: 32px;
 }
 
 .confirm-btn {
-  width: 150px;
-  height: 46px;
+  width: 128px;
+  height: 40px;
   background-color: #7b2cf5;
   color: white;
   border: none;
@@ -4605,19 +4662,30 @@ export default {
 .feedback-btns {
   display: flex;
   justify-content: center;
-  gap: 64px;
+  gap: 24px;
   /* 使用 gap 控制按钮间距 */
   margin-top: 15px;
   flex-direction: row-reverse;
   /* 反转按钮顺序 */
 }
 
-.feedback-btns .cancel-btn,
 .feedback-btns .submit-btn {
   width: 198px;
   height: 42px;
   border-radius: 4px;
   font-size: 16px;
+  background: #F3F6F8;
+  border: none;
+}
+
+.feedback-btns .cancel-btn {
+  width: 198px;
+  height: 42px;
+  border-radius: 4px;
+  font-size: 16px;
+  background: #F3F6F8;
+  border: none;
+  color: #111111;
 }
 
 .feedback-btns .submit-btn {
@@ -4867,7 +4935,7 @@ export default {
   font-size: 18px;
   font-weight: 500;
   color: #303133;
-  width: 90px;
+  width: AUTO;
   height: 24px;
   display: flex;
   align-items: center;
@@ -4950,7 +5018,7 @@ export default {
   left: 15%;
   width: 70%;
   border-radius: 12px;
-  height: 80%;
+  height: 80vh;
   align-items: center;
   justify-content: center;
   z-index: 2000;
@@ -6328,9 +6396,11 @@ export default {
 }
 
 .fullscreen-title {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 500;
-  color: #303133;
+  font-family: "PingFang SC" !important;
+  color: #000000;
+  
   /* 改为深色文本，适合白色背景 */
 }
 
@@ -6384,11 +6454,11 @@ export default {
 /* 栏目内容 */
 .column-content {
   flex: 1;
-  padding: 16px;
+  padding: 16px 32px;
   overflow-y: auto;
   font-size: 16px;
   line-height: 1.8;
-  white-space: pre-wrap;
+
 }
 
 /* 点评内容样式 */
@@ -6412,6 +6482,7 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  height: 48px;
   padding: 12px 16px;
 }
 
@@ -6423,7 +6494,6 @@ export default {
 
 .source-hint-actions {
   display: flex;
-  gap: 10px;
   align-items: center;
 }
 
@@ -6520,7 +6590,7 @@ export default {
   color: #7b2cf5;
   font-size: 14px;
   padding: 0;
-  margin-left: 20px;
+  margin-left: 12px !important;
   cursor: pointer;
   transition: all 0.3s;
   font-weight: normal;
@@ -6959,6 +7029,7 @@ export default {
   display: flex;
   flex-direction: column;
   max-width: 100%;
+  height: 80vh;
   /* 确保内容不会超出对话框宽度 */
 }
 
@@ -7112,7 +7183,7 @@ export default {
   flex-direction: column;
   align-items: center;
   gap: 8px;
-
+ 
 }
 
 .demo-text {
