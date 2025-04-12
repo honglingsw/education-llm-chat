@@ -1210,6 +1210,8 @@ export default {
       this.isAnVisible = !this.isAnVisible;
     },
     dealisANSWERED(data) {
+      this.isDemoStarted = false
+
       console.log(data);
       // 更新题目内容对象
       this.questionContent = {
@@ -1235,8 +1237,9 @@ export default {
       this.currentIndex = data.currentIndex;
       this.reasonContent = data.demoReasonContent;
       this.modelResult = data.demoAnswerResult
-
+      debugger
       if (data.demoReasonContent && data.demoAnswerResult) {
+        debugger
         this.isDemoStarted = true
         this.isAnVisible = false
       }
