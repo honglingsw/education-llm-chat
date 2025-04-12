@@ -90,16 +90,16 @@
                       'question-item',
                       { active: currentQuestionIndex === i },
                     ]">
-                    <span>
+                    <span class="question-text">
                       <span v-if="
                         item.state === 'ANSWERED' || item.state === 'VIEWED'
                       " :class="[
-                          'question-item-status',
-                          {
-                            'item-status-answered': item.state === 'ANSWERED',
-                            'item-status-viewed': item.state === 'VIEWED',
-                          },
-                        ]">
+                        'question-item-status',
+                        {
+                          'item-status-answered': item.state === 'ANSWERED',
+                          'item-status-viewed': item.state === 'VIEWED',
+                        },
+                      ]">
                         {{ item.state === "ANSWERED" ? "已作答" : "已阅读" }}
                       </span>
                       {{ (i + 1) < 10 ? '0' + (i + 1) : (i + 1) }}. {{ item.questionContent }} （{{ item.examTime }} {{
@@ -164,11 +164,11 @@
                         questionContent.questionStateEnum === 'ANSWERED' ||
                         questionContent.questionStateEnum === 'VIEWED'
                       " :class="{
-                      'status-answered':
-                        questionContent.questionStateEnum === 'ANSWERED',
-                      'status-viewed':
-                        questionContent.questionStateEnum === 'VIEWED',
-                    }">
+                        'status-answered':
+                          questionContent.questionStateEnum === 'ANSWERED',
+                        'status-viewed':
+                          questionContent.questionStateEnum === 'VIEWED',
+                      }">
                         {{
                           questionContent.questionStateEnum === "ANSWERED"
                             ? "已作答"
@@ -177,21 +177,16 @@
                       </div>
                 </div>
                 <div class="nav-buttons">
-                  <el-button 
-                    class="square-nav-btn" 
-                    @click="prevQuestion" 
-                    :class="{ 'btn-disabled': currentIndex === 1 }"
-                  >
+                  <el-button class="square-nav-btn" @click="prevQuestion"
+                    :class="{ 'btn-disabled': currentIndex === 1 }">
                     <img src="@/assets/left.png" alt="上一题" class="arrow-icon" />
                   </el-button>
-                  <span>{{ currentIndex < 10 ? '0' + currentIndex : currentIndex }}/{{ totalCount < 10 ? '0' + totalCount : totalCount }}</span>
-                  <el-button 
-                    class="square-nav-btn" 
-                    @click="nextQuestion" 
-                    :class="{ 'btn-disabled': currentIndex === totalCount }"
-                  >
-                    <img src="@/assets/right.png" alt="下一题" class="arrow-icon" />
-                  </el-button>
+                  <span>{{ currentIndex < 10 ? '0' + currentIndex : currentIndex }}/{{ totalCount < 10 ? '0' +
+                    totalCount : totalCount }}</span>
+                      <el-button class="square-nav-btn" @click="nextQuestion"
+                        :class="{ 'btn-disabled': currentIndex === totalCount }">
+                        <img src="@/assets/right.png" alt="下一题" class="arrow-icon" />
+                      </el-button>
                 </div>
               </div>
               <h1 class="question-title">
@@ -273,13 +268,6 @@
                     ]">
                       <p class="paragraph">
                         {{ asrResult }}
-                         This is a comprehensive Vue single-file component for an
-                        interview page, handling user authentication, audio
-                        recording, question navigation, feedback dialogs, and
-                        more. Could you let me know what you'd like assistance
-                        with? For example, do you need help debugging an issue,
-                        refactoring the code, or understanding how a specific
-                        part works?
                         This is a comprehensive Vue single-file component for an
                         interview page, handling user authentication, audio
                         recording, question navigation, feedback dialogs, and
@@ -398,71 +386,67 @@
               </div>
             </div>
           </main>
-          <transition name="slide-right">
-            <div class="demo-panel" v-show="demoDrawerVisible">
-              <div class="demo-drawer-content">
-                <!-- 标题栏始终显示 -->
-                <div class="source-hint-header">
-                  <div class="source-hint-title">示范作答</div>
-                  <div class="source-hint-actions" v-if="isDemoStarted">
-                    <button class="icon-btn" @click.stop="toggleReadDemo">
-                      <i :class="isReading ? 'el-icon-video-pause' : 'el-icon-headset'"></i>
-                      {{ isReading ? "停止" : "朗读" }}
-                    </button>
-                    <button class="icon-btn" @click.stop="startDemo">
-                      <i class="el-icon-refresh"></i> 重试
-                    </button>
-                    <button class="icon-btn" @click.stop="toggleDemoFullscreen">
-                      <i class="el-icon-full-screen"></i> 全屏
-                    </button>
-                    <button class="icon-btn" @click="toggleAn">
-                      <img v-if="isAnVisible" src="@/assets/eyein.png" class="eye-icon" />
-                      <i v-else class="el-icon-view"></i>
-                      {{ isAnVisible ? "隐藏" : "显示" }}
-                    </button>
+          <!-- <transition name="slide-right"> -->
+          <div class="demo-panel" v-show="demoDrawerVisible">
+            <div class="demo-drawer-content">
+              <!-- 标题栏始终显示 -->
+              <div class="source-hint-header">
+                <div class="source-hint-title">示范作答</div>
+                <div class="source-hint-actions" v-if="isDemoStarted">
+                  <button class="icon-btn" @click.stop="toggleReadDemo">
+                    <i :class="isReading ? 'el-icon-video-pause' : 'el-icon-headset'"></i>
+                    {{ isReading ? "停止" : "朗读" }}
+                  </button>
+                  <button class="icon-btn" @click.stop="startDemo">
+                    <i class="el-icon-refresh"></i> 重试
+                  </button>
+                  <button class="icon-btn" @click.stop="toggleDemoFullscreen">
+                    <i class="el-icon-full-screen"></i> 全屏
+                  </button>
+                  <button class="icon-btn" @click="toggleAn">
+                    <img v-if="isAnVisible" src="@/assets/eyein.png" class="eye-icon" />
+                    <i v-else class="el-icon-view"></i>
+                    {{ isAnVisible ? "隐藏" : "显示" }}
+                  </button>
+                </div>
+              </div>
+
+              <!-- 根据状态显示不同内容 -->
+              <template v-if="!isDemoStarted">
+                <div class="demo-start-area">
+                  <button class="demo-button" @click="startDemo">
+                    查看示范
+                  </button>
+                  <div class="demo-hint-text">
+                    不知道怎么回答？让AI做个示范
                   </div>
                 </div>
-
-                <!-- 根据状态显示不同内容 -->
-                <template v-if="!isDemoStarted">
-                  <div class="demo-start-area">
-                    <button class="demo-button" @click="startDemo">
-                      查看示范
-                    </button>
-                    <div class="demo-hint-text">
-                      不知道怎么回答？让AI做个示范
-                    </div>
+              </template>
+              <template v-else>
+                <!-- 添加第二个source-hint标题栏 -->
+                <div class="source-hint-header thinking-header">
+                  <div class="source-hint-title">
+                    <span class="deepseek-text">以下内容来自DeepSeek-RI-YanYi-36B-ST</span>
+                    <span class="info-icon-wrapper">
+                      <img src="@/assets/question.png" class="info-icon" v-popover:popover
+                        style="width: 16px; height: 16px;" />
+                      <div class="info-tooltip">
+                        DeepSeek-RI-YanYi-36B-ST 是基于 DeepSeek-R1
+                        大规模语言模型微调而成的专用模型，专注于高效解答结构化面试题。该模型通过海量知名机构的标准面试题目及高质量答案进行精细化训练，具备卓越的逻辑推理、问题拆解和答案生成能力。
+                      </div>
+                    </span>
                   </div>
-                </template>
-                <template v-else>
-                  <!-- 添加第二个source-hint标题栏 -->
-                  <div class="source-hint-header thinking-header">
-                    <div class="source-hint-title">
-                      <span class="deepseek-text">以下内容来自DeepSeek-RI-YanYi-36B-ST</span>
-                      <span class="info-icon-wrapper">
-                        <img 
-                          src="@/assets/question.png" 
-                          class="info-icon" 
-                          v-popover:popover
-                          style="width: 16px; height: 16px;"
-                        />
-                        <div class="info-tooltip">
-                          DeepSeek-RI-YanYi-36B-ST 是基于 DeepSeek-R1
-                          大规模语言模型微调而成的专用模型，专注于高效解答结构化面试题。该模型通过海量知名机构的标准面试题目及高质量答案进行精细化训练，具备卓越的逻辑推理、问题拆解和答案生成能力。
-                        </div>
-                      </span>
-                    </div>
+                </div>
+                <div class="demo-content" :class="{ blurred: !isAnVisible }" ref="sourceHint">
+                  <div class="content-text">
+                    <p class="paragraph model-thinking" v-html="markdownReasonContent"></p>
+                    <p class="paragraph" v-html="markdownModelResult"></p>
                   </div>
-                  <div class="demo-content" :class="{ blurred: !isAnVisible }" ref="sourceHint">
-                    <div class="content-text">
-                      <p class="paragraph model-thinking" v-html="markdownReasonContent"></p>
-                      <p class="paragraph" v-html="markdownModelResult"></p>
-                    </div>
-                  </div>
-                </template>
-              </div>
+                </div>
+              </template>
             </div>
-          </transition>
+          </div>
+          <!-- </transition> -->
         </div>
       </main>
 
@@ -486,8 +470,42 @@
     <el-dialog :visible.sync="messageDialogVisible" :show-close="false" :close-on-click-modal="false"
       class="welcome-dialog">
       <div class="welcome-content">
-        <div v-html="Tipsontent"></div>
+        <!-- 提示内容 -->
+        <h1 class="welcome-title">欢迎使用结构化面试陪练助手！</h1>
+        <p class="user-greeting">亲爱的考生：</p>
+        <p class="intro-text">
+          感谢您对我们产品的信任！在这里，我们将为您简单介绍当前工具的使用场景及特色功能：
+        </p>
+        <p class="intro-text">
+          结构化面试是当前公务员/事业编考试中，最常见的面试手段，它具备标准化的特点，考试形式是问答式，存在评分维度；根据过往经验，我们将结构化面试分为了5个维度，分别是：
+        </p>
+        <ol>
+          <li>综合分析能力：考察考生对问题的理解和分析能力。</li>
+          <li>言语表达能力：考察考生的语言组织和表达能力。</li>
+          <li>应变能力：考察考生在面对突发情况时的应对能力。</li>
+          <li>计划组织协调能力：考察考生的计划、组织和协调能力。</li>
+          <li>人际交往意识与技巧：考察考生的人际交往能力和技巧。</li>
+        </ol>
+        <p class="intro-text">
+          在结构化面试陪练助手中，基于国内顶尖的人工智能基础设施，我们为您准备了以下的特色功能：
+        </p>
+        <ul>
+          <li>智能模拟面试：提供真实的面试环境，帮助考生适应面试氛围。</li>
+          <li>个性化反馈：根据考生的表现提供针对性的改进建议。</li>
+          <li>海量题库：包含各类面试题目，覆盖不同领域和难度。</li>
+          <li>实时评分：模拟真实面试评分标准，给出即时反馈。</li>
+          <li>多轮练习：支持多次练习，逐步提升面试技巧。</li>
+        </ul>
+        <div class="signature">
+          <p>您的职业伙伴</p>
+          <p>aigcpm</p>
+          <p>2025年4月19日</p>
+        </div>
+        <p class="intro-text">
+          希望这些信息能帮助您更好地理解和使用这款结构化面试陪练助手。
+        </p>
 
+        <!-- 按钮 -->
         <div class="btn-container">
           <button class="confirm-btn" @click="messageDialogVisible = false">
             我知道了
@@ -698,11 +716,12 @@
           <div class="fullscreen-columns">
             <!-- 示范作答全屏内容 -->
             <div class="fullscreen-demo-column">
-              
+
               <div class="column-content" :class="{ blurred: !isAnVisible }">
                 <span class="gradient-text">作答点评如下:</span>
                 <p class="paragraph model-thinking" v-html="markdownReason"></p>
                 <p class="paragraph" v-html="markdownResult"></p>
+                
               </div>
             </div>
           </div>
@@ -792,6 +811,7 @@ export default {
         phone: "",
         code: "",
       },
+      abortStream: false,
       coinBalance: 0,
       asrClient: null,
       captcha: {
@@ -832,7 +852,6 @@ export default {
       errorLock: false,
       years: [],
       regions: [],
-      Tipsontent: "",
       questionTypes: [],
 
       questionContent: {
@@ -968,7 +987,7 @@ export default {
 
     // 检查是否需要显示欢迎对话框
     this.checkWelcomeDialog();
-        //关闭已经存在的
+    //关闭已经存在的
 
     // 添加全局点击监听器
     document.addEventListener("click", this.handlePageClick);
@@ -1203,15 +1222,19 @@ export default {
       // this.selectedYear = data.examTime;
       // this.selectedRegion = data.region;
       // this.selectedQuestionType = data.questionType;
-      this.modelResult = data.modelResult;
       this.hasRecordedContent = true;
 
       this.asrResult = data.userContent;
       this.aiResponseReasonContent = data.reasonContent;
       this.aiResponseResult = data.modelResult;
       this.currentIndex = data.currentIndex;
-      // 重置相关状态
-      this.isDemoStarted = false;
+      this.reasonContent = data.demoReasonContent;
+      this.modelResult = data.demoAnswerResult
+
+      if (data.demoReasonContent && data.demoAnswerResult) {
+        this.isDemoStarted = true
+        this.isAnVisible = false
+      }
       this.showEvaluationContentIn = true;
     },
     get_exam_detail(id, I) {
@@ -1219,6 +1242,9 @@ export default {
         this.$message.warning("请先结束作答");
         return
       }
+      this.abortStream = true;
+
+
       this.currentQuestionIndex = I;
       console.log("id", id);
       const token = localStorage.getItem("token");
@@ -1420,7 +1446,7 @@ export default {
 
       // 如果ASR客户端不存在或已断开连接，重新创建并连接
       if (!this.asrClient) {
-        this.asrClient = new ASRClient("wss://test.aigcpmer.com/asr/ws");        
+        this.asrClient = new ASRClient("wss://test.aigcpmer.com/asr/ws");
 
         // 设置回调函数
         this.asrClient.setCallbacks({
@@ -1579,7 +1605,13 @@ export default {
       this.hasRecordedContent = false;
       this.showEvaluationContent = false;
       this.asrResult = "";
-      this.modelResult = "";
+      this.reasonContent = data.demoReasonContent;
+      this.modelResult = data.demoAnswerResult
+
+      if (data.demoReasonContent && data.demoAnswerResult) {
+        this.isDemoStarted = true
+        this.isAnVisible = false
+      }
     },
     changeQuestion(direction) {
       if (this.isLoading) return;
@@ -1662,6 +1694,7 @@ export default {
     },
     async submitAnswer() {
       let stream = true;
+      this.abortStream = false;
       const token = localStorage.getItem("token");
 
       const config = {
@@ -1687,17 +1720,17 @@ export default {
           throw new Error("当前浏览器不支持流式响应");
         }
 
-        if(response.status === 500){
-          const data =  await response.json();
+        if (response.status === 500) {
+          const data = await response.json();
           console.log("data", data);
-          if(data.code === 10002){
+          if (data.code === 10002) {
             this.$message.error(data.message);
             return;
           }
-           return;
+          return;
         }
 
-    
+
         const reader = response.body.getReader();
         const decoder = new TextDecoder("utf-8");
         let done = false;
@@ -1706,9 +1739,10 @@ export default {
         this.aiResponseResult = "";
         let partialData = "";
 
-        while (!done) {
+        while (!done && !this.abortStream) {
           const { value, done: streamDone } = await reader.read();
           done = streamDone;
+
           if (value) {
             // 将当前 chunk 解码
             const chunk = decoder.decode(value, { stream: true });
@@ -1860,21 +1894,21 @@ export default {
             }, 2000);
           }
         }
-      }).catch ((error)=> {
+      }).catch((error) => {
         if (error.response) {
-              if (error.response.status === 401) {
-                // 处理 401 错误
-                localStorage.removeItem("userPhone");
-                localStorage.removeItem("token");
-                this.isLoggedIn = false;
-                this.userPhone = "";
-                return;
-              } else if (error.response.data && error.response.data.message) {
-                errorMsg = error.response.data.message;
-              }
-            }
-        })
-     
+          if (error.response.status === 401) {
+            // 处理 401 错误
+            localStorage.removeItem("userPhone");
+            localStorage.removeItem("token");
+            this.isLoggedIn = false;
+            this.userPhone = "";
+            return;
+          } else if (error.response.data && error.response.data.message) {
+            errorMsg = error.response.data.message;
+          }
+        }
+      })
+
     },
     handleLogin() {
       this.$refs.loginForm.validate((valid) => {
@@ -2065,6 +2099,7 @@ export default {
       }
     },
     async startDemo() {
+      this.abortStream = false;
       var data = {
         questionId: this.questionContent.questionId,
       };
@@ -2087,22 +2122,22 @@ export default {
           config
         );
         console.log("demoAnswner", response);
-        if(response.status === 401){
+        if (response.status === 401) {
           this.$message.error("请先登录");
           return;
         }
-      
+
         // const data = await response.json();
-        if(response.status === 500){
-          const data =  await response.json();
+        if (response.status === 500) {
+          const data = await response.json();
           console.log("data", data);
-          if(data.code === 10002){
+          if (data.code === 10002) {
             this.$message.error(data.message);
             return;
           }
-           return;
+          return;
         }
-        
+
         if (!response.body) {
           throw new Error("当前浏览器不支持流式响应");
         }
@@ -2113,14 +2148,16 @@ export default {
         const reader = response.body.getReader();
         const decoder = new TextDecoder("utf-8");
         let done = false;
+       this.isAnVisible = true
 
         this.reasonContent = "";
         this.modelResult = "";
         let partialData = "";
         console.log(`开始处理${now.toLocaleTimeString()}`);
-        while (!done) {
+        while (!done&& !this.abortStream) {
           const { value, done: streamDone } = await reader.read();
           done = streamDone;
+
           if (value) {
             // 将当前 chunk 解码
             const chunk = decoder.decode(value, { stream: true });
@@ -2197,6 +2234,8 @@ export default {
         this.$message.warning("请先结束作答");
         return
       }
+      this.abortStream = true;
+   
       if (this.currentIndex > 1) {
         this.changeQuestion(-1);
       }
@@ -2207,9 +2246,12 @@ export default {
         return
 
       }
+      this.abortStream = true;
+   
       if (this.currentIndex < this.totalCount) {
         this.changeQuestion(1);
       }
+
     },
     clearFilters() {
       this.selectedYear = "";
@@ -2224,56 +2266,13 @@ export default {
         this.$message.warning("请先结束作答");
         return
       }
+      this.abortStream = true;
+
       // 返回面试广场
       this.$router.push("/interview-square");
+
     },
     showTips() {
-      var config = {
-        method: "get",
-        url: "https://test.aigcpmer.com/api/dictInfo/getByType",
-        params: {
-          type: "notice", // 传递查询参数
-        },
-      };
-      axios(config)
-        .then((response) => {
-          if (response.data.code === 200) {
-            console.log(response.data);
-            this.Tipsontent = response.data.data.content;
-          } else {
-            // 处理错误情况
-            if (!this.errorLock) {
-              this.errorLock = true;
-              this.$message.error(response.data.message);
-              setTimeout(() => {
-                this.errorLock = false;
-              }, 2000);
-            }
-          }
-        })
-
-        .catch((error) => {
-          this.isRecording = false;
-          console.log("error", error);
-          let errorMsg = false;
-          if (
-            error.response &&
-            error.response.data &&
-            error.response.data.message
-          ) {
-            errorMsg = error.response.data.message;
-          }
-          if (!errorMsg) {
-            return;
-          }
-          if (!this.errorLock) {
-            this.errorLock = true;
-            this.$message.error(errorMsg);
-            setTimeout(() => {
-              this.errorLock = false;
-            }, 2000);
-          }
-        });
       // 显示消息对话框
       this.messageDialogVisible = true;
     },
@@ -2323,7 +2322,7 @@ export default {
     },
     // 添加重新回答方法
     restartRecording() {
-       this.isAnswerFullscreen = false
+      this.isAnswerFullscreen = false
       // 重置状态
       this.asrResult = "";
       this.aiResponseReasonContent = "";
@@ -2436,7 +2435,8 @@ export default {
   max-width: 40%;
   background-color: #f5f7fa;
   overflow: hidden;
-  box-shadow: none; /* 移除阴影 */
+  box-shadow: none;
+  /* 移除阴影 */
   position: relative;
 }
 
@@ -2444,7 +2444,7 @@ export default {
 .main-content {
   flex: 1;
   background: #fff;
-  overflow-y: auto;
+  overflow-y: hidden;
   /* 允许主内容区域滚动 */
   height: calc(100vh - 56px);
   /* 减去顶部导航栏高度 */
@@ -2462,8 +2462,10 @@ export default {
   top: 50%;
   right: 0;
   transform: translateY(-50%);
-  width: 36px;  /* 默认宽度 */
-  height: 140px;  /* 默认高度 */
+  width: 36px;
+  /* 默认宽度 */
+  height: 140px;
+  /* 默认高度 */
   background-color: #f5f7fa;
   border: none;
   border-radius: 4px 0 0 4px;
@@ -2483,8 +2485,10 @@ export default {
 /* 当抽屉打开时的样式 */
 .demo-trigger.drawer-open {
   right: 456px;
-  width: 24px;  /* 展开时的宽度 */
-  height: 70px;  /* 展开时的高度 */
+  width: 24px;
+  /* 展开时的宽度 */
+  height: 70px;
+  /* 展开时的高度 */
 }
 
 .demo-trigger-area {
@@ -2513,17 +2517,24 @@ export default {
 .demo-trigger-area i {
   display: inline-block;
   color: #7b2cf5;
-  font-size: 20px; /* 增大字体大小 */
-  font-weight: bold; /* 加粗 */
-  font-weight: 900; /* 极粗 */
-  -webkit-text-stroke: 0.1px #7b2cf5; /* 添加文字阴影增加粗度感 */
+  font-size: 20px;
+  /* 增大字体大小 */
+  font-weight: bold;
+  /* 加粗 */
+  font-weight: 900;
+  /* 极粗 */
+  -webkit-text-stroke: 0.1px #7b2cf5;
+  /* 添加文字阴影增加粗度感 */
 }
 
 /* 添加特定的粗体图标类 */
 .bold-icon:before {
-  content: "\e6e0"; /* Element UI 右箭头图标的 Unicode */
-  font-weight: 900; /* 极粗 */
-  -webkit-text-stroke: 0.1px #666666; /* 添加描边使图标更粗 */
+  content: "\e6e0";
+  /* Element UI 右箭头图标的 Unicode */
+  font-weight: 900;
+  /* 极粗 */
+  -webkit-text-stroke: 0.1px #666666;
+  /* 添加描边使图标更粗 */
 }
 
 /* 过渡动画示例，可根据需要自定义 */
@@ -2539,7 +2550,7 @@ export default {
 
 .slide-right-enter-active,
 .slide-right-leave-active {
-  transition: transform 0.3s ease;
+  transition: transform 0.01s ease;
 }
 
 .slide-right-enter,
@@ -2578,8 +2589,10 @@ export default {
 .header {
   padding: 0;
   background: #fff;
-  box-shadow: none; /* 移除阴影 */
-  border-bottom: 1px solid #F0F2FA; /* 添加底部边框 */
+  box-shadow: none;
+  /* 移除阴影 */
+  border-bottom: 1px solid #F0F2FA;
+  /* 添加底部边框 */
 }
 
 .header-container {
@@ -2597,7 +2610,8 @@ export default {
 .nav-logo {
   height: 24px;
   width: 24px;
-  cursor: pointer; /* 添加这一行，使鼠标悬停时显示为手型指针 */
+  cursor: pointer;
+  /* 添加这一行，使鼠标悬停时显示为手型指针 */
 }
 
 .header-right {
@@ -2836,9 +2850,9 @@ export default {
 
 .question-box {
   background: #fff;
-  padding: 24px 32px; /* 修改左右内边距为32px */
+  padding: 24px 32px;
+  /* 修改左右内边距为32px */
   border-bottom: 1px solid #F0F2FA;
-  height: 156px;
 }
 
 .question-title {
@@ -3155,7 +3169,8 @@ export default {
   border: none;
   border-radius: 4px;
   font-size: 16px;
-  cursor: pointer;  /* 只在按钮上保留手型指针 */
+  cursor: pointer;
+  /* 只在按钮上保留手型指针 */
   transition: all 0.3s;
 }
 
@@ -3228,7 +3243,8 @@ export default {
   cursor: pointer;
   color: #606266;
   box-shadow: none;
-  border-right: 1px solid #F0F2FA; /* 添加右边框 */
+  border-right: 1px solid #F0F2FA;
+  /* 添加右边框 */
 }
 
 /* 添加一个容器来包裹图标和文字，并设置与抽屉头部相同的内边距 */
@@ -3261,8 +3277,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 16px;
-  /* 确保与触发区域的内边距一致 */
-  border-bottom: 1px solid #ebeef5;
+  background-color: #ffffff;
 }
 
 .drawer-content {
@@ -3270,6 +3285,7 @@ export default {
   overflow-y: auto;
   /* 添加垂直滚动 */
   padding: 0;
+  background-color: #ffffff;
 }
 
 .question-list {
@@ -3283,20 +3299,24 @@ export default {
   border-bottom: 1px solid #ebeef5;
   cursor: pointer;
   font-size: 14px;
-  position: relative; /* 为 tooltip 定位 */
+  position: relative;
+  /* 为 tooltip 定位 */
 }
 
-/* 限制文本显示为2行 */
-.question-item span {
+/* 整体文字容器，使用 -webkit-box 布局实现多行截断 */
+.question-text {
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  /* 限制两行 */
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: normal;
+  /* 允许换行 */
 }
 
 /* hover 时显示完整内容 */
-.question-item:hover span {
+.question-item:hover .question-text {
   display: block;
   position: absolute;
   left: 0;
@@ -3312,13 +3332,38 @@ export default {
   word-break: break-all;
 }
 
+/* 添加答题表中的状态标签样式 */
+.question-item-status {
+  display: inline-block;
+  white-space: nowrap;
+  /* 保证标签不换行 */
+  margin-right: 4px;
+  /* 标签与题号之间留出间距 */
+  padding: 0 4px;
+  height: 20px;
+  line-height: 20px;
+  font-size: 12px;
+  border-radius: 2px;
+  box-sizing: border-box;
+}
+
+.item-status-answered {
+  background-color: #7b2cf5;
+  color: #fff;
+}
+
+.item-status-viewed {
+  background-color: #eeeeee;
+  color: #333333;
+}
+
 /* 保持其他样式不变 */
 .question-item:hover {
   background-color: #f0f2f5;
 }
 
 .question-item.active {
-  background-color: #F7F8F9; 
+  background-color: #F7F8F9;
 }
 
 .dialog-container {
@@ -3469,15 +3514,19 @@ export default {
   }
 
   .el-icon-refresh {
-    height: 40px !important; /* 保持容器高度与其他元素一致 */
-    width: 20px !important; /* 设置宽度为20px */
+    height: 40px !important;
+    /* 保持容器高度与其他元素一致 */
+    width: 20px !important;
+    /* 设置宽度为20px */
     margin-left: 8px !important;
     display: inline-flex !important;
     align-items: center !important;
-    justify-content: center !important; /* 确保图标居中 */
+    justify-content: center !important;
+    /* 确保图标居中 */
     cursor: pointer;
     color: #7b2cf5;
-    font-size: 20px !important; /* 设置图标大小为20px */
+    font-size: 20px !important;
+    /* 设置图标大小为20px */
   }
 
   /* 登录和取消按钮 */
@@ -3498,7 +3547,8 @@ export default {
   .cancel-btn {
     background: #F3F6F8;
     color: #111111 !important;
-    border: none !important; /* 移除边框 */
+    border: none !important;
+    /* 移除边框 */
   }
 
   :deep(.el-form-item__error) {
@@ -3549,11 +3599,13 @@ export default {
   }
 
   .register-form-item {
-    margin-bottom: 12px !important; /* 设置注册按钮的表单项底部间距为12px */
+    margin-bottom: 12px !important;
+    /* 设置注册按钮的表单项底部间距为12px */
   }
 
   .cancel-form-item {
-    margin-bottom: 0 !important; /* 取消按钮的表单项不需要底部间距 */
+    margin-bottom: 0 !important;
+    /* 取消按钮的表单项不需要底部间距 */
   }
 
   /* 验证码区域容器 */
@@ -3562,11 +3614,12 @@ export default {
     flex-direction: row !important;
     align-items: center !important;
     margin-bottom: 24px !important;
-    justify-content: flex-start !important; /* 确保向左对齐 */
+    justify-content: flex-start !important;
+    /* 确保向左对齐 */
   }
 
   /* 验证码区域内所有直接子元素 */
-  .captcha-verify > * {
+  .captcha-verify>* {
     display: inline-flex !important;
     align-items: center !important;
     vertical-align: middle;
@@ -3590,13 +3643,15 @@ export default {
     width: 148px;
     height: 40px !important;
     object-fit: contain;
-    margin-left: 10px; /* 与输入框间距10px */
+    margin-left: 10px;
+    /* 与输入框间距10px */
   }
 
   /* 刷新图标 */
   .el-icon-refresh {
     height: 40px !important;
-    margin-left: 8px !important; /* 与验证码图片间距8px */
+    margin-left: 8px !important;
+    /* 与验证码图片间距8px */
     display: inline-flex !important;
     align-items: center !important;
     cursor: pointer;
@@ -4851,7 +4906,13 @@ export default {
 }
 
 .welcome-dialog>>>.el-dialog {
-  background: linear-gradient(180deg, /* 第1个色标：#3948F2 + 100%不透明度 */ rgba(57, 72, 242, 0.07) 0%, /* 第2个色标：#550197 + 50%不透明度 */ rgba(85, 1, 151, 0.035) 50%, /* 第3个色标：#FFFFFF + 100%不透明度 */ rgba(255, 255, 255, 0.07) 100%);
+  background: linear-gradient(180deg,
+      /* 第1个色标：#3948F2 + 100%不透明度 */
+      rgba(57, 72, 242, 0.07) 0%,
+      /* 第2个色标：#550197 + 50%不透明度 */
+      rgba(85, 1, 151, 0.035) 50%,
+      /* 第3个色标：#FFFFFF + 100%不透明度 */
+      rgba(255, 255, 255, 0.07) 100%);
   margin: 0 !important;
   width: auto !important;
   /* 自适应内容宽度 */
@@ -4907,7 +4968,13 @@ export default {
 
 .demo-drawer-content {
   height: calc(100vh - 60px) !important;
-  background: linear-gradient(/* 使用 "to bottom right" 表示从左上角到右下角 */ to bottom right, /* 第一个色标：蓝色 + 100% 不透明度 */ rgba(57, 72, 242, 0.01) 0%, /* 第二个色标：紫色 + 50% 不透明度 */ rgba(85, 1, 151, 0.005) 100%);
+  background: linear-gradient(
+      /* 使用 "to bottom right" 表示从左上角到右下角 */
+      to bottom right,
+      /* 第一个色标：蓝色 + 100% 不透明度 */
+      rgba(57, 72, 242, 0.01) 0%,
+      /* 第二个色标：紫色 + 50% 不透明度 */
+      rgba(85, 1, 151, 0.005) 100%);
   overflow: hidden;
   /* 修改为 hidden */
   position: relative;
@@ -4929,7 +4996,8 @@ export default {
 }
 
 .demo-drawer-content .demo-start-area:active {
-  background: none; /* 移除点击效果 */
+  background: none;
+  /* 移除点击效果 */
 }
 
 .demo-drawer-content .logo {
@@ -5905,14 +5973,15 @@ export default {
 /* 添加答题表中的状态标签样式 */
 .question-item-status {
   display: inline-block;
-  width: 50px;
-  height: 20px;
-  border-radius: 2px;
-  font-size: 12px;
-  text-align: center;
-  line-height: 20px;
-  padding: 0 4px;
+  white-space: nowrap;
+  /* 保证标签不换行 */
   margin-right: 4px;
+  /* 标签与题号之间留出间距 */
+  padding: 0 4px;
+  height: 20px;
+  line-height: 20px;
+  font-size: 12px;
+  border-radius: 2px;
   box-sizing: border-box;
 }
 
@@ -5965,8 +6034,10 @@ export default {
 .record-header {
   position: absolute;
   top: 19px;
-  left: 32px;  /* 改为32px */
-  right: 32px; /* 改为32px */
+  left: 32px;
+  /* 改为32px */
+  right: 32px;
+  /* 改为32px */
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -6034,7 +6105,8 @@ export default {
   transition: all 0.3s;
   font-weight: normal;
   line-height: 1;
-  margin-left: 0px;/* 设置重新回答和全屏的左边距为0px */
+  margin-left: 0px;
+  /* 设置重新回答和全屏的左边距为0px */
 }
 
 .restart-btn:hover,
@@ -6055,9 +6127,10 @@ export default {
   border-radius: 2px;
   cursor: pointer;
   transition: all 0.3s;
-  margin-left: 0px;/* 设置作答点评按钮的左边距为0px */
+  margin-left: 0px;
+  /* 设置作答点评按钮的左边距为0px */
   font-size: 16px;
-  font-family: "PingFang SC"!important;
+  font-family: "PingFang SC" !important;
 }
 
 .evaluation-btn:hover {
@@ -6081,7 +6154,8 @@ export default {
 .recording-wave {
   display: inline-flex;
   align-items: center;
-  margin-right: 10px; /* 改为右侧间距 */
+  margin-right: 10px;
+  /* 改为右侧间距 */
   height: 16px;
   width: 60px;
 }
@@ -6535,7 +6609,8 @@ export default {
   display: none;
   line-height: 20px;
   font-family: "PingFang SC";
-  font-weight: 400; /* 添加字体粗细 */
+  font-weight: 400;
+  /* 添加字体粗细 */
 }
 
 .info-icon-wrapper:hover .info-tooltip {
@@ -6589,7 +6664,8 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 16px 24px;
-  border-bottom: none; /* 移除底部边框 */
+  border-bottom: none;
+  /* 移除底部边框 */
 }
 
 .answer-fullscreen-title {
@@ -6626,7 +6702,8 @@ export default {
   flex: 1;
   display: flex;
   flex-direction: column;
-  border-right: none; /* 移除右侧边框 */
+  border-right: none;
+  /* 移除右侧边框 */
 }
 
 /* 最后一个栏目不需要右边框 */
@@ -6970,7 +7047,8 @@ export default {
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  color: #7B2CF5; /* 兼容不支持渐变的浏览器 */
+  color: #7B2CF5;
+  /* 兼容不支持渐变的浏览器 */
   font-weight: 500;
   display: block;
   margin-bottom: 10px;
@@ -6982,6 +7060,7 @@ export default {
   flex-direction: column;
   align-items: center;
   gap: 8px;
+
 }
 
 .demo-text {
