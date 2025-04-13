@@ -265,7 +265,7 @@
                     ]">
                       <p class="paragraph">
                         {{ asrResult }}
-                        This is a comprehensive Vue single-file component for an
+                        <!-- This is a comprehensive Vue single-file component for an
                         interview page, handling user authentication, audio
                         recording, question navigation, feedback dialogs, and
                         more. Could you let me know what you'd like assistance
@@ -369,7 +369,7 @@
                         more. Could you let me know what you'd like assistance
                         with? For example, do you need help debugging an issue,
                         refactoring the code, or understanding how a specific
-                        part works? -->
+                        part works? --> 
                       </p>
                     </div>
                     <!-- 点评内容 -->
@@ -949,7 +949,6 @@ export default {
     // };
     // axios(config)
     //   .then((response) => {
-    //     debugger;
     //     if (response.data.code === 200) {
     //       console.log(response.data);
     //       this.questionTypes = response.data.data[0].tags;
@@ -1237,9 +1236,7 @@ export default {
       this.currentIndex = data.currentIndex;
       this.reasonContent = data.demoReasonContent;
       this.modelResult = data.demoAnswerResult
-      debugger
       if (data.demoReasonContent && data.demoAnswerResult) {
-        debugger
         this.isDemoStarted = true
         this.isAnVisible = false
       }
@@ -1558,7 +1555,6 @@ export default {
       if (needSave) {
         this.saveUserContent();
       }
-      debugger
     },
 
     searchQuestion(pageNum, pageSize) {
@@ -1920,7 +1916,6 @@ export default {
         url: "https://test.aigcpmer.com/api/user/detail",
         headers: { Authorization: `Bearer ${token}` },
       };
-      debugger;
 
       axios(config).then((response) => {
         console.log("response", response);
