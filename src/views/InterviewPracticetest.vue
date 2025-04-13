@@ -1363,7 +1363,7 @@ export default {
       // console.log(startBtn, stopBtn, resultDiv, statusDiv);
 
       // 创建ASR客户端
-      this.asrClient = new ASRClient("wss://test.aigcpmer.com/api/asr/ws");
+      this.asrClient = new ASRClient("wss://test.aigcpmer.com/asr/ws");
 
       // 设置回调函数
       this.asrClient.setCallbacks({
@@ -1451,7 +1451,7 @@ export default {
 
       // 如果ASR客户端不存在或已断开连接，重新创建并连接
       if (!this.asrClient) {
-        this.asrClient = new ASRClient("wss://test.aigcpmer.com/api/asr/ws");
+        this.asrClient = new ASRClient("wss://test.aigcpmer.com/asr/ws");
 
         // 设置回调函数
         this.asrClient.setCallbacks({
