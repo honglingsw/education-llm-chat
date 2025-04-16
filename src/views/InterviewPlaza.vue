@@ -81,8 +81,7 @@
         <!-- 面试卡片列表 -->
         <div class="card-list">
           <div v-for="(interview, index) in filteredInterviews" :key="index" class="interview-card"
-          :class="{ disabled: interview.isForWaiting }"
-            @click="goToInterview(interview)">
+            :class="{ disabled: interview.isForWaiting }" @click="goToInterview(interview)">
             <div class="card-header">
               <div class="card-icon">
                 <!-- <i :class="interview.icon" /> -->
@@ -794,6 +793,44 @@ export default {
   },
 };
 </script>
+<style>
+.send-code-text {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #7b2cf5;
+  font-size: 16px;
+  font-family: "PingFang SC", sans-serif;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.send-code-text.disabled {
+  color: #909399;
+  cursor: not-allowed;
+}
+.el-form-item__content {
+    display: flex;
+  }
+  .verify-input-wrapper {
+  position: relative;
+  width: 320px;
+  height: 40px;
+  font-family: "PingFang SC", sans-serif;
+}
+
+.verify-input {
+  width: 320px !important;
+  font-family: "PingFang SC", sans-serif;
+  font-size: 16px;
+}
+
+.verify-input .el-input__inner {
+  padding-right: 120px !important;
+}
+</style>
+
 
 <style scoped>
 .interview-plaza {
@@ -818,7 +855,7 @@ export default {
 
 .header-container {
   height: 56px;
-  margin: 0 24px ;
+  margin: 0 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1135,7 +1172,7 @@ export default {
 
 .main-content {
   margin: 0 auto;
-  padding:0 84px;
+  padding: 0 84px;
 }
 
 .page-title {
@@ -1182,13 +1219,13 @@ export default {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: space-between;
-  padding-bottom: 200px;
+  justify-content: flex-start;
+  padding-bottom: 400px;
 }
 
 .interview-card {
-  width:300px ;
-  height:152px ;
+  width: 300px;
+  height: 152px;
 
   margin-top: 40px;
   margin-right: 24px;
@@ -1203,10 +1240,12 @@ export default {
   display: flex;
   flex-direction: column;
 }
+
 .interview-card.disabled {
   cursor: not-allowed;
   opacity: 0.6;
 }
+
 .forWaiting {
   position: absolute;
   text-align: center;
@@ -1513,9 +1552,7 @@ export default {
     color: #606266;
   }
 
-  .el-form-item__content {
-    display: flex;
-  }
+  
 
   :deep(.el-form) {
     width: 80% !important;
@@ -1548,39 +1585,9 @@ export default {
   }
 }
 
-.verify-input-wrapper {
-  position: relative;
-  width: 320px;
-  height: 40px;
-  font-family: "PingFang SC", sans-serif;
-}
 
-.verify-input {
-  width: 320px !important;
-  font-family: "PingFang SC", sans-serif;
-  font-size: 16px;
-}
 
-.verify-input .el-input__inner {
-  padding-right: 120px !important;
-}
 
-.send-code-text {
-  position: absolute;
-  right: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #7b2cf5;
-  font-size: 16px;
-  font-family: "PingFang SC", sans-serif;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.send-code-text.disabled {
-  color: #909399;
-  cursor: not-allowed;
-}
 
 /* 充值弹窗样式 */
 .recharge-dialog {

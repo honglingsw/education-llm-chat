@@ -142,14 +142,12 @@
 
             <!-- 题目区域 -->
             <div class="question-box">
-              <div class="back-btn" @click="goBack">
-                <i class="el-icon-arrow-left"></i>
-                <span>返回</span>
-                <span class="exam-title">
-                  {{
-                    examTitle
-                  }}
-                </span>
+              <div class="back-btn">
+                <div class="return-area" @click="goBack">
+                  <i class="el-icon-arrow-left"></i>
+                  <span>返回</span>
+                </div>
+                <span class="exam-title">{{ examTitle }}</span>
                 <div class="light-btn" @click.stop="showTips">
                   <img src="@/assets/light.png" alt="提示" class="light-icon" />
                 </div>
@@ -237,7 +235,7 @@
                       全屏
                     </button>
                     <button class="evaluation-btn action-btn" @click="showEvaluation" v-if="!showEvaluationContent">
-                      <img src="@/assets/logo2.png" alt="点评" class="evaluation-icon" /> 作答点评
+                      <img src="@/assets/logo2.png" alt="点评" class="evaluation-icon" /> <div class="feedback-icon">作答点评</div>
                     </button>
                   </div>
                 </div>
@@ -265,111 +263,7 @@
                     ]">
                       <p class="paragraph">
                         {{ asrResult }}
-                        <!-- This is a comprehensive Vue single-file component for an
-                        interview page, handling user authentication, audio
-                        recording, question navigation, feedback dialogs, and
-                        more. Could you let me know what you'd like assistance
-                        with? For example, do you need help debugging an issue,
-                        refactoring the code, or understanding how a specific
-                        part works?
-                        This is a comprehensive Vue single-file component for an
-                        interview page, handling user authentication, audio
-                        recording, question navigation, feedback dialogs, and
-                        more. Could you let me know what you'd like assistance
-                        with? For example, do you need help debugging an issue,
-                        refactoring the code, or understanding how a specific
-                        part works?
-                        This is a comprehensive Vue single-file component for an
-                        interview page, handling user authentication, audio
-                        recording, question navigation, feedback dialogs, and
-                        more. Could you let me know what you'd like assistance
-                        with? For example, do you need help debugging an issue,
-                        refactoring the code, or understanding how a specific
-                        part works?
-                        This is a comprehensive Vue single-file component for an
-                        interview page, handling user authentication, audio
-                        recording, question navigation, feedback dialogs, and
-                        more. Could you let me know what you'd like assistance
-                        with? For example, do you need help debugging an issue,
-                        refactoring the code, or understanding how a specific
-                        part works?
-                        This is a comprehensive Vue single-file component for an
-                        interview page, handling user authentication, audio
-                        recording, question navigation, feedback dialogs, and
-                        more. Could you let me know what you'd like assistance
-                        with? For example, do you need help debugging an issue,
-                        refactoring the code, or understanding how a specific
-                        part works?
-                        This is a comprehensive Vue single-file component for an
-                        interview page, handling user authentication, audio
-                        recording, question navigation, feedback dialogs, and
-                        more. Could you let me know what you'd like assistance
-                        with? For example, do you need help debugging an issue,
-                        refactoring the code, or understanding how a specific
-                        part works?
-                        This is a comprehensive Vue single-file component for an
-                        interview page, handling user authentication, audio
-                        recording, question navigation, feedback dialogs, and
-                        more. Could you let me know what you'd like assistance
-                        with? For example, do you need help debugging an issue,
-                        refactoring the code, or understanding how a specific
-                        part works?
-                        This is a comprehensive Vue single-file component for an
-                        interview page, handling user authentication, audio
-                        recording, question navigation, feedback dialogs, and
-                        more. Could you let me know what you'd like assistance
-                        with? For example, do you need help debugging an issue,
-                        refactoring the code, or understanding how a specific
-                        part works?
-                        This is a comprehensive Vue single-file component for an
-                        interview page, handling user authentication, audio
-                        recording, question navigation, feedback dialogs, and
-                        more. Could you let me know what you'd like assistance
-                        with? For example, do you need help debugging an issue,
-                        refactoring the code, or understanding how a specific
-                        part works?
-                        This is a comprehensive Vue single-file component for an
-                        interview page, handling user authentication, audio
-                        recording, question navigation, feedback dialogs, and
-                        more. Could you let me know what you'd like assistance
-                        with? For example, do you need help debugging an issue,
-                        refactoring the code, or understanding how a specific
-                        part works?
-                        This is a comprehensive Vue single-file component for an
-                        interview page, handling user authentication, audio
-                        recording, question navigation, feedback dialogs, and
-                        more. Could you let me know what you'd like assistance
-                        with? For example, do you need help debugging an issue,
-                        refactoring the code, or understanding how a specific
-                        part works?
-                        This is a comprehensive Vue single-file component for an
-                        interview page, handling user authentication, audio
-                        recording, question navigation, feedback dialogs, and
-                        more. Could you let me know what you'd like assistance
-                        with? For example, do you need help debugging an issue,
-                        refactoring the code, or understanding how a specific
-                        part works?
-                        This is a comprehensive Vue single-file component for an
-                        interview page, handling user authentication, audio
-                        recording, question navigation, feedback dialogs, and
-                        more. Could you let me know what you'd like assistance
-                        with? For example, do you need help debugging an issue,
-                        refactoring the code, or understanding how a specific
-                        part works?
-                        This is a comprehensive Vue single-file component for an
-                        interview page, handling user authentication, audio
-                        recording, question navigation, feedback dialogs, and
-                        more. Could you let me know what you'd like assistance
-                        with? For example, do you need help debugging an issue,
-                        refactoring the code, or understanding how a specific
-                        part works?
-                        This is a comprehensive Vue single-file component for an
-                        interview page, handling user authentication, audio
-                        recording, question navigation, feedback dialogs, and
-                        more. Could you let me know what you'd like assistance
-                        with? For example, do you need help debugging an issue,
-                        refactoring the code, or understanding how a specific
-                        part works? --> 
+                        
                       </p>
                     </div>
                     <!-- 点评内容 -->
@@ -617,11 +511,11 @@
           <el-form-item prop="code" class="form-item">
             <div class="verify-input-wrapper">
               <el-input v-model="loginForm.code" placeholder="输入验证码" class="verify-input" />
-              <span class="send-code-text" :class="{ disabled: !canSendCode }" @click="sendCode">
+              <div class="send-code-text" :class="{ disabled: !canSendCode }" @click="sendCode">
                 {{
                   canSendCode ? "获取短信验证码" : `${countdown}秒后重新发送`
                 }}
-              </span>
+              </div>
             </div>
           </el-form-item>
 
@@ -1836,6 +1730,12 @@ export default {
       this.drawerVisible = !this.drawerVisible;
     },
     toggleRecording() {
+      // 检查是否登录
+      if (!this.isLoggedIn) {
+        this.showLoginDialog();
+        return;
+      }
+      
       this.isRecording = !this.isRecording;
       if (!this.isRecording) {
         this.hasRecordedContent = true;
@@ -1860,6 +1760,7 @@ export default {
         // 开始录音时，确保评价按钮可见
         this.hasRecordedContent = false; // 先设为false，等有内容时再设为true
         this.showEvaluationContent = false;
+        this.showEvaluationContentIn = false; // 添加这行确保不显示作答点评
         this.startRecognition();
       }
     },
@@ -2137,6 +2038,12 @@ export default {
       }
     },
     handleDemoClick() {
+      // 检查是否登录
+      if (!this.isLoggedIn) {
+        this.showLoginDialog();
+        return;
+      }
+      
       console.log("测试", this.modelResult)
       if (!this.modelResult) {
         this.startDemo()
@@ -2476,6 +2383,43 @@ export default {
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+.send-code-text {
+    position: absolute ;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #7b2cf5 ;
+    font-size: 16px ;
+    font-family: "PingFang SC", sans-serif ;
+    cursor: pointer ;
+    white-space: nowrap ;
+  }
+
+  .send-code-text.disabled {
+    color: #909399;
+    cursor: not-allowed;
+  }
+
+   /* 验证码输入框样式 */
+   .verify-input-wrapper {
+    position: relative;
+    width: 320px;
+    height: 40px;
+    font-family: "PingFang SC", sans-serif;
+  }
+
+  .verify-input {
+    width: 320px !important;
+    font-family: "PingFang SC", sans-serif;
+    font-size: 16px;
+  }
+
+  .verify-input .el-input__inner {
+    padding-right: 120px !important;
+  }
+
+ 
+
 </style>
 <style scoped>
 /* 外层容器：左右中三栏布局 */
@@ -2976,6 +2920,7 @@ export default {
   display: flex;
   flex-direction: column;
   position: relative;
+  overflow: hidden;
 }
 
 /* 录音提示区域 */
@@ -3399,10 +3344,10 @@ export default {
   /* position: absolute; */
   left: 0;
   top: 100%;
-  background: white;
+  background: #F7F8F9;
   color: #7B2CF5;
 
-  padding: 10px;
+  /* padding: 10px; */
   border-radius: 4px;
   /* box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1); */
   z-index: 10;
@@ -3439,7 +3384,7 @@ export default {
 
 /* 保持其他样式不变 */
 .question-item:hover {
-  background-color: #f0f2f5;
+  background-color: #F7F8F9;
 }
 
 .question-item.active {
@@ -3644,41 +3589,7 @@ export default {
     font-family: "PingFang SC", sans-serif;
   }
 
-  /* 验证码输入框样式 */
-  .verify-input-wrapper {
-    position: relative;
-    width: 320px;
-    height: 40px;
-    font-family: "PingFang SC", sans-serif;
-  }
-
-  .verify-input {
-    width: 320px !important;
-    font-family: "PingFang SC", sans-serif;
-    font-size: 16px;
-  }
-
-  .verify-input .el-input__inner {
-    padding-right: 120px !important;
-  }
-
-  .send-code-text {
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #7b2cf5;
-    font-size: 16px;
-    font-family: "PingFang SC", sans-serif;
-    cursor: pointer;
-    white-space: nowrap;
-  }
-
-  .send-code-text.disabled {
-    color: #909399;
-    cursor: not-allowed;
-  }
-
+ 
   .register-form-item {
     margin-bottom: 12px !important;
     /* 设置注册按钮的表单项底部间距为12px */
@@ -4920,6 +4831,34 @@ export default {
   margin-bottom: 10px;
 }
 
+/* 保留返回箭头和返回文字的hover效果 */
+.back-btn i.el-icon-arrow-left {
+  color: #606266;
+  transition: color 0.3s;
+}
+
+.back-btn i.el-icon-arrow-left:hover {
+  color: #7b2cf5;
+}
+
+/* 返回文字 - 使用更精确的选择器 */
+.back-btn > span:first-of-type {
+  color: #606266;
+  transition: color 0.3s;
+}
+
+.back-btn > span:first-of-type:hover {
+  color: #7b2cf5;
+}
+
+/* 完全删除exam title的所有hover效果 */
+
+/* 确保灯泡hover不影响其他元素 */
+.back-btn .light-btn {
+  /* 已有样式 */
+  z-index: 2; /* 提高层级，确保hover事件不穿透 */
+}
+
 .back-btn i {
   margin-right: 4px;
 }
@@ -4937,10 +4876,6 @@ export default {
   height: 24px;
   display: flex;
   align-items: center;
-}
-
-.back-btn:hover span:first-of-type {
-  color: #7b2cf5;
 }
 
 .page-region {
@@ -5986,10 +5921,6 @@ export default {
   align-items: center;
 }
 
-.demo-drawer-content .back-btn:hover span:first-of-type {
-  color: #7b2cf5;
-}
-
 .demo-drawer-content .page-region {
   display: flex;
   align-items: center;
@@ -6166,9 +6097,10 @@ export default {
 .record-title {
   font-size: 16px;
   font-weight: 500;
-  color: #000000;
+  color: #111111;
   display: flex;
   align-items: center;
+  font-family: "PingFang SC" !important;
 }
 
 /* 头部操作按钮容器 */
@@ -6262,11 +6194,18 @@ export default {
 
 /* 作答点评按钮图标样式 */
 .evaluation-btn .evaluation-icon {
-  width: 15px;
+  width: 16px;
   height: 16px;
   margin-right: 2px;
   vertical-align: middle;
 }
+.evaluation-btn .feedback-icon {
+  height: 16px;
+    font-size: 16px;
+    line-height: 14px;
+    font-family: PingFang SC !important;
+}
+
 
 /* 录音波形图样式 要改的所以先放在这一下*/
 .recording-wave {
@@ -6318,11 +6257,6 @@ export default {
 .recording-wave span:nth-child(5) {
   animation-delay: 0.5s;
   height: 100%;
-}
-
-.recording-wave span:nth-child(6) {
-  animation-delay: 0.6s;
-  height: 50%;
 }
 
 .recording-wave span:nth-child(7) {
@@ -6876,6 +6810,7 @@ export default {
   padding: 10px;
   border-radius: 4px;
   margin-top: 10px;
+  overflow-x: hidden;
 }
 
 /* 确保段落内容不会导致不必要的滚动 */
@@ -7214,5 +7149,99 @@ export default {
 .btn-disabled {
   opacity: 0.4;
   pointer-events: none;
+}
+
+/* 首先确保back-btn的布局类型保持不变 */
+.back-btn {
+  display: flex;
+  align-items: center;
+  /* 保持其他现有样式不变 */
+}
+
+/* 为每个元素添加独立的hover效果 */
+.back-btn i.el-icon-arrow-left {
+  color: #606266;
+  transition: color 0.3s;
+}
+
+.back-btn i.el-icon-arrow-left:hover {
+  color: #7b2cf5;
+}
+
+/* 返回文字 - 使用更精确的选择器 */
+.back-btn > span:first-of-type {
+  color: #606266;
+  transition: color 0.3s;
+}
+
+.back-btn > span:first-of-type:hover {
+  color: #7b2cf5;
+}
+
+/* 完全删除exam title的所有hover效果 */
+
+/* 确保灯泡hover不影响其他元素 */
+.back-btn .light-btn {
+  /* 已有样式 */
+  z-index: 2; /* 提高层级，确保hover事件不穿透 */
+}
+
+/* 移除单独的选择器 */
+
+/* 创建一个返回区域的统一选择器 */
+.back-btn .return-area {
+  display: flex;
+  align-items: center;
+  color: #606266;
+  transition: color 0.3s;
+  cursor: pointer;
+}
+
+.back-btn .return-area:hover,
+.back-btn .return-area:hover i,
+.back-btn .return-area:hover span {
+  color: #7b2cf5;
+}
+
+/* 确保灯泡hover不影响其他元素 */
+.back-btn .light-btn {
+  z-index: 2;
+}
+
+/* 将返回区域作为一个整体设置hover效果 */
+.back-btn .return-area {
+  display: flex;
+  align-items: center;
+  color: #606266;
+  transition: color 0.3s;
+  cursor: pointer;
+}
+
+.back-btn .return-area:hover,
+.back-btn .return-area:hover i,
+.back-btn .return-area:hover span {
+  color: #7b2cf5;
+}
+
+/* 完全删除exam title的所有hover效果 */
+.back-btn .exam-title {
+  color: #111111 !important; /* 使用!important确保覆盖其他规则 */
+  font-weight: 500;
+  margin-left: 10px;
+  transition: none !important; /* 禁用所有transition */
+}
+
+/* 显式禁用所有可能的hover状态 */
+.back-btn .exam-title:hover,
+.back-btn:hover .exam-title,
+.back-btn > .exam-title:hover {
+  color: #111111 !important;
+  text-decoration: none !important;
+  cursor: default !important;
+}
+
+/* 确保灯泡hover不影响其他元素 */
+.back-btn .light-btn {
+  z-index: 2;
 }
 </style>
